@@ -1,0 +1,5 @@
+websockets==14.2
+certifi
+google-genai
+aiohttp-cors
+absl-py

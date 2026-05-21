@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mahindra Auto - AI Live Showroom Consultant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
+    }
+    </script>
+  <script type="module">
+    import "@material/web/all.js";
+    import { styles as typescaleStyles } from "@material/web/typography/md-typescale-styles.js";
+
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
+
+  <script src="/frontend/gemini-live-api.js"></script>
+  <script src="/frontend/live-media-manager.js"></script>
+  <script src="/frontend/cookieJar.js"></script>
+
+  <link rel="stylesheet" href="/frontend/styles.css" />
+  <script defer src="/frontend/script.js"></script>
+
+  <style>
+    /* --- Premium Mahindra Auto Theme Variables --- */
+    :root {
+      --mahindra-bg: #0a0b0d;
+      --mahindra-surface: #111317;
+      --mahindra-card: #171a21;
+      --mahindra-red: #ff1e27;
+      --mahindra-red-hover: #d6121a;
+      --mahindra-red-glow: rgba(255, 30, 39, 0.25);
+      --mahindra-border: #262b35;
+      --mahindra-text-primary: #f3f4f6;
+      --mahindra-text-secondary: #9ca3af;
+      --font-family: 'Outfit', sans-serif;
+
+      /* Material Web Color Overrides */
+      --md-sys-color-primary: var(--mahindra-red);
+      --md-sys-color-primary-container: rgba(255, 30, 39, 0.15);
+      --md-sys-color-on-primary-container: var(--mahindra-text-primary);
+      --md-sys-color-surface: var(--mahindra-surface);
+      --md-sys-color-surface-container: var(--mahindra-card);
+      --md-sys-color-on-surface: var(--mahindra-text-primary);
+      --md-sys-color-on-surface-variant: var(--mahindra-text-secondary);
+      --md-sys-color-outline: var(--mahindra-border);
+      --md-outlined-text-field-label-text-color: var(--mahindra-text-secondary);
+      --md-outlined-select-label-text-color: var(--mahindra-text-secondary);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background-color: var(--mahindra-bg);
+      color: var(--mahindra-text-primary);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Premium Header --- */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--mahindra-border);
+      background-color: var(--mahindra-surface);
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-left .logo {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-left .logo span.brand-red {
+      color: var(--mahindra-red);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-right .material-icons {
+      color: var(--mahindra-text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .header-right .material-icons:hover {
+      color: var(--mahindra-text-primary);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--mahindra-red), #ff5e62);
+      border: 2px solid var(--mahindra-border);
+    }
+
+    /* --- App Container Layout --- */
+    .app-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      background-color: var(--mahindra-bg);
+    }
+
+    /* --- Left Sidebar --- */
+    .left-sidebar {
+      width: 260px;
+      background-color: var(--mahindra-surface);
+      padding: 24px 12px;
+      border-right: 1px solid var(--mahindra-border);
+      flex-shrink: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--mahindra-text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--mahindra-text-primary);
+    }
+
+    .nav-item .material-icons {
+      margin-right: 16px;
+      font-size: 22px;
+      color: var(--mahindra-text-secondary);
+    }
+
+    .nav-item.active {
+      background-color: var(--md-sys-color-primary-container);
+      color: var(--mahindra-red);
+      border-left: 4px solid var(--mahindra-red);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .nav-item.active .material-icons {
+      color: var(--mahindra-red);
+    }
+
+    .nav-header {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 16px 16px 8px;
+      color: var(--mahindra-text-secondary);
+      opacity: 0.6;
+    }
+
+    /* --- Main Content Area --- */
+    .main-content {
+      flex-grow: 1;
+      padding: 24px 32px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background-color: var(--mahindra-bg);
+    }
+
+    .main-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .main-header .material-icons {
+      color: var(--mahindra-text-secondary);
+      cursor: pointer;
+    }
+
+    .main-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- Main Grid / Avatar & Feeds --- */
+    #video-preview-container {
+      display: flex;
+      gap: 24px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #video-preview-container > div {
+      flex: 1;
+      min-width: 320px;
+      background-color: var(--mahindra-card);
+      border: 1px solid var(--mahindra-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    #video-preview-container h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--mahindra-text-secondary);
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Immersive Avatar Container */
+    #video-preview-container.avatar-mode .avatar-output-container {
+      flex: 1.2;
+      min-width: 300px;
+      min-height: 400px;
+      border: 2px solid var(--mahindra-border);
+      background: linear-gradient(180deg, var(--mahindra-surface), #08090b);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Glowing effect when talking */
+    #model-state #speaking:not([hidden]) ~ #video-preview-container.avatar-mode .avatar-output-container,
+    #video-preview-container.avatar-mode.active-speaking {
+      border-color: var(--mahindra-red);
+      box-shadow: 0 0 25px var(--mahindra-red-glow);
+    }
+
+    #video-preview-container.avatar-mode .input-container {
+      flex: 1;
+      max-width: 380px;
+    }
+
+    video,
+    #video_player {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+      background-color: #000;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    #video_player {
+      aspect-ratio: 9 / 16; /* Taller portrait for customized avatar */
+      max-height: 50vh;
+    }
+
+    #video {
+      aspect-ratio: 4/3;
+    }
+
+    /* --- Media controls (mic, camera) --- */
+    .media-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+      padding: 12px;
+      background-color: var(--mahindra-surface);
+      border: 1px solid var(--mahindra-border);
+      border-radius: 12px;
+    }
+
+    .media-controls md-outlined-select {
+      min-width: 180px;
+    }
+
+    .media-controls md-filled-icon-button {
+      --md-filled-icon-button-container-color: var(--mahindra-red);
+      --md-filled-icon-button-hover-container-color: var(--mahindra-red-hover);
+    }
+
+    /* --- Modern Chat System --- */
+    #chat-container {
+      margin-top: 24px;
+      flex-grow: 1;
+      background-color: var(--mahindra-card);
+      border: 1px solid var(--mahindra-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    #text-chat {
+      flex-grow: 1;
+      height: 140px;
+      overflow-y: auto;
+      border: 1px solid var(--mahindra-border);
+      border-radius: 12px;
+      padding: 16px;
+      background-color: rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #text-chat p {
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Chat Bubble Styles */
+    #text-chat p.user-bubble {
+      background-color: var(--mahindra-border);
+      color: var(--mahindra-text-primary);
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    #text-chat p.model-bubble {
+      background: linear-gradient(90deg, rgba(255, 30, 39, 0.08), rgba(0,0,0,0));
+      border-left: 3px solid var(--mahindra-red);
+      color: var(--mahindra-text-primary);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    #text-chat p.system-bubble {
+      background-color: rgba(255, 255, 255, 0.02);
+      color: var(--mahindra-text-secondary);
+      font-style: italic;
+      align-self: center;
+      text-align: center;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .text-input-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #text-message {
+      flex-grow: 1;
+    }
+
+    /* --- Connection / Status indicators --- */
+    #model-state {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .state {
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    #disconnected { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    #connecting { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); animation: pulse 1.5s infinite ease-in-out; }
+    #connected { background-color: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    #speaking { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); animation: pulse 1.5s infinite ease-in-out; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.75; }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Right Sidebar (Configuration) --- */
+    .right-sidebar {
+      width: 350px;
+      background-color: var(--mahindra-surface);
+      border-left: 1px solid var(--mahindra-border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .config-section {
+      padding: 18px;
+      background-color: var(--mahindra-card);
+      border: 1px solid var(--mahindra-border);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .config-section h3 {
+      margin: 0 0 16px;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--mahindra-text-primary);
+      border-left: 3px solid var(--mahindra-red);
+      padding-left: 8px;
+    }
+
+    .config-section md-outlined-text-field,
+    .config-section md-outlined-select {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button-group md-filled-button {
+      --md-filled-button-container-color: var(--mahindra-red);
+      --md-filled-button-hover-container-color: var(--mahindra-red-hover);
+      flex: 1.2;
+    }
+
+    .button-group md-outlined-button {
+      flex: 1;
+    }
+
+    /* Details (Collapsible) Config Sections */
+    details.config-section {
+      background-color: var(--mahindra-card);
+      transition: all 0.3s ease;
+    }
+
+    details[open].config-section {
+      border-color: rgba(255, 30, 39, 0.4);
+    }
+
+    details>summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details>summary::after {
+      content: '\25BC';
+      font-size: 10px;
+      color: var(--mahindra-text-secondary);
+      transition: transform 0.3s;
+    }
+
+    details[open]>summary::after {
+      transform: rotate(180deg);
+      color: var(--mahindra-red);
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details .details-content {
+      padding-top: 16px;
+      border-top: 1px solid var(--mahindra-border);
+      margin-top: 8px;
+    }
+
+    /* --- Modal styling --- */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background-color: var(--mahindra-surface);
+      border: 1px solid var(--mahindra-border);
+      padding: 24px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      color: var(--mahindra-text-primary);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .close-button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: var(--mahindra-text-secondary);
+      transition: color 0.2s;
+    }
+
+    .close-button:hover {
+      color: var(--mahindra-red);
+    }
+
+    .record-section {
+      background-color: var(--mahindra-card);
+      border: 1px solid var(--mahindra-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    .record-section p {
+      color: var(--mahindra-text-secondary);
+      font-size: 15px;
+      line-height: 1.6;
+      background-color: rgba(0,0,0,0.2);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px dashed var(--mahindra-border);
+    }
+
+    #recordButton {
+      background-color: var(--mahindra-red);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+    }
+
+    #recordButton:hover {
+      background-color: var(--mahindra-red-hover);
+    }
+
+    #recordButton:disabled {
+      background-color: var(--mahindra-border);
+      cursor: not-allowed;
+      color: var(--mahindra-text-secondary);
+    }
+
+    /* Checkbox row */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .checkbox-row label {
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--mahindra-text-primary);
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="material-icons">menu</span>
+      <div class="logo"><span class="brand-red">MAHINDRA</span> Auto Virtual Showroom</div>
+    </div>
+    <div class="header-right">
+      <span class="material-icons">help_outline</span>
+      <span class="material-icons">notifications</span>
+      <span class="material-icons">apps</span>
+      <div class="user-avatar"></div>
+    </div>
+  </header>
+
+  <!-- App Container -->
+  <div class="app-container">
+    <!-- Left Sidebar -->
+    <nav class="left-sidebar">
+      <div class="nav-header">Mahindra Lineup</div>
+      <div class="nav-item"><span class="material-icons">explore</span> Thar ROXX</div>
+      <div class="nav-item"><span class="material-icons">family_restroom</span> XUV700</div>
+      <div class="nav-item"><span class="material-icons">terrain</span> Scorpio-N</div>
+      <div class="nav-item"><span class="material-icons">electric_car</span> XUV400 EV</div>
+      <div class="nav-item"><span class="material-icons">minor_crash</span> XUV 3XO</div>
+      <div class="nav-header">Interactive AI</div>
+      <div class="nav-item active"><span class="material-icons">support_agent</span> Talk to Mahi</div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="main-header">
+        <span class="material-icons">arrow_back</span>
+        <h1>Meet Mahi - Your Mahindra Advisor</h1>
+      </div>
+
+      <div id="model-state">
+        <div id="disconnected" class="state"><span class="material-symbols-outlined">cloud_off</span><span
+            class="icon-text">disconnected</span></div>
+        <div id="connecting" class="state" hidden><span class="material-symbols-outlined">hourglass_empty</span><span
+            class="icon-text">connecting...</span></div>
+        <div id="connected" class="state" hidden><span class="material-symbols-outlined">cloud_done</span><span
+            class="icon-text">connected</span></div>
+        <div id="speaking" class="state" hidden><span class="material-symbols-outlined">graphic_eq</span><span
+            class="icon-text">model speaking</span></div>
+      </div>
+
+      <div id="video-preview-container" class="avatar-mode">
+        <div class="input-container">
+          <h3>Input (Camera/Screen)</h3>
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+        <div class="avatar-output-container">
+          <h3>Avatar Output</h3>
+          <video id="video_player" autoplay controls></video>
+        </div>
+      </div>
+
+      <div class="media-controls" style="margin-top: 16px;">
+        <md-outlined-select id="cameraSource" label="Camera" onchange="newCameraSelected()"></md-outlined-select>
+        <md-outlined-select id="audioSource" label="Microphone" onchange="newMicSelected()"></md-outlined-select>
+        <span id="micBtn" hidden><md-filled-icon-button
+            onclick="micBtnClick()"><md-icon>mic</md-icon></md-filled-icon-button></span>
+        <span id="micOffBtn"><md-filled-icon-button disabled
+            onclick="micOffBtnClick()"><md-icon>mic_off</md-icon></md-filled-icon-button></span>
+        <span id="cameraBtn" hidden><md-filled-icon-button
+            onclick="cameraBtnClick()"><md-icon>videocam</md-icon></md-filled-icon-button></span>
+        <span id="cameraOffBtn"><md-filled-icon-button disabled
+            onclick="cameraOffBtnClick()"><md-icon>videocam_off</md-icon></md-filled-icon-button></span>
+        <span id="screenBtn"><md-filled-icon-button disabled
+            onclick="screenShareBtnClick()"><md-icon>present_to_all</md-icon></md-filled-icon-button></span>
+      </div>
+
+      <div id="chat-container" style="margin-top: 18px; flex-grow: 1;">
+        <div id="text-chat" style="height: auto; flex-grow: 1; max-height: 100px; overflow-y: auto;"></div>
+        <div class="text-input-area">
+          <md-outlined-text-field id="text-message" label="Send a text message"></md-outlined-text-field>
+          <md-icon-button onclick="newUserMessage()"><md-icon>send</md-icon></md-icon-button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Right Sidebar (Configuration) -->
+    <aside class="right-sidebar">
+      <div class="config-section">
+        <h3>Connection</h3>
+        <md-outlined-text-field id="location" label="Location" value="us-central1"></md-outlined-text-field>
+        <md-outlined-select label="Environment" id="envApiHost">
+          <md-select-option value="autopush">
+            <div slot="headline">autopush</div>
+          </md-select-option>
+          <md-select-option value="staging">
+            <div slot="headline">staging</div>
+          </md-select-option>
+          <md-select-option selected value="prod">
+            <div slot="headline">prod</div>
+          </md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Model" id="liveApiModel">
+          <md-select-option value="gemini-live-2.5-flash-native-audio">
+            <div slot="headline">gemini-live-2.5-flash-native-audio</div>
+          </md-select-option>
+          <md-select-option value="gemini-3.1-flash-live-preview">
+            <div slot="headline">gemini-3.1-flash-live-preview</div>
+          </md-select-option>
+          <md-select-option selected value="gemini-3.1-flash-live-preview-04-2026">
+            <div slot="headline">gemini-3.1-flash-live-preview-04-2026</div>
+          </md-select-option>
+          <md-select-option value="gemini-3.2-flash-lite-live-preview">
+            <div slot="headline">gemini-3.2-flash-lite-live-preview</div>
+          </md-select-option>
+          <md-select-option value="gemini-live-3.0-flash-preview-native-audio-beyond">
+            <div slot="headline">gemini-live-3.0-flash-preview-native-audio-beyond</div>
+          </md-select-option>
+        </md-outlined-select>
+        <div class="button-group">
+          <md-filled-button onclick="connectBtnClick()" id="connectBtn">Connect</md-filled-button>
+          <md-outlined-button onclick="disconnectBtnClick()" id="disconnectBtn">Disconnect</md-outlined-button>
+        </div>
+      </div>
+
+      <details class="config-section">
+        <summary>
+          <h3>Model Behavior</h3>
+        </summary>
+        <div class="details-content">
+          <p class="md-typescale-body-medium" style="margin-top: 0; margin-bottom: 16px;">Model response type
+          </p>
+          <form>
+            <md-radio id="video-radio" name="responseModality" value="VIDEO" checked></md-radio>
+            <label for="video-radio">Video</label>
+            <md-radio id="audio-radio" name="responseModality" value="AUDIO" style="margin-left: 24px;"></md-radio>
+            <label for="audio-radio">Audio</label>
+            <md-radio id="text-radio" name="responseModality" value="TEXT" style="margin-left: 24px;"></md-radio>
+            <label for="text-radio">Text</label>
+          </form>
+          <br />
+          <md-outlined-text-field id="systemInstructions" type="textarea" label="System Instructions"
+            rows="3"></md-outlined-text-field>
+        </div>
+      </details>
+
+      <div class="config-section">
+        <h3>Outputs</h3>
+        <md-outlined-select label="Voice Name" id="voiceName">
+          <md-select-option value="puck">
+            <div slot="headline">puck</div>
+          </md-select-option>
+          <md-select-option value="charon">
+            <div slot="headline">charon</div>
+          </md-select-option>
+          <md-select-option value="kore">
+            <div slot="headline">kore</div>
+          </md-select-option>
+          <md-select-option value="fenrir">
+            <div slot="headline">fenrir</div>
+          </md-select-option>
+          <md-select-option value="aoede">
+            <div slot="headline">aoede</div>
+          </md-select-option>
+          <md-select-option selected value="orus">
+            <div slot="headline">orus</div>
+          </md-select-option>
+          <md-select-option value="zephyr">
+            <div slot="headline">zephyr</div>
+          </md-select-option>
+          <md-select-option value="leda">
+            <div slot="headline">leda</div>
+          </md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Voice Locale" id="voiceLocale">
+          <md-select-option selected value="en-US">
+            <div slot="headline">en-US</div>
+          </md-select-option>
+          <md-select-option value="de-DE">
+            <div slot="headline">de-DE</div>
+          </md-select-option>
+          <md-select-option value="en-AU">
+            <div slot="headline">en-AU</div>
+          </md-select-option>
+          <md-select-option value="en-GB">
+            <div slot="headline">en-GB</div>
+          </md-select-option>
+        </md-outlined-select>
+      </div>
+
+      <div class="config-section">
+        <h3>Branded Voice</h3>
+        <div class="form-group">
+          <label for="voice-dropdown"
+            style="display: block; font-size: 14px; margin-bottom: 8px; font-weight: 500;">Voice</label>
+          <select id="voice-dropdown"
+            style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--gcp-border); background-color: var(--gcp-surface);">
+            <option value="zephyr">zephyr</option>
+            <option value="google-1">Google Voice 1</option>
+            <option value="google-2">Google Voice 2</option>
+          </select>
+          <div class="create-voice-link" id="createVoiceBtn">
+            + Create a new branded voice
+          </div>
+          <div class="button-group">
+            <input type="file" id="audioFileInput" accept=".wav" style="display: none;">
+            <md-outlined-button onclick="document.getElementById('audioFileInput').click()">Upload .wav file
+            </md-outlined-button>
+          </div>
+          <span id="fileName"
+            style="font-size: 12px; color: var(--gcp-text-secondary); margin-top: 8px; display: block;"></span>
+        </div>
+
+      </div>
+
+      <div class="config-section">
+        <h3>Function call</h3>
+        <div class="form-group">
+          <label style="display: block; font-size: 12px; margin-bottom: 8px; ">Function call definitions
+            in OpenAI format. Should be a json file.</label>
+          <div class="button-group">
+            <input type="file" id="fcFileInput" accept=".json" style="display: none;">
+            <md-outlined-button onclick="document.getElementById('fcFileInput').click()">Upload .json file
+            </md-outlined-button>
+          </div>
+
+          <span id="fcFileName"
+            style="font-size: 12px; color: var(--gcp-text-secondary); margin-top: 8px; display: block;"></span>
+        </div>
+
+      </div>
+
+      <div class="config-section">
+        <h3>Avatar Mode</h3>
+        <div class="checkbox-row">
+          <md-checkbox id="enableAvatarMode" touch-target="wrapper" checked onchange="toggleAvatarMode()"></md-checkbox>
+          <label for="enableAvatarMode">Enable Avatar Mode (Side-by-side view)</label>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <h3>Translation</h3>
+        <div class="checkbox-row">
+          <md-checkbox id="enableS2ST" touch-target="wrapper"
+            onchange="document.getElementById('s2stTargetLanguage').disabled = !this.checked">
+          </md-checkbox>
+          <label for="enableS2ST">Enable Speech-to-Speech Translation</label>
+        </div>
+
+        <md-outlined-select label="S2ST Target Language" id="s2stTargetLanguage" disabled>
+          <md-select-option selected value="ar">
+            <div slot="headline">Arabic (ar)</div>
+          </md-select-option>
+          <md-select-option value="cmn">
+            <div slot="headline">Mandarin (cmn)</div>
+          </md-select-option>
+          <md-select-option value="de">
+            <div slot="headline">German (de)</div>
+          </md-select-option>
+          <md-select-option value="en">
+            <div slot="headline">English (en)</div>
+          </md-select-option>
+          <md-select-option value="es">
+            <div slot="headline">Spanish (es)</div>
+          </md-select-option>
+          <md-select-option value="fa">
+            <div slot="headline">Persian (fa)</div>
+          </md-select-option>
+          <md-select-option value="fr">
+            <div slot="headline">French (fr)</div>
+          </md-select-option>
+          <md-select-option value="hi">
+            <div slot="headline">Hindi (hi)</div>
+          </md-select-option>
+          <md-select-option value="id">
+            <div slot="headline">Indonesian (id)</div>
+          </md-select-option>
+          <md-select-option value="it">
+            <div slot="headline">Italian (it)</div>
+          </md-select-option>
+          <md-select-option value="ja">
+            <div slot="headline">Japanese (ja)</div>
+          </md-select-option>
+          <md-select-option value="ko">
+            <div slot="headline">Korean (ko)</div>
+          </md-select-option>
+          <md-select-option value="nl">
+            <div slot="headline">Dutch (nl)</div>
+          </md-select-option>
+          <md-select-option value="pl">
+            <div slot="headline">Polish (pl)</div>
+          </md-select-option>
+          <md-select-option value="pt">
+            <div slot="headline">Portuguese (pt)</div>
+          </md-select-option>
+          <md-select-option value="ro">
+            <div slot="headline">Romanian (ro)</div>
+          </md-select-option>
+          <md-select-option value="ru">
+            <div slot="headline">Russian (ru)</div>
+          </md-select-option>
+          <md-select-option value="th">
+            <div slot="headline">Thai (th)</div>
+          </md-select-option>
+          <md-select-option value="tr">
+            <div slot="headline">Turkish (tr)</div>
+          </md-select-option>
+          <md-select-option value="uk">
+            <div slot="headline">Ukrainian (uk)</div>
+          </md-select-option>
+          <md-select-option value="vi">
+            <div slot="headline">Vietnamese (vi)</div>
+          </md-select-option>
+          <md-select-option value="yue">
+            <div slot="headline">Cantonese (yue)</div>
+          </md-select-option>
+        </md-outlined-select>
+
+      </div>
+      <details class="config-section">
+        <details class="config-section">
+          <summary>
+            <h3>Advanced Settings</h3>
+          </summary>
+          <div class="details-content">
+            <b>Transcription</b><br />
+            <div class="checkbox-row">
+              <md-checkbox id="inputTranscript" touch-target="wrapper" checked></md-checkbox>
+              <label for="inputTranscript">Input Audio Transcripts</label><br />
+            </div>
+            <div class="checkbox-row">
+              <md-checkbox id="outputTranscript" touch-target="wrapper" checked></md-checkbox>
+              <label for="outputTranscript">Output Audio Transcripts</label><br /><br />
+            </div>
+
+            <b>Session Resumption</b><br />
+            <div class="checkbox-row">
+              <md-checkbox id="resumption" touch-target="wrapper"></md-checkbox>
+              <label for="resumption">Enable session resumption</label><br />
+            </div>
+            <md-outlined-text-field id="handle" label="Resumption Handle"></md-outlined-text-field><br /><br />
+
+            <b>VAD & Proactivity</b><br />
+            <div class="checkbox-row">
+              <md-checkbox id="disableInterruption" touch-target="wrapper"></md-checkbox>
+              <label for="disableInterruption">Disable Interruption</label><br />
+            </div>
+            <div class="checkbox-row">
+              <md-checkbox id="disableDetection" touch-target="wrapper"></md-checkbox>
+              <label for="disableDetection">Disable Audio Endpointing Detection</label><br />
+            </div>
+            <div class="checkbox-row">
+              <md-checkbox id="proactiveVideo" touch-target="wrapper"></md-checkbox>
+              <label for="proactiveVideo">Enable Proactive Video</label><br /><br />
+            </div>
+
+            <b class="settings-subtitle">Sampling Rate</b><br />
+            <div class="form-grid" style="margin-bottom: 20px;">
+              <md-outlined-text-field id="audioInterval" type="number" label="Audio Interval (ms)"
+                value="200"></md-outlined-text-field>
+              <md-outlined-text-field id="videoInterval" type="number" label="Video Frame Interval (ms)"
+                value="400"></md-outlined-text-field>
+            </div>
+
+            <b class="settings-subtitle">Detection Sensitivity</b><br />
+            <md-outlined-select label="Start Sensitivity" id="startSensitivity">
+              <md-select-option value="low">
+                <div slot="headline">low</div>
+              </md-select-option>
+              <md-select-option selected value="high">
+                <div slot="headline">high</div>
+              </md-select-option>
+            </md-outlined-select>
+            <md-outlined-select label="End Sensitivity" id="endSensitivity">
+              <md-select-option selected value="low">
+                <div slot="headline">low</div>
+              </md-select-option>
+              <md-select-option value="high">
+                <div slot="headline">high</div>
+              </md-select-option>
+            </md-outlined-select>
+          </div>
+  </div>
+  </aside>
+  </div>
+
+  <md-dialog id="dialog" close>
+    <div slot="content">
+      <span id="dialogMessage">A dialog that is opened by default.</span>
+    </div>
+  </md-dialog>
+
+  <!-- Branded Voice Creation Modal -->
+  <div id="brandedVoiceModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create a new branded voice</h2>
+        <button class="close-button" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Step 2: Name the voice -->
+        <div class="form-group">
+          <label for="newVoiceName">Reference voice name</label>
+          <input type="text" id="newVoiceName" placeholder="e.g., My custom branded voice"
+            style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--gcp-border); background-color: var(--gcp-surface);">
+        </div>
+
+        <!-- Step 3: Record reference audio -->
+        <div class="form-group">
+          <label>Record reference audio</label>
+          <div class="record-section">
+            Read the following text aloud clearly. A recording of at least 10 seconds is required.
+            <p>
+              <i>“If this is true then those who tend to think creatively really are somehow different.
+                She
+                will likely jump for joy and want to skip straight to the honeymoon. The sugar syrup
+                should create very fine strands of sugar that drape over the handles. But really in the
+                grand scheme of things, this information is insignificant. I let the positive overrule
+                the negative.”</i>
+            </p>
+            <div class="record-controls">
+              <button id="recordButton">
+                <span class="material-icons">mic</span>
+                Record reference voice
+              </button>
+              <div class="spinner" id="processingSpinner"></div>
+              <span id="recordStatus"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</body>
+
+</html>
