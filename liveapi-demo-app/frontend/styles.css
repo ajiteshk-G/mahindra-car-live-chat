@@ -559,12 +559,36 @@ body {
   gap: 6px;
 }
 
+.chat-lang-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 6px;
+}
+
+.lang-pill {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-pill.active {
+  background: rgba(0, 229, 255, 0.25);
+  border-color: var(--maruti-cyan);
+  color: #ffffff;
+}
+
 .chat-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #38bdf8;
-  margin-left: auto;
   box-shadow: 0 0 6px #38bdf8;
 }
 

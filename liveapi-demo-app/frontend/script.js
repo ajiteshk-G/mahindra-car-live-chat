@@ -908,6 +908,29 @@ let isFirstTurn = true;
 
 let speechRecognizer = null;
 let currentInterimBubble = null;
+let currentSpeechLang = "hi-IN";
+
+function setSpeechLanguage(lang) {
+    currentSpeechLang = lang;
+    const hiBtn = document.getElementById("lang-hi-btn");
+    const enBtn = document.getElementById("lang-en-btn");
+    if (hiBtn) hiBtn.classList.toggle("active", lang === "hi-IN");
+    if (enBtn) enBtn.classList.toggle("active", lang === "en-IN");
+
+    const voiceLocaleSelect = document.getElementById("voiceLocale");
+    if (voiceLocaleSelect) voiceLocaleSelect.value = lang;
+
+    if (speechRecognizer) {
+        try {
+            speechRecognizer.abort();
+        } catch (e) {}
+        initSpeechRecognition();
+        if (micBtn && !micBtn.hidden) {
+            try { speechRecognizer.start(); } catch (e) {}
+        }
+    }
+    console.log("Speech recognition language set to:", lang);
+}
 
 function initSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -925,7 +948,7 @@ function initSpeechRecognition() {
         speechRecognizer.continuous = true;
         speechRecognizer.interimResults = true;
         speechRecognizer.maxAlternatives = 1;
-        speechRecognizer.lang = (voiceLocale && voiceLocale.value) ? voiceLocale.value : "hi-IN";
+        speechRecognizer.lang = currentSpeechLang || "hi-IN";
 
         speechRecognizer.onresult = (event) => {
             let interimText = "";
@@ -965,7 +988,7 @@ function initSpeechRecognition() {
                 console.log("Customer Final Speech Received:", speechStr);
 
                 const lower = speechStr.toLowerCase();
-                const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ")) && lower.includes("वर्चुअल शोरूम");
+                const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ") || lower.includes("kabir")) && lower.includes("वर्चुअल शोरूम");
                 if (!isEcho) {
                     newUserTranscriptMessage(speechStr);
                     detectCarInTranscript(speechStr);
@@ -979,6 +1002,13 @@ function initSpeechRecognition() {
             if (currentInterimBubble) {
                 currentInterimBubble.remove();
                 currentInterimBubble = null;
+            }
+            if (event.error === 'no-speech' || event.error === 'network') {
+                if (micBtn && !micBtn.hidden) {
+                    setTimeout(() => {
+                        try { speechRecognizer.start(); } catch (e) {}
+                    }, 400);
+                }
             }
         };
 
@@ -1404,8 +1434,11 @@ async function startAudioInput() {
         inputWorkletNode.connect(dummyGain);
         dummyGain.connect(inputAudioContext.destination);
 
+        initSpeechRecognition();
         if (speechRecognizer) {
-            try { speechRecognizer.start(); } catch (e) {}
+            try { speechRecognizer.start(); } catch (e) {
+                console.log("Speech recognizer start error:", e);
+            }
         }
 
         console.log("Microphone live streaming active at rate:", inputAudioContext.sampleRate);

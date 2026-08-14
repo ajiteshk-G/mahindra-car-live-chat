@@ -257,6 +257,10 @@
       <div id="chat-container" class="live-chat-box">
         <div class="chat-box-header">
           <span class="material-icons">forum</span> Live Transcript & Chat
+          <div class="chat-lang-toggle">
+            <button id="lang-hi-btn" class="lang-pill active" onclick="setSpeechLanguage('hi-IN')" title="Listen in Hindi">🇮🇳 Hindi</button>
+            <button id="lang-en-btn" class="lang-pill" onclick="setSpeechLanguage('en-IN')" title="Listen in English / Hinglish">🇬🇧 English</button>
+          </div>
           <span class="chat-status-dot"></span>
         </div>
         <div id="text-chat" class="chat-scroll-area">
