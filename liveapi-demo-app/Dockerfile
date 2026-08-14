@@ -1,24 +1,18 @@
-FROM python:3.11
+FROM python:3.11-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# 1. Install dependencies first (for better caching)
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 2. Copy the actual code and assets
-# This copies everything from your local liveapi-demo-app into /app
 COPY . .
 
-ENV PROJECT_ID "cloud-llm-preview1"
-ENV LOCATION "us-central1"
+ENV PROJECT_ID="mb-poc-352009"
+ENV LOCATION="us-central1"
+ENV PORT=8080
 
-
-
-# 3. Cloud Run needs to run the backend
-# We switch to backend so main.py can find its local imports easily
 WORKDIR /app/backend
 
-# Use the PORT environment variable provided by Cloud Run
-CMD python main.py --project_id=$PROJECT_ID
+CMD ["python", "main.py"]

@@ -2,6 +2,7 @@ class GeminiLiveResponseMessage {
     constructor(data) {
         this.data = "";
         this.type = "";
+        this.raw = data;
 
         const serverContent = data?.serverContent || data?.server_content;
         this.endOfTurn = serverContent?.turnComplete || serverContent?.turn_complete;
@@ -13,6 +14,7 @@ class GeminiLiveResponseMessage {
 
         if (data?.setupComplete || data?.setup_complete) {
             this.type = "SETUP COMPLETE";
+            this.data = data.setupComplete || data.setup_complete;
         } else if (tool_calls) {
             this.data = tool_calls;
             this.type = "FUNCTION_CALL";
@@ -33,6 +35,7 @@ class GeminiLiveResponseMessage {
                 this.mimeType = mimeType;
             } else {
                 this.type = "AUDIO";
+                this.mimeType = mimeType || "audio/pcm;rate=24000";
             }
         } else if (data?.sessionResumptionUpdate || data?.session_resumption_update) {
             this.type = "RESUMPTION";
@@ -52,7 +55,7 @@ class GeminiLiveResponseMessage {
             if (outputTranscription?.text) {
                 this.data = outputTranscription?.text;
             } else if (outputTranscription?.finished) {
-                this.data = "Finished: " + outputTranscription?.finished;
+                this.data = outputTranscription?.finished;
             }
         } else if (this.endOfTurn) {
             this.data = "END OF TURN";
@@ -63,8 +66,6 @@ class GeminiLiveResponseMessage {
         }
     }
 }
-const DUMMY_AVATAR_16_9 =
-    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAIAAABnTYUvAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXYwQDAAACAAHnSm8jAAAAAElFTkSuQmCC";
 
 class GeminiLiveAPI {
     constructor(proxyUrl, controlUrl, frUrl) {
@@ -74,14 +75,12 @@ class GeminiLiveAPI {
 
         this.sessionId = crypto.randomUUID();
         this.projectId = null;
-        this.model = null;
-
+        this.model = "gemini-3.1-flash-live-preview-04-2026";
         this.environment = "prod";
 
         this.responseModalities = ["VIDEO"];
         this.systemInstructions = "";
-
-        this.endPoint = null;
+        this.endPoint = "aiplatform.googleapis.com";
 
         this.onReceiveResponse = (message) => {
             console.log("Default message received callback", message);
@@ -92,17 +91,17 @@ class GeminiLiveAPI {
         };
 
         this.onErrorMessage = (message) => {
-            alert(message);
+            console.error("GeminiLiveAPI Error:", message);
         };
 
         this.websocket = null;
-        this.location = null;
-        this.avatarMode = false;
+        this.location = "us-central1";
+        this.avatarMode = true;
 
-        this.enableInputTranscript = false;
-        this.enableOutputTranscript = false;
-        this.voiceName = "";
-        this.voiceLocale = "";
+        this.enableInputTranscript = true;
+        this.enableOutputTranscript = true;
+        this.voiceName = "orus";
+        this.voiceLocale = "hi-IN";
         this.enableSessionResumption = false;
         this.customVoiceSample = "";
         this.resumptionHandle = "";
@@ -117,45 +116,18 @@ class GeminiLiveAPI {
         this.customizedAvatarData = "";
         this.customizedAvatarMimeType = "image/png";
 
-        console.log("Created Gemini Live API object: ", this);
-    }
-
-    async loadCustomAvatar(url = "/frontend/assets/avatar_image.png?v=" + Date.now()) {
-        try {
-            console.log("Loading custom avatar from:", url);
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Failed to load avatar image: ${response.statusText}`);
-            }
-            const blob = await response.blob();
-            this.customizedAvatarMimeType = blob.type;
-            
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    // Extract base64 data from DataURL
-                    const base64data = reader.result.split(",")[1];
-                    this.customizedAvatarData = base64data;
-                    console.log("Custom avatar image loaded successfully.");
-                    resolve();
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        } catch (error) {
-            console.error("Error loading custom avatar:", error);
-            this.onErrorMessage("Error loading custom avatar image.");
-            throw error;
-        }
+        console.log("Created Gemini Live API object:", this);
     }
 
     setLocation(location) {
         this.location = location;
         this.setApiHost(this.environment);
     }
+
     setProjectId(projectId) {
         this.projectId = projectId;
     }
+
     setModel(model) {
         this.model = model;
     }
@@ -166,25 +138,19 @@ class GeminiLiveAPI {
             this.endPoint = `autopush-aiplatform.sandbox.googleapis.com`;
         } else if (this.environment === "staging") {
             this.endPoint = `staging-aiplatform.sandbox.googleapis.com`;
-        } else if (this.environment === "prod") {
-            this.endPoint = `aiplatform.googleapis.com`;
         } else {
-            console.error(
-                `Unknown environment: ${this.environment}. Using production API host.`
-            );
-            this.endPoint = `aiplatform.googleapis.com`; // Default to production
+            this.endPoint = `aiplatform.googleapis.com`;
         }
     }
 
     setTranscript(input, output) {
-        console.log("input transcript: ", input, "output transcript: ", output);
         this.enableInputTranscript = input;
         this.enableOutputTranscript = output;
     }
 
     setVoice(name, locale) {
-        this.voiceName = name;
-        this.voiceLocale = locale;
+        this.voiceName = name || "orus";
+        this.voiceLocale = locale || "hi-IN";
     }
 
     setFunctionCall(fcDefinition) {
@@ -212,7 +178,6 @@ class GeminiLiveAPI {
     }
 
     setS2ST(enable, language) {
-        console.log(`Setting S2ST to: ${enable}, Target Language: ${language}`);
         this.enableS2ST = enable;
         this.s2stTargetLanguage = language;
     }
@@ -223,27 +188,18 @@ class GeminiLiveAPI {
     }
 
     connect() {
-        console.log("connect(): Skipping custom avatar load and triggering initBackendService...");
-        Promise.resolve()
+        console.log("Connecting via initBackendService...");
+        this.initBackendService()
             .then(() => {
-                console.log("connect(): Triggering initBackendService...");
-                return this.initBackendService();
-            })
-            .then(() => {
-                console.log(
-                    "connect(): initBackendService successful. Triggering setupFuncDeclarationToService..."
-                );
                 return this.setupFuncDeclarationToService();
             })
             .then(() => {
-                console.log(
-                    "connect(): setupFuncDeclarationToService successful. Triggering setupWebSocketToService."
-                );
                 this.setupWebSocketToService();
             })
-            .catch((error) =>
-                console.error("connect(): Promise chain failed.", error)
-            );
+            .catch((error) => {
+                console.error("connect() failed:", error);
+                this.onErrorMessage("Connection failed: " + error.message);
+            });
     }
 
     initBackendService() {
@@ -255,16 +211,14 @@ class GeminiLiveAPI {
         };
         return this.sendPostRequest(this.controlUrl, postRequestBody)
             .then((response) => {
-                if (response) {
-                    if (response.project_id) {
-                        this.setProjectId(response.project_id);
-                    }
+                if (response && response.project_id) {
+                    this.setProjectId(response.project_id);
                 }
             })
             .catch((error) => {
                 console.error("Error in initBackendService:", error);
                 this.onErrorMessage("Error initializing backend service.");
-                throw error; // Re-throw the error to stop the promise chain
+                throw error;
             });
     }
 
@@ -280,56 +234,108 @@ class GeminiLiveAPI {
                 funcDeclarationMessage
             ).catch((error) => {
                 console.error("Error in setupFuncDeclarationToService:", error);
-                this.onErrorMessage("Error setting up function declaration.");
-                // Re-throw the error to stop the promise chain
                 throw error;
             });
         }
-        // If there's no function definition, return a resolved promise so .then() can still be used.
         return Promise.resolve();
     }
 
     disconnect() {
-        this.webSocket.close();
+        if (this.webSocket) {
+            this.webSocket.close();
+        }
     }
 
     sendMessage(message) {
-        this.webSocket.send(JSON.stringify(message));
+        if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
+            this.webSocket.send(JSON.stringify(message));
+        } else {
+            console.warn("WebSocket not open, cannot send message:", message);
+        }
     }
 
     onReceiveMessage(messageEvent) {
-        console.log("Message received: ", messageEvent);
         let messageData;
         if (typeof messageEvent.data === "string") {
-            messageData = JSON.parse(messageEvent.data);
+            try {
+                messageData = JSON.parse(messageEvent.data);
+            } catch (e) {
+                console.warn("Error parsing message JSON:", e);
+                return;
+            }
         } else {
-            console.warn("Received binary message, ignoring: ", messageEvent.data);
             return;
         }
+
+        // Handle tool calls (e.g. switch_vehicle_showroom)
+        const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
+        if (toolCalls && toolCalls.length > 0) {
+            for (const call of toolCalls) {
+                if (call.name === "switch_vehicle_showroom" && call.args) {
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_SWITCH_CAR",
+                        carName: call.args.car_name,
+                        callId: call.id,
+                        raw: messageData
+                    });
+                }
+            }
+        }
+
+        const serverContent = messageData?.serverContent || messageData?.server_content;
+        const modelTurn = serverContent?.modelTurn || serverContent?.model_turn;
+        const parts = modelTurn?.parts;
+
+        // If multiple parts exist (e.g. text AND video/audio in the same turn), dispatch each
+        if (parts && parts.length > 0) {
+            for (const part of parts) {
+                if (part.text) {
+                    this.onReceiveResponse({
+                        type: "TEXT",
+                        data: part.text,
+                        raw: messageData
+                    });
+                }
+                if (part.inlineData || part.inline_data || part.video) {
+                    const inlineData = part.inlineData || part.inline_data || part.video;
+                    const mimeType = inlineData.mimeType || inlineData.mime_type || "";
+                    const isVideo = mimeType.startsWith("video/") || mimeType.startsWith("image/");
+                    this.onReceiveResponse({
+                        type: isVideo ? "VIDEO" : "AUDIO",
+                        data: inlineData.data,
+                        mimeType: mimeType,
+                        raw: messageData
+                    });
+                }
+            }
+        }
+
         const message = new GeminiLiveResponseMessage(messageData);
-        console.log("onReceiveMessageCallBack this ", this);
-        this.onReceiveResponse(message);
+        if (message.type && (!parts || parts.length === 0 || message.type === "SETUP COMPLETE" || message.type === "INPUT_TRANSCRIPTION" || message.type === "OUTPUT_TRANSCRIPTION")) {
+            this.onReceiveResponse(message);
+        }
     }
 
     setupWebSocketToService() {
-        console.log("connecting: ", this.proxyUrl);
-
-        const wsUrl = new URL(this.proxyUrl);
+        const wsUrl = new URL(this.proxyUrl, window.location.href);
+        wsUrl.protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         wsUrl.searchParams.append("session_id", this.sessionId);
-        this.webSocket = new WebSocket(wsUrl);
+        
+        console.log("Opening WebSocket connection to:", wsUrl.toString());
+        this.webSocket = new WebSocket(wsUrl.toString());
 
         this.webSocket.onclose = (event) => {
-            console.log("websocket closed: ", event);
-            this.onErrorMessage("Connection closed");
+            console.log("WebSocket closed:", event);
+            this.onErrorMessage("Session ended.");
         };
 
         this.webSocket.onerror = (event) => {
-            console.log("websocket error: ", event);
-            this.onErrorMessage("Connection error");
+            console.error("WebSocket error:", event);
+            this.onErrorMessage("Connection error.");
         };
 
         this.webSocket.onopen = (event) => {
-            console.log("websocket open: ", event);
+            console.log("WebSocket opened successfully:", event);
             this.sendInitialSetupMessages();
             this.onConnectionStarted();
         };
@@ -338,10 +344,30 @@ class GeminiLiveAPI {
     }
 
     sendInitialSetupMessages() {
-        console.log("start setting up");
-        console.log("Setting up voice sample:" + this.customVoiceSample);
+        console.log("Sending initial Gemini Live setup message with vehicle tool declarations...");
 
-        const modelUri = `projects/${this.projectId}/locations/${this.location}/publishers/google/models/${this.model}`;
+        const modelUri = `projects/${this.projectId || "mb-poc-352009"}/locations/${this.location}/publishers/google/models/${this.model}`;
+        
+        // Built-in tool declaration for instant backdrop switching
+        const vehicleSwitchTool = {
+            function_declarations: [
+                {
+                    name: "switch_vehicle_showroom",
+                    description: "Call this tool to switch the showroom backdrop and display specs whenever the user asks about, compares, or mentions any Maruti Suzuki car model.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            car_name: {
+                                type: "string",
+                                description: "The normalized key of the vehicle (e.g. victoris, grand-vitara, swift, brezza, dzire, fronx, jimny, invicto, baleno, ertiga, xl6, wagonr, alto-k10, celerio, s-presso, eeco, super-carry, tour-s, tour-m, tour-v, e-vitara)"
+                            }
+                        },
+                        required: ["car_name"]
+                    }
+                }
+            ]
+        };
+
         const sessionSetupMessage = {
             setup: {
                 model: modelUri,
@@ -351,41 +377,24 @@ class GeminiLiveAPI {
                         voice_config: this.customVoiceSample
                             ? {
                                 replicated_voice_config: {
-                                    voice_sample_audio:
-                                          this.customVoiceSample,
+                                    voice_sample_audio: this.customVoiceSample,
                                     mime_type: "audio/pcm;rate=24000",
-                                  },
+                                },
                               }
                             : {
                                 prebuilt_voice_config: {
-                                    voice_name: this.voiceName,
-                                  },
+                                    voice_name: this.voiceName || "orus",
+                                },
                               },
-                        language_code: this.voiceLocale,
+                        language_code: this.voiceLocale || "hi-IN",
                     },
                 },
-                avatar_config: this.customizedAvatarData
-                    ? {
-                        customized_avatar: {
-                            image_mime_type: this.customizedAvatarMimeType.includes("/") 
-                                ? this.customizedAvatarMimeType.split("/")[1] 
-                                : this.customizedAvatarMimeType,
-                            image_data: this.customizedAvatarData,
-                        },
-                      }
-                    : {
-                        avatar_name: "Jay",
-                      }
+                tools: [vehicleSwitchTool],
+                avatar_config: {
+                    avatar_name: "Jay"
+                }
             },
         };
-
-        if (this.functionCallDefinition) {
-            sessionSetupMessage.setup.tools = [
-                { function_declarations: this.functionCallDefinition },
-            ];
-        }
-
-        console.log(sessionSetupMessage);
 
         if (this.systemInstructions && this.systemInstructions.trim()) {
             sessionSetupMessage.setup.system_instruction = {
@@ -393,53 +402,13 @@ class GeminiLiveAPI {
             };
         }
 
-        if (this.enableSessionResumption) {
+        if (this.enableSessionResumption && this.resumptionHandle) {
             sessionSetupMessage.setup.session_resumption = {
                 handle: this.resumptionHandle,
             };
         }
 
-        if (this.disableDetection || this.disableInterruption || this.startSensitivity !== "" || this.endSensitivity !== "") {
-            sessionSetupMessage.setup.realtime_input_config = {
-                automatic_activity_detection: {}
-            };
-            if (this.disableDetection) {
-                sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.disabled = true;
-            }
-            if (this.disableInterruption) {
-                sessionSetupMessage.setup.realtime_input_config.activity_handling = 2;
-            }
-        }
-
-        if (this.startSensitivity === "") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.start_of_speech_sensitivity = "START_SENSITIVITY_UNSPECIFIED";
-        } else if (this.startSensitivity === "low") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.start_of_speech_sensitivity = "START_SENSITIVITY_LOW";
-        } else if (this.startSensitivity === "high") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.start_of_speech_sensitivity = "START_SENSITIVITY_HIGH";
-        }
-
-        if (this.endSensitivity === "") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.end_of_speech_sensitivity = "END_SENSITIVITY_UNSPECIFIED";
-        } else if (this.endSensitivity === "low") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.end_of_speech_sensitivity = "END_SENSITIVITY_LOW";
-        } else if (this.endSensitivity === "high") {
-            sessionSetupMessage.setup.realtime_input_config.automatic_activity_detection.end_of_speech_sensitivity = "START_SENSITIVITY_HIGH";
-        }
-
-        if (this.enableProactiveVideo) {
-            sessionSetupMessage.setup.proactivity = {
-                proactive_video: true,
-            };
-        }
-
-        if (this.enableS2ST) {
-            sessionSetupMessage.setup.enable_speech_to_speech_translation = true;
-            sessionSetupMessage.setup.generation_config.speech_config.language_code =
-                this.s2stTargetLanguage;
-        }
-
-        console.log("setup message: " + sessionSetupMessage);
+        console.log("Setup message payload:", JSON.stringify(sessionSetupMessage));
         this.sendMessage(sessionSetupMessage);
     }
 
@@ -458,77 +427,50 @@ class GeminiLiveAPI {
         this.sendMessage(textMessage);
     }
 
-    sendVoiceActivityMessage(start) {
-        if (start) {
-            const startMessage = {
-                realtime_input: {
-                    activity_start: {},
-                },
-            };
-            this.sendMessage(startMessage);
-        } else {
-            const endMessage = {
-                realtime_input: {
-                    activity_end: {},
-                },
-            };
-            this.sendMessage(endMessage);
-        }
-    }
-
-    sendRealtimeInputMessage(data, mimeType, isVideo = false) {
-        const message = {
-            realtime_input: {},
+    sendAudioChunk(base64PcmData, sampleRate = 16000) {
+        if (!this.webSocket || this.webSocket.readyState !== WebSocket.OPEN) return;
+        const audioMessage = {
+            realtime_input: {
+                media_chunks: [
+                    {
+                        mime_type: `audio/pcm;rate=${sampleRate}`,
+                        data: base64PcmData,
+                    },
+                ],
+            },
         };
-
-        if (isVideo) {
-            message.realtime_input.video = {
-                mime_type: mimeType,
-                data: data,
-            };
-        } else {
-            message.realtime_input.media_chunks = [
-                {
-                    mime_type: mimeType,
-                    data: data,
-                },
-            ];
-        }
-
-        this.sendMessage(message);
+        this.sendMessage(audioMessage);
     }
 
-    sendAudioMessage(base64PCM) {
-        this.sendRealtimeInputMessage(base64PCM, "audio/pcm;rate=16000");
+    sendImageChunk(base64ImageData) {
+        if (!this.webSocket || this.webSocket.readyState !== WebSocket.OPEN) return;
+        const imageMessage = {
+            realtime_input: {
+                media_chunks: [
+                    {
+                        mime_type: "image/jpeg",
+                        data: base64ImageData,
+                    },
+                ],
+            },
+        };
+        this.sendMessage(imageMessage);
     }
 
-    sendImageMessage(base64Image, mime_type = "image/jpeg") {
-        this.sendRealtimeInputMessage(base64Image, mime_type, true);
-    }
-
-    async sendPostRequest(url, data) {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-
+    sendPostRequest(url, body) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        }).then((response) => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return response.text().then((text) => {
+                    throw new Error(`HTTP error ${response.status}: ${text}`);
+                });
             }
-
-            const received_data = await response.json();
-            console.log("Received data:", received_data);
-            return received_data;
-        } catch (error) {
-            console.error("Error sending POST request:", error);
-            this.onErrorMessage(`Error sending POST request: ${error.message}`);
-            throw error; // Re-throw the error to reject the promise
-        }
+            return response.json();
+        });
     }
 }
-
-console.log("loaded gemini-live-api.js");

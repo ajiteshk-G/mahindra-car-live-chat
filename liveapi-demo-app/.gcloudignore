@@ -3,3 +3,7 @@
 .gcloudignore
 __pycache__
 *.pyc
+.venv
+backend/.venv
+backend/~
+.DS_Store

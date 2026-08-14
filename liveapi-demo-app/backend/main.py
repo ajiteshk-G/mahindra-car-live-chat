@@ -198,11 +198,11 @@ async def handle_control_request(request: web.Request):
 
 
 def initialize_gemini_chat_session(location: str):
-    project_id = PROJECT_ID.value
+    project_id = PROJECT_ID.value or os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("PROJECT_ID")
     if not project_id:
         _, project_id = get_credentials.get_credentials()
         if not project_id:
-            project_id = "cloud-llm-preview1"
+            project_id = "mb-poc-352009"
             logging.info(f"Using hardcoded fallback project ID: {project_id}")
         else:
             logging.info(f"Auto-detected project ID: {project_id}")

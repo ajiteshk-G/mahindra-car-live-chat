@@ -1,235 +1,1340 @@
+/* ==========================================================================
+   Maruti Suzuki AI Live Virtual Showroom Stylesheet
+   ========================================================================== */
+
 :root {
-  --md-sys-color-surface-container: #f3f4f6;
-  --md-sys-color-on-surface-variant: #43474e;
-  --md-sys-color-outline: #73777f;
+  --bg-primary: #05070c;
+  --bg-surface: #0a0e17;
+  --bg-surface-elevated: #111726;
+  --bg-card: rgba(10, 15, 26, 0.88);
+  --bg-glass: rgba(8, 12, 22, 0.82);
+
+  --maruti-blue: #002855;
+  --maruti-blue-light: #0056b3;
+  --maruti-cyan: #00e5ff;
+  --nexa-accent: #0084ff;
+  --arena-red: #ff2a34;
+  --arena-red-hover: #e01822;
+  --commercial-gold: #d97706;
+
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-active: rgba(0, 229, 255, 0.6);
+  --border-glass: rgba(255, 255, 255, 0.18);
+
+  --font-main: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 35px rgba(0, 229, 255, 0.35);
+  --shadow-speaking: 0 0 40px rgba(0, 229, 255, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #ffffff;
-  color: #1f1f1f;
-  margin: 0;
-  padding: 24px;
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
 }
 
-h1 {
-  margin-bottom: 4px;
-}
-
-p.description {
-  margin-top: 0;
-  color: var(--md-sys-color-on-surface-variant);
-}
-
-.main-layout {
-  display: grid;
-  grid-template-columns: minmax(400px, 1.5fr) 2fr;
-  gap: 24px;
-  align-items: start;
-}
-
-/* Configuration Column */
-.config-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.config-card {
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.config-card h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-.config-card md-outlined-text-field,
-.config-card md-outlined-select {
+/* --- Dynamic High-Visibility Backdrop Stage --- */
+#showroom-backdrop-container {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #05070c;
 }
 
-.config-card .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.backdrop-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center left;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1.05) contrast(1.08) saturate(1.1);
 }
 
-.config-card .button-group {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
+.backdrop-layer.active {
+  opacity: 1;
+  transform: scale(1);
 }
 
-details > summary {
-  list-style: none;
-  cursor: pointer;
-}
-details > summary::-webkit-details-marker {
-  display: none;
-}
-details .details-content {
-    padding-top: 16px;
+.backdrop-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(270deg, rgba(5, 7, 12, 0.94) 0%, rgba(5, 7, 12, 0.5) 42%, rgba(5, 7, 12, 0.05) 75%, rgba(5, 7, 12, 0.3) 100%),
+              linear-gradient(0deg, rgba(5, 7, 12, 0.9) 0%, rgba(5, 7, 12, 0.05) 35%, rgba(5, 7, 12, 0.3) 100%);
+  pointer-events: none;
 }
 
-/* Interaction Column */
-.interaction-column {
-  position: sticky;
-  top: 24px;
+/* --- Header --- */
+.header {
+  position: relative;
+  z-index: 10;
+  height: 62px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(6, 9, 16, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.suzuki-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #ff2a34, #002855);
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 20px;
+  font-weight: 800;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(255, 42, 52, 0.4);
+}
+
+.brand-text {
   display: flex;
   flex-direction: column;
+}
+
+.brand-primary {
+  font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+}
+
+.brand-tag {
+  font-size: 11px;
+  color: var(--maruti-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.channel-pills {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px;
+  border-radius: 24px;
+  border: 1px solid var(--border-subtle);
+}
+
+.channel-pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.channel-pill.active {
+  background: linear-gradient(90deg, #0056b3, #00c6ff);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 198, 255, 0.35);
+}
+
+.channel-pill:hover:not(.active) {
+  color: #ffffff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
   gap: 16px;
 }
 
+/* Connection States */
 #model-state {
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
 .state {
-  border-radius: 50px;
-  padding: 8px 16px;
-  text-align: center;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.icon-text {
-  vertical-align: middle;
+.state[hidden],
+[hidden] {
+  display: none !important;
 }
 
-#video-preview-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 12px;
-  background-color: var(--md-sys-color-surface-container);
-  overflow: hidden;
-  position: relative;
-  margin-top: 24px;
-  margin-bottom: 24px;
+#disconnected {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
-#video-preview-container.avatar-mode {
-  display: flex;
-  aspect-ratio: auto;
-  gap: 24px;
-  background-color: transparent;
-  overflow: visible;
+#connecting {
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  animation: pulse-slow 1.5s infinite;
 }
 
-#video-preview-container > div {
-  display: none;
+#connected {
+  background-color: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-#video-preview-container.avatar-mode > div {
-  flex: 1;
-  background-color: var(--gcp-surface);
-  border: 1px solid var(--gcp-border);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 1px 2px 0 rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+#speaking {
+  background: linear-gradient(90deg, rgba(0, 229, 255, 0.25), rgba(0, 86, 179, 0.3));
+  color: #7dd3fc;
+  border: 1px solid rgba(0, 229, 255, 0.6);
+  animation: pulse-glow 1.2s infinite;
 }
 
-/* Solo Input View */
-#video-preview-container:not(.avatar-mode) > .input-container {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-#video-preview-container:not(.avatar-mode) #video {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto;
-  object-fit: cover;
-  border-radius: 0;
-}
-
-#video-preview-container:not(.avatar-mode) h3 {
-  display: none;
-}
-
-#video, #avatar-output {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  background-color: #000;
-  object-fit: cover;
-}
-
-.media-controls {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-#chat-container {
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-#text-chat {
-    height: 150px;
-    overflow-y: auto;
-    border: 1px solid var(--md-sys-color-outline);
-    border-radius: 8px;
-    padding: 8px;
-    background-color: var(--md-sys-color-surface-container);
-}
-
-.text-input-area {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-#text-message {
-    flex-grow: 1;
-}
-
-
-/* Status Styles */
-#disconnected { background-color: #ffebee; color: #b71c1c; }
-#connecting { background-color: #fffde7; color: #f57f17; animation: throb 1.5s infinite ease-in-out; }
-#connected { background-color: #e8f5e9; color: #2e7d32; }
-#speaking { background-color: #e3f2fd; color: #1565c0; animation: throb 1.5s infinite ease-in-out; }
-@keyframes throb {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .main-layout {
-    grid-template-columns: 1fr;
-  }
-  .interaction-column {
-    position: static;
-  }
-}
-
-.state[hidden] {
-  display: none;
-}
-
-.checkbox-row {
+.settings-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* --- Main Split App Layout (Right-Side Chat Window) --- */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 430px;
+  height: calc(100vh - 62px);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   RIGHT PANEL: AI Avatar & Chat Window
+   ========================================================================== */
+.chat-avatar-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(28px);
+  border-left: 1px solid var(--border-subtle);
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  gap: 12px;
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.avatar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.consultant-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-badge-online {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.consultant-name {
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-chip {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #0056b3, #00c6ff);
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+}
+
+.consultant-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.btn-primary-connect {
+  background: linear-gradient(135deg, #0056b3 0%, #00c6ff 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 198, 255, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-primary-connect:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 198, 255, 0.5);
+}
+
+.btn-secondary-disconnect {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary-disconnect:hover {
+  background: rgba(239, 68, 68, 0.35);
+  color: #ffffff;
+}
+
+/* Avatar Stage */
+.avatar-stage {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #020408;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.avatar-stage.active-speaking {
+  border-color: var(--maruti-cyan);
+  box-shadow: var(--shadow-speaking);
+}
+
+.avatar-output-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#video_player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-placeholder-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #0f172a 0%, #060912 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  text-align: center;
+  padding: 16px;
+  transition: opacity 0.3s;
+}
+
+.avatar-placeholder-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatar-pulse-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 86, 179, 0.35), rgba(0, 229, 255, 0.35));
+  border: 1px solid var(--maruti-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--maruti-cyan);
+  animation: pulse-slow 2s infinite ease-in-out;
+}
+
+.camera-pip-wrapper {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 90px;
+  height: 65px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  background: #000000;
+  z-index: 5;
+}
+
+.camera-pip-wrapper #video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pip-label {
+  position: absolute;
+  bottom: 2px;
+  left: 4px;
+  font-size: 9px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* Media Controls Strip */
+.media-controls-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.control-circle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-circle-btn.active {
+  background: linear-gradient(135deg, #0056b3, #00c6ff);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 198, 255, 0.4);
+}
+
+.control-circle-btn.disabled,
+.control-circle-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.control-circle-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.device-selectors {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.mini-select {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 4px 6px;
+  max-width: 95px;
+  outline: none;
+}
+
+/* Live Chat & Transcript Area */
+.live-chat-box {
+  flex-grow: 1;
+  background: rgba(8, 12, 20, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-box-header {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  margin-left: auto;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.chat-scroll-area {
+  flex-grow: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.chat-welcome-card {
+  background: rgba(0, 40, 85, 0.35);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+.welcome-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.welcome-desc {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.suggested-questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.suggestion-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--maruti-cyan);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.suggestion-chip:hover {
+  background: rgba(0, 229, 255, 0.25);
+  border-color: var(--maruti-cyan);
+  color: #ffffff;
+}
+
+/* Chat Bubbles */
+.chat-scroll-area p {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 85%;
+  font-size: 12.5px;
+  line-height: 1.45;
+  word-wrap: break-word;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.chat-scroll-area p.user-bubble {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-scroll-area p.model-bubble {
+  background: rgba(15, 22, 36, 0.95);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--maruti-cyan);
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-scroll-area p.system-bubble {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-style: italic;
+  align-self: center;
+  text-align: center;
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(6, 9, 16, 0.95);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.chat-input-bar input {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-size: 12.5px;
+  outline: none;
+}
+
+.chat-input-bar input:focus {
+  border-color: var(--maruti-cyan);
+}
+
+.send-msg-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0056b3, #00c6ff);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.send-msg-btn:hover {
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   LEFT PANEL: Vehicle Showroom Showcase
+   ========================================================================== */
+.showroom-stage-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 28px;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.showroom-main-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+/* Hero Vehicle Info Card */
+.hero-vehicle-card {
+  background: rgba(10, 15, 26, 0.88);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 18px 22px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.channel-badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--maruti-blue-light);
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.channel-badge.arena {
+  background: var(--arena-red);
+}
+
+.channel-badge.commercial {
+  background: var(--commercial-gold);
+}
+
+.category-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.active-pulse-tag {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--maruti-cyan);
+  background: rgba(0, 229, 255, 0.12);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--maruti-cyan);
+  animation: pulse-glow 1s infinite;
+}
+
+.vehicle-title {
+  font-family: var(--font-main);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  margin-bottom: 3px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.vehicle-tagline {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.settings-subtitle {
+.metric-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.metric-value.highlight {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--maruti-cyan);
+}
+
+/* Highlights Box */
+.highlights-box {
+  background: rgba(0, 40, 85, 0.3);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.highlight-title {
+  color: #ffffff;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 4px;
+}
+
+.highlight-title .material-icons {
+  font-size: 14px;
+  color: var(--maruti-cyan);
+}
+
+/* Hero Action Buttons */
+.hero-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ask-consultant {
+  background: linear-gradient(135deg, #0056b3 0%, #00c6ff 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 198, 255, 0.35);
+  transition: all 0.2s;
+}
+
+.btn-ask-consultant:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 198, 255, 0.5);
+}
+
+.btn-book-test-drive {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  color: #ffffff;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-book-test-drive:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff;
+}
+
+/* Prominent Hero Car Visual Card */
+.hero-visual-card {
+  background: rgba(10, 15, 26, 0.85);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  animation: slideInUp 0.4s ease-out;
+  position: relative;
+}
+
+.visual-card-image-wrapper {
+  position: relative;
+  flex-grow: 1;
+  min-height: 250px;
+  overflow: hidden;
+  background: #000000;
+}
+
+.hero-car-featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   display: block;
-  margin-bottom: 12px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1.05) contrast(1.08);
+}
+
+.hero-visual-card:hover .hero-car-featured-img {
+  transform: scale(1.05);
+}
+
+.visual-card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(5, 7, 12, 0.6) 100%);
+  pointer-events: none;
+}
+
+.visual-card-footer {
+  padding: 10px 16px;
+  background: rgba(6, 9, 16, 0.95);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.visual-card-footer .material-icons {
+  font-size: 16px;
+  color: var(--maruti-cyan);
+}
+
+.visual-tag-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(0, 86, 179, 0.35);
+  color: var(--maruti-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+/* --- Bottom Interactive Lineup Carousel Strip --- */
+.lineup-drawer {
+  background: rgba(8, 12, 22, 0.88);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass);
+  border-radius: 18px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-lg);
+}
+
+.lineup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.lineup-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.lineup-title h3 {
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lineup-title .material-icons {
+  color: var(--maruti-cyan);
+  font-size: 18px;
+}
+
+.lineup-filter-tabs {
+  display: flex;
+  gap: 5px;
+}
+
+.filter-tab {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-tab.active {
+  background: #ffffff;
+  color: #07090e;
+  font-weight: 700;
+}
+
+.filter-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.lineup-cards-carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-behavior: smooth;
+}
+
+.lineup-cards-carousel::-webkit-scrollbar {
+  height: 5px;
+}
+
+.lineup-cards-carousel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Individual Car Card with Thumbnail */
+.car-card-item {
+  flex: 0 0 170px;
+  background: rgba(12, 17, 28, 0.92);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-thumb-wrapper {
+  width: 100%;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 2px;
+}
+
+.card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s;
+}
+
+.car-card-item:hover .card-thumb-img {
+  transform: scale(1.08);
+}
+
+.car-card-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--maruti-cyan);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.car-card-item.active {
+  border-color: var(--maruti-cyan);
+  background: rgba(0, 40, 85, 0.6);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-channel-pill {
+  font-size: 8.5px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.card-channel-pill.nexa {
+  background: rgba(0, 86, 179, 0.4);
+  color: #7dd3fc;
+  border: 1px solid rgba(0, 198, 255, 0.35);
+}
+
+.card-channel-pill.arena {
+  background: rgba(255, 42, 52, 0.25);
+  color: #fca5a5;
+  border: 1px solid rgba(255, 42, 52, 0.4);
+}
+
+.card-channel-pill.commercial {
+  background: rgba(217, 119, 6, 0.25);
+  color: #fde047;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+}
+
+.card-category-text {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.card-car-name {
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-car-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--maruti-cyan);
+}
+
+/* ==========================================================================
+   Settings Modal Dialog
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-card {
+  background: #0b101c;
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 12.5px;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--maruti-cyan);
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .half {
+  flex: 1;
+}
+
+.radio-options {
+  display: flex;
+  gap: 14px;
+  font-size: 12.5px;
+}
+
+.radio-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-modal-done {
+  background: linear-gradient(135deg, #0056b3, #00c6ff);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
+  50% { box-shadow: 0 0 25px rgba(0, 229, 255, 0.8); }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .app-layout {
+    grid-template-columns: 1fr 380px;
+  }
+  .showroom-main-grid {
+    grid-template-columns: 1fr;
+  }
 }
