@@ -63,14 +63,15 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             entity = client.get(key)
             if not entity:
                 entity = datastore.Entity(key=key)
-                entity['call_date'] = now_utc
+            existing_transcript = entity.get('transcript', '')
+            final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
             
             entity.update({
                 'session_id': str(session_id),
-                'customer_name': str(customer_name).strip() if customer_name else "Valued Customer",
-                'model_of_interest': str(model_of_interest).strip() if model_of_interest else "Victoris",
-                'channel': str(channel).strip().upper() if channel else "ARENA",
-                'transcript': str(transcript),
+                'customer_name': str(customer_name).strip() if customer_name else entity.get('customer_name', "Valued Customer"),
+                'model_of_interest': str(model_of_interest).strip() if model_of_interest else entity.get('model_of_interest', "Victoris"),
+                'channel': str(channel).strip().upper() if channel else entity.get('channel', "ARENA"),
+                'transcript': final_transcript,
                 'status': str(status),
                 'last_updated': now_utc
             })
@@ -88,10 +89,10 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             INSERT INTO customer_leads (session_id, customer_name, model_of_interest, channel, transcript, call_date, status)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(session_id) DO UPDATE SET
-                customer_name = excluded.customer_name,
-                model_of_interest = excluded.model_of_interest,
+                customer_name = CASE WHEN excluded.customer_name != 'Valued Customer' THEN excluded.customer_name ELSE customer_leads.customer_name END,
+                model_of_interest = CASE WHEN excluded.model_of_interest != 'Victoris' THEN excluded.model_of_interest ELSE customer_leads.model_of_interest END,
                 channel = excluded.channel,
-                transcript = excluded.transcript,
+                transcript = CASE WHEN length(excluded.transcript) >= length(customer_leads.transcript) THEN excluded.transcript ELSE customer_leads.transcript END,
                 status = excluded.status;
         """, (session_id, customer_name, model_of_interest, channel, transcript, now_iso, status))
         conn.commit()
@@ -128,10 +129,12 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
                 if channel:
                     entity['channel'] = str(channel).strip().upper()
 
-            entity['transcript'] = str(transcript)
+            existing_transcript = entity.get('transcript', '')
+            final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
+            entity['transcript'] = final_transcript
             entity['last_updated'] = now_utc
             client.put(entity)
-            logging.info(f"Transcript synced in Datastore for session {session_id} ({len(transcript)} chars)")
+            logging.info(f"Transcript synced in Datastore for session {session_id} ({len(final_transcript)} chars)")
             return {"success": True, "source": "datastore"}
         except Exception as e:
             logging.error(f"Failed to update transcript in Datastore: {e}")

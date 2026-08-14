@@ -907,58 +907,95 @@ function triggerSpeakingGlow() {
 let isFirstTurn = true;
 
 let speechRecognizer = null;
+let currentInterimBubble = null;
 
 function initSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-        console.log("Web Speech Recognition not supported in this browser");
+        console.warn("Web Speech Recognition not supported in this browser");
         return;
     }
 
     try {
+        if (speechRecognizer) {
+            try { speechRecognizer.abort(); } catch (e) {}
+        }
+
         speechRecognizer = new SpeechRecognition();
         speechRecognizer.continuous = true;
-        speechRecognizer.interimResults = false;
-        speechRecognizer.lang = "hi-IN";
+        speechRecognizer.interimResults = true;
+        speechRecognizer.maxAlternatives = 1;
+        speechRecognizer.lang = (voiceLocale && voiceLocale.value) ? voiceLocale.value : "hi-IN";
 
         speechRecognizer.onresult = (event) => {
-            // Echo suppression: Ignore if avatar / Kabir is currently speaking
-            if (isAgentSpeaking) {
-                console.log("Speaker loopback ignored while Kabir is speaking");
-                return;
-            }
+            let interimText = "";
+            let finalText = "";
 
             for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    const transcript = event.results[i][0].transcript.trim();
-                    if (transcript && transcript.length > 1) {
-                        // Extra echo check: Filter out common prompt sentences spoken by agent
-                        const lower = transcript.toLowerCase();
-                        if (lower.includes("कबीर") || lower.includes("वर्चुअल शोरूम") || lower.includes("शुभ नाम") || lower.includes("kabir") || lower.includes("virtual showroom")) {
-                            console.log("Filtered speaker echo:", transcript);
-                            return;
-                        }
+                const item = event.results[i];
+                if (item.isFinal) {
+                    finalText += item[0].transcript + " ";
+                } else {
+                    interimText += item[0].transcript;
+                }
+            }
 
-                        console.log("Live Customer Speech Captured:", transcript);
-                        newUserTranscriptMessage(transcript);
-                        detectCarInTranscript(transcript);
-                        extractCustomerDetailsFromText(transcript);
-                    }
+            const textChat = document.getElementById("text-chat");
+
+            // Live interim speech indicator bubble
+            if (interimText.trim()) {
+                if (!currentInterimBubble && textChat) {
+                    currentInterimBubble = document.createElement("p");
+                    currentInterimBubble.className = "user-bubble interim";
+                    textChat.appendChild(currentInterimBubble);
+                }
+                if (currentInterimBubble) {
+                    currentInterimBubble.textContent = "🎙️ " + interimText.trim() + "...";
+                    textChat.scrollTop = textChat.scrollHeight;
+                }
+            }
+
+            if (finalText.trim()) {
+                if (currentInterimBubble) {
+                    currentInterimBubble.remove();
+                    currentInterimBubble = null;
+                }
+
+                const speechStr = finalText.trim();
+                console.log("Customer Final Speech Received:", speechStr);
+
+                const lower = speechStr.toLowerCase();
+                const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ")) && lower.includes("वर्चुअल शोरूम");
+                if (!isEcho) {
+                    newUserTranscriptMessage(speechStr);
+                    detectCarInTranscript(speechStr);
+                    extractCustomerDetailsFromText(speechStr);
                 }
             }
         };
 
         speechRecognizer.onerror = (event) => {
             console.log("Speech recognition notice:", event.error);
+            if (currentInterimBubble) {
+                currentInterimBubble.remove();
+                currentInterimBubble = null;
+            }
         };
 
         speechRecognizer.onend = () => {
+            if (currentInterimBubble) {
+                currentInterimBubble.remove();
+                currentInterimBubble = null;
+            }
+            // Automatically restart if microphone and session are active
             if (geminiLiveApi && geminiLiveApi.webSocket && geminiLiveApi.webSocket.readyState === WebSocket.OPEN && micBtn && !micBtn.hidden) {
                 try { speechRecognizer.start(); } catch (e) {}
             }
         };
+
+        console.log("Speech recognition initialized for:", speechRecognizer.lang);
     } catch (e) {
-        console.log("Speech recognition init error:", e);
+        console.error("Speech recognition init error:", e);
     }
 }
 
@@ -1068,6 +1105,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         console.log("Gemini Live Tool Call: record_customer_lead ->", messageResponse.customerName, messageResponse.modelOfInterest);
         saveLeadToBackend(messageResponse.customerName, messageResponse.modelOfInterest);
         selectCar(messageResponse.modelOfInterest);
+        newModelMessage(`Namaste ${messageResponse.customerName} ji! Maruti Suzuki ${messageResponse.modelOfInterest} ki inquiry auto-qualify ho chuki hai.`);
 
         // Acknowledge tool execution
         if (messageResponse.callId) {
@@ -1086,6 +1124,12 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         console.log("Gemini Live Tool Call: switch_vehicle_showroom ->", messageResponse.carName);
         selectCar(messageResponse.carName);
         
+        const carKey = messageResponse.carName.toLowerCase().trim().replace(/\s+/g, "-");
+        const vehicle = MARUTI_VEHICLES[carKey] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(messageResponse.carName.toLowerCase()));
+        if (vehicle) {
+            newModelMessage(`Maruti Suzuki ${vehicle.name} (${vehicle.channel}) - Fuel: ${vehicle.fuelTypes} | Variants: ${vehicle.variantRange} | Ex-Showroom: ${vehicle.priceRange}.`);
+        }
+
         if (messageResponse.callId) {
             geminiLiveApi.sendMessage({
                 tool_response: {
@@ -1100,6 +1144,8 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         }
     } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
         console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.summary);
+        newModelMessage(`Maruti Suzuki Virtual Showroom mein aane ke liye dhanyawad! Consultation concluded.`);
+
         if (messageResponse.callId) {
             geminiLiveApi.sendMessage({
                 tool_response: {
@@ -1131,7 +1177,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         newModelMessage(messageResponse.data);
         detectCarInTranscript(messageResponse.data);
     } else if (messageResponse.type === "OUTPUT_TRANSCRIPTION") {
-        newModelMessage("Kabir: " + messageResponse.data);
+        newModelMessage(messageResponse.data);
         detectCarInTranscript(messageResponse.data);
     } else if (messageResponse.type === "INPUT_TRANSCRIPTION") {
         newUserTranscriptMessage(messageResponse.data);

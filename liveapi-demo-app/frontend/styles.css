@@ -651,6 +651,13 @@ body {
   border-bottom-right-radius: 2px;
 }
 
+.chat-scroll-area p.user-bubble.interim {
+  background: rgba(0, 86, 179, 0.45);
+  border: 1px dashed rgba(56, 189, 248, 0.6);
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}
+
 .chat-scroll-area p.model-bubble {
   background: rgba(15, 22, 36, 0.95);
   border: 1px solid var(--border-subtle);
