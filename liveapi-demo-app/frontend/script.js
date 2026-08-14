@@ -853,6 +853,10 @@ async function connectBtnClick() {
 }
 
 function disconnectBtnClick() {
+    // Finalize any active speaker buffers
+    if (typeof finalizeUserStreamTurn === "function") finalizeUserStreamTurn();
+    if (typeof finalizeModelStreamTurn === "function") finalizeModelStreamTurn();
+
     geminiLiveApi.disconnect();
     setAppStatus("disconnected");
     stopAudioInput();
@@ -1303,6 +1307,10 @@ function appendModelStreamText(chunk) {
     const textChat = document.getElementById("text-chat");
     if (!textChat) return;
 
+    if (currentUserStreamText.trim()) {
+        finalizeUserStreamTurn();
+    }
+
     if (!currentModelStreamBubble) {
         currentModelStreamBubble = document.createElement("p");
         currentModelStreamBubble.className = "model-bubble";
@@ -1330,6 +1338,10 @@ function appendUserStreamText(chunk) {
     if (!chunk) return;
     const textChat = document.getElementById("text-chat");
     if (!textChat) return;
+
+    if (currentModelStreamText.trim()) {
+        finalizeModelStreamTurn();
+    }
 
     if (!currentUserStreamBubble) {
         currentUserStreamBubble = document.createElement("p");

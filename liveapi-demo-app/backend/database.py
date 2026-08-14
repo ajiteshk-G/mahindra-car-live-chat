@@ -124,16 +124,15 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
                 entity['call_date'] = now_utc
                 entity['status'] = "Auto-Qualified Inquiry"
             else:
-                if customer_name and entity.get('customer_name') in ["Valued Customer", "Inquiry in Progress", "Unknown", None, ""]:
+                if customer_name and customer_name not in ["Valued Customer", "Unknown", ""]:
                     entity['customer_name'] = str(customer_name).strip()
-                if model_of_interest and entity.get('model_of_interest') in ["Victoris", "Unknown", None, ""]:
+                if model_of_interest and model_of_interest not in ["Victoris", "Unknown", ""]:
                     entity['model_of_interest'] = str(model_of_interest).strip()
                 if channel:
                     entity['channel'] = str(channel).strip().upper()
 
-            existing_transcript = entity.get('transcript', '')
-            final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
-            entity['transcript'] = final_transcript
+            if transcript and str(transcript).strip():
+                entity['transcript'] = str(transcript).strip()
             entity['last_updated'] = now_utc
             if not entity.get('call_date'):
                 entity['call_date'] = now_utc

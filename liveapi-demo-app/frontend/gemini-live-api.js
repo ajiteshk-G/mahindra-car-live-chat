@@ -267,7 +267,16 @@ class GeminiLiveAPI {
             return;
         }
 
-        // Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session)
+        // 1. Setup Complete
+        if (messageData?.setupComplete || messageData?.setup_complete) {
+            this.onReceiveResponse({
+                type: "SETUP COMPLETE",
+                data: messageData.setupComplete || messageData.setup_complete,
+                raw: messageData
+            });
+        }
+
+        // 2. Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session)
         const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
         if (toolCalls && toolCalls.length > 0) {
             for (const call of toolCalls) {
@@ -298,18 +307,30 @@ class GeminiLiveAPI {
         }
 
         const serverContent = messageData?.serverContent || messageData?.server_content;
-        const turnComplete = serverContent?.turnComplete || serverContent?.turn_complete || serverContent?.endOfTurn || serverContent?.end_of_turn;
-        if (turnComplete) {
+
+        // 3. User Voice Input Transcription (streaming customer tokens)
+        const inTx = serverContent?.inputTranscription || serverContent?.input_transcription;
+        if (inTx && inTx.text) {
             this.onReceiveResponse({
-                type: "END_OF_TURN",
+                type: "INPUT_TRANSCRIPTION",
+                data: inTx.text,
                 raw: messageData
             });
         }
 
+        // 4. Agent Voice Output Transcription (streaming Kabir tokens)
+        const outTx = serverContent?.outputTranscription || serverContent?.output_transcription;
+        if (outTx && outTx.text) {
+            this.onReceiveResponse({
+                type: "OUTPUT_TRANSCRIPTION",
+                data: outTx.text,
+                raw: messageData
+            });
+        }
+
+        // 5. Model Media & Text parts (Audio, Video, Text)
         const modelTurn = serverContent?.modelTurn || serverContent?.model_turn;
         const parts = modelTurn?.parts;
-
-        // If multiple parts exist (e.g. text AND video/audio in the same turn), dispatch each
         if (parts && parts.length > 0) {
             for (const part of parts) {
                 if (part.text) {
@@ -333,9 +354,21 @@ class GeminiLiveAPI {
             }
         }
 
-        const message = new GeminiLiveResponseMessage(messageData);
-        if (message.type && (!parts || parts.length === 0 || message.type === "SETUP COMPLETE" || message.type === "INPUT_TRANSCRIPTION" || message.type === "OUTPUT_TRANSCRIPTION")) {
-            this.onReceiveResponse(message);
+        // 6. Interruption Signal
+        if (serverContent?.interrupted) {
+            this.onReceiveResponse({
+                type: "INTERRUPT",
+                raw: messageData
+            });
+        }
+
+        // 7. Turn Complete
+        const turnComplete = serverContent?.turnComplete || serverContent?.turn_complete || serverContent?.endOfTurn || serverContent?.end_of_turn;
+        if (turnComplete) {
+            this.onReceiveResponse({
+                type: "END_OF_TURN",
+                raw: messageData
+            });
         }
     }
 
