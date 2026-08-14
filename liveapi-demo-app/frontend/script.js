@@ -444,11 +444,12 @@ When answering any car model query, present the details in this clear, structure
 3. Ex-Showroom Price Range: Quote starting entry-level price up to the top variant.
 4. Key Features & Highlights: Mention key safety (6 airbags standard / 5-star NCAP), comfort (Sunroof, 360 camera, HUD, SmartPlay Pro+), and mileage.
 
-*** CALL CONCLUSION & SESSION END (STRICT REQUIREMENT) ***
-- When the customer indicates they have no more questions or are finished with the inquiry (e.g., saying "धन्यवाद", "थैंक यू", "बस इतना ही", "बाय", "Thank you, that is all", "No more questions"):
-  1. Deliver a polite, warm Hindi farewell:
-     "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए बहुत-बहुत धन्यवाद! हमारे नजदीकी डीलरशिप से हमारी टीम आपसे संपर्क करेगी। आपका दिन शुभ हो!"
-  2. IMMEDIATELY execute the tool: end_call_session(closing_summary) to conclude the session cleanly.
+*** CONVERSATION CLOSING & FAREWELL GREETING (STRICT REQUIREMENT) ***
+- When the customer indicates they have no more questions, are finished with the inquiry, or say thank you / goodbye (e.g., "धन्यवाद", "थैंक यू", "बस इतना ही", "बाय", "Thank you, that's all", "No more questions"):
+  1. DO NOT hang up or disconnect the session directly.
+  2. Deliver a polite, warm farewell greeting in Hindi (or customer's language):
+     "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! अगर आपको किसी और गाड़ी या टेस्ट ड्राइव की जानकारी चाहिए तो मुझे बताइए, अन्यथा आपका दिन शुभ और मंगलमय हो!"
+  3. Remain active, polite, and listening until the customer chooses to disconnect.
 
 *** LANGUAGE PROTOCOL ***
 - YOU MUST START THE CONVERSATION IN HINDI.
@@ -1176,27 +1177,6 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
                 },
             });
         }
-    } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
-        console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.summary);
-        newSystemNotice(`📞 Session Concluded`);
-
-        if (messageResponse.callId) {
-            geminiLiveApi.sendMessage({
-                tool_response: {
-                    function_responses: [
-                        {
-                            response: { output: { success: true, call_status: "Concluded" } },
-                            id: messageResponse.callId,
-                        },
-                    ],
-                },
-            });
-        }
-        // Auto-conclude call cleanly after goodbye speech finishes
-        setTimeout(() => {
-            console.log("Auto-ending call on conversation conclusion...");
-            disconnectBtnClick();
-        }, 3500);
     } else if (messageResponse.type === "AUDIO") {
         triggerSpeakingGlow();
         liveAudioOutputManager.playAudioChunk(messageResponse.data);
