@@ -1274,22 +1274,86 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
             liveVideoOutputManager.playVideoChunk(messageResponse.data);
         }
     } else if (messageResponse.type === "END_OF_TURN") {
+        finalizeUserStreamTurn();
+        finalizeModelStreamTurn();
         setAgentSpeaking(false);
     } else if (messageResponse.type === "TEXT") {
         newModelMessage(messageResponse.data);
         detectCarInTranscript(messageResponse.data);
     } else if (messageResponse.type === "OUTPUT_TRANSCRIPTION") {
-        newModelMessage(messageResponse.data);
-        detectCarInTranscript(messageResponse.data);
+        appendModelStreamText(messageResponse.data);
     } else if (messageResponse.type === "INPUT_TRANSCRIPTION") {
-        newUserTranscriptMessage(messageResponse.data);
-        detectCarInTranscript(messageResponse.data);
+        appendUserStreamText(messageResponse.data);
     } else if (messageResponse.type === "INTERRUPT") {
         console.log("Consultant Interrupted - Listening to user");
         liveAudioOutputManager.interrupt();
+        finalizeModelStreamTurn();
         setAgentSpeaking(false);
     }
 };
+
+let currentModelStreamBubble = null;
+let currentModelStreamText = "";
+
+let currentUserStreamBubble = null;
+let currentUserStreamText = "";
+
+function appendModelStreamText(chunk) {
+    if (!chunk) return;
+    const textChat = document.getElementById("text-chat");
+    if (!textChat) return;
+
+    if (!currentModelStreamBubble) {
+        currentModelStreamBubble = document.createElement("p");
+        currentModelStreamBubble.className = "model-bubble";
+        textChat.appendChild(currentModelStreamBubble);
+        currentModelStreamText = "";
+    }
+
+    currentModelStreamText += chunk;
+    currentModelStreamBubble.textContent = currentModelStreamText;
+    textChat.scrollTop = textChat.scrollHeight;
+}
+
+function finalizeModelStreamTurn() {
+    if (currentModelStreamText.trim()) {
+        const text = currentModelStreamText.trim();
+        currentSessionTranscript.push("Kabir: " + text);
+        detectCarInTranscript(text);
+        syncTranscriptToBackend();
+    }
+    currentModelStreamBubble = null;
+    currentModelStreamText = "";
+}
+
+function appendUserStreamText(chunk) {
+    if (!chunk) return;
+    const textChat = document.getElementById("text-chat");
+    if (!textChat) return;
+
+    if (!currentUserStreamBubble) {
+        currentUserStreamBubble = document.createElement("p");
+        currentUserStreamBubble.className = "user-bubble";
+        textChat.appendChild(currentUserStreamBubble);
+        currentUserStreamText = "";
+    }
+
+    currentUserStreamText += chunk;
+    currentUserStreamBubble.textContent = currentUserStreamText;
+    textChat.scrollTop = textChat.scrollHeight;
+}
+
+function finalizeUserStreamTurn() {
+    if (currentUserStreamText.trim()) {
+        const text = currentUserStreamText.trim();
+        currentSessionTranscript.push("Customer: " + text);
+        detectCarInTranscript(text);
+        extractCustomerDetailsFromText(text);
+        syncTranscriptToBackend();
+    }
+    currentUserStreamBubble = null;
+    currentUserStreamText = "";
+}
 
 function setAppStatus(status) {
     const states = {

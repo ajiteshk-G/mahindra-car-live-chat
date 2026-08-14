@@ -443,6 +443,8 @@ class GeminiLiveAPI {
                     },
                 },
                 tools: [showroomTools],
+                input_audio_transcription: {},
+                output_audio_transcription: {},
                 avatar_config: {
                     avatar_name: "Jay"
                 }
