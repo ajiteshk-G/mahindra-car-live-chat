@@ -1031,13 +1031,6 @@ async function saveLeadToBackend(customerName, modelOfInterest) {
     const channel = vehicle ? vehicle.channel : "ARENA";
     const carName = vehicle ? vehicle.name : activeModelOfInterest;
 
-    if (currentSessionTranscript.length === 0) {
-        currentSessionTranscript.push(`Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?`);
-        if (activeCustomerName && activeCustomerName !== "Valued Customer") {
-            currentSessionTranscript.push(`Customer: ${activeCustomerName} (Inquired about Maruti Suzuki ${carName})`);
-        }
-    }
-
     const transcriptText = currentSessionTranscript.join("\n");
     const payload = {
         session_id: geminiLiveApi.sessionId,
@@ -1086,6 +1079,17 @@ async function syncTranscriptToBackend() {
     }
 }
 
+function newSystemNotice(text) {
+    const textChat = document.getElementById("text-chat");
+    if (!textChat) return;
+
+    const p = document.createElement("p");
+    p.className = "system-bubble";
+    p.textContent = text;
+    textChat.appendChild(p);
+    textChat.scrollTop = textChat.scrollHeight;
+}
+
 geminiLiveApi.onReceiveResponse = (messageResponse) => {
     if (messageResponse.type === "SETUP COMPLETE") {
         console.log("Live Avatar Setup complete! Ready for voice/text.");
@@ -1105,7 +1109,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         console.log("Gemini Live Tool Call: record_customer_lead ->", messageResponse.customerName, messageResponse.modelOfInterest);
         saveLeadToBackend(messageResponse.customerName, messageResponse.modelOfInterest);
         selectCar(messageResponse.modelOfInterest);
-        newModelMessage(`Namaste ${messageResponse.customerName} ji! Maruti Suzuki ${messageResponse.modelOfInterest} ki inquiry auto-qualify ho chuki hai.`);
+        newSystemNotice(`📋 Lead Auto-Qualified: ${messageResponse.customerName} (${messageResponse.modelOfInterest})`);
 
         // Acknowledge tool execution
         if (messageResponse.callId) {
@@ -1127,7 +1131,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         const carKey = messageResponse.carName.toLowerCase().trim().replace(/\s+/g, "-");
         const vehicle = MARUTI_VEHICLES[carKey] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(messageResponse.carName.toLowerCase()));
         if (vehicle) {
-            newModelMessage(`Maruti Suzuki ${vehicle.name} (${vehicle.channel}) - Fuel: ${vehicle.fuelTypes} | Variants: ${vehicle.variantRange} | Ex-Showroom: ${vehicle.priceRange}.`);
+            newSystemNotice(`🚗 Showroom Backdrop: Maruti Suzuki ${vehicle.name}`);
         }
 
         if (messageResponse.callId) {
@@ -1144,7 +1148,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         }
     } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
         console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.summary);
-        newModelMessage(`Maruti Suzuki Virtual Showroom mein aane ke liye dhanyawad! Consultation concluded.`);
+        newSystemNotice(`📞 Session Concluded`);
 
         if (messageResponse.callId) {
             geminiLiveApi.sendMessage({
