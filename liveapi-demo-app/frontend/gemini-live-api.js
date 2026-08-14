@@ -267,7 +267,7 @@ class GeminiLiveAPI {
             return;
         }
 
-        // Handle tool calls (switch_vehicle_showroom and record_customer_lead)
+        // Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session)
         const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
         if (toolCalls && toolCalls.length > 0) {
             for (const call of toolCalls) {
@@ -283,6 +283,13 @@ class GeminiLiveAPI {
                         type: "TOOL_CALL_RECORD_LEAD",
                         customerName: call.args.customer_name,
                         modelOfInterest: call.args.model_of_interest,
+                        callId: call.id,
+                        raw: messageData
+                    });
+                } else if (call.name === "end_call_session" && call.args) {
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_END_CALL",
+                        reason: call.args.reason || "Customer completed inquiry",
                         callId: call.id,
                         raw: messageData
                     });
@@ -396,6 +403,19 @@ class GeminiLiveAPI {
                             }
                         },
                         required: ["customer_name", "model_of_interest"]
+                    }
+                },
+                {
+                    name: "end_call_session",
+                    description: "Call this tool to end the call when the customer says they do not have any more questions/queries, are satisfied, say thanks, bye, no more questions, or that's all.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            reason: {
+                                type: "string",
+                                description: "Reason for concluding the call, e.g. 'Customer confirmed no more questions'"
+                            }
+                        }
                     }
                 }
             ]

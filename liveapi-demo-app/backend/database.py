@@ -144,18 +144,84 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
         except Exception as e:
             logging.error(f"Failed to update transcript in Datastore: {e}")
 
+def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, customer_name: str = None, model_of_interest: str = None, channel: str = "ARENA"):
+    """Atomically appends customer and agent dialogue turns to the lead record in Datastore & SQLite."""
+    client = get_datastore_client()
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    
+    if client:
+        try:
+            from google.cloud import datastore
+            key = client.key("CustomerLead", str(session_id))
+            entity = client.get(key)
+            if not entity:
+                entity = datastore.Entity(key=key)
+                entity['session_id'] = str(session_id)
+                entity['customer_name'] = str(customer_name or "Valued Customer").strip()
+                entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
+                entity['channel'] = str(channel or "ARENA").strip().upper()
+                entity['call_date'] = now_utc
+                entity['status'] = "Auto-Qualified Inquiry"
+                existing_transcript = "Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"
+            else:
+                existing_transcript = entity.get('transcript', '')
+                if customer_name and entity.get('customer_name') in ["Valued Customer", "Inquiry in Progress", "Unknown", None, ""]:
+                    entity['customer_name'] = str(customer_name).strip()
+                if model_of_interest and entity.get('model_of_interest') in ["Victoris", "Unknown", None, ""]:
+                    entity['model_of_interest'] = str(model_of_interest).strip()
+                if channel:
+                    entity['channel'] = str(channel).strip().upper()
+
+            lines = [l for l in existing_transcript.split("\n") if l.strip()] if existing_transcript else []
+            if customer_text:
+                lines.append(f"Customer: {customer_text.strip()}")
+            if agent_text:
+                lines.append(f"Kabir: {agent_text.strip()}")
+
+            entity['transcript'] = "\n".join(lines)
+            entity['last_updated'] = now_utc
+            if not entity.get('call_date'):
+                entity['call_date'] = now_utc
+
+            client.put(entity)
+            logging.info(f"Atomic turn appended to Datastore for {session_id} ({len(lines)} turns)")
+            return {"success": True, "source": "datastore", "turns": len(lines)}
+        except Exception as e:
+            logging.error(f"Failed to append turn in Datastore: {e}")
+
     try:
         conn = sqlite3.connect(SQLITE_DB_PATH)
         cursor = conn.cursor()
         now_iso = now_utc.isoformat()
-        cursor.execute("""
-            INSERT INTO customer_leads (session_id, customer_name, model_of_interest, channel, transcript, call_date, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(session_id) DO UPDATE SET
-                transcript = excluded.transcript,
-                customer_name = CASE WHEN customer_leads.customer_name IN ('Valued Customer', 'Inquiry in Progress', 'Unknown') THEN excluded.customer_name ELSE customer_leads.customer_name END,
-                model_of_interest = CASE WHEN customer_leads.model_of_interest IN ('Victoris', 'Unknown') THEN excluded.model_of_interest ELSE customer_leads.model_of_interest END;
-        """, (session_id, customer_name or "Valued Customer", model_of_interest or "Victoris", channel or "ARENA", transcript, now_iso, "Auto-Qualified Inquiry"))
+        cursor.execute("SELECT transcript, customer_name, model_of_interest FROM customer_leads WHERE session_id = ?", (session_id,))
+        row = cursor.fetchone()
+        
+        if row:
+            curr_transcript, curr_name, curr_model = row
+            lines = [l for l in curr_transcript.split("\n") if l.strip()] if curr_transcript else []
+            if customer_text:
+                lines.append(f"Customer: {customer_text.strip()}")
+            if agent_text:
+                lines.append(f"Kabir: {agent_text.strip()}")
+            new_transcript = "\n".join(lines)
+            new_name = customer_name if customer_name and curr_name in ["Valued Customer", "Unknown"] else curr_name
+            new_model = model_of_interest if model_of_interest and curr_model in ["Victoris", "Unknown"] else curr_model
+            cursor.execute("""
+                UPDATE customer_leads
+                SET transcript = ?, customer_name = ?, model_of_interest = ?, channel = ?
+                WHERE session_id = ?
+            """, (new_transcript, new_name, new_model, channel, session_id))
+        else:
+            lines = ["Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"]
+            if customer_text:
+                lines.append(f"Customer: {customer_text.strip()}")
+            if agent_text:
+                lines.append(f"Kabir: {agent_text.strip()}")
+            new_transcript = "\n".join(lines)
+            cursor.execute("""
+                INSERT INTO customer_leads (session_id, customer_name, model_of_interest, channel, transcript, call_date, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (session_id, customer_name or "Valued Customer", model_of_interest or "Victoris", channel, new_transcript, now_iso, "Auto-Qualified Inquiry"))
         conn.commit()
         conn.close()
         return {"success": True, "source": "sqlite"}

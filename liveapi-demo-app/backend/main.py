@@ -347,10 +347,29 @@ async def handle_dialogue_turn(request: web.Request):
         )
         agent_reply = resp.text.strip() if resp and resp.text else f"जी {customer_name} जी, मारुति सुजुकी {model_of_interest} के बारे में हमारे पास पूरी जानकारी उपलब्ध है।"
 
+        closing_patterns = [
+            r"\b(no\s*more|no\s*questions?|don'?t\s*have|dont\s*have|nothing\s*else|that'?s\s*all|bas\s*itna|koi\s*aur\s*nahi|kuch\s*nahi|aur\s*kuch\s*nahi|no\s*thanks?|nahi\s*bas|nahi\s*shukriya|shukriya|dhanyawad|thank\s*you|thanks|bye|goodbye|all\s*good|no\s*further)\b",
+            r"(धन्यवाद|थैंक\s*यू|बस\s*इतना\s*ही|कोई\s*सवाल\s*नहीं|कुछ\s*नहीं|बाय|अलविदा|போதும்|நன்றி|ధన్యవాదాలు|చాలు|ಧನ್ಯವಾದಗಳು|ಸಾಕು|काही\s*नाही|ধন্যবাদ|આભાર|നന്ദി)"
+        ]
+        import re
+        is_call_ended = any(re.search(pat, customer_message, re.IGNORECASE) for pat in closing_patterns)
+
+        # Atomically append this turn to Datastore and SQLite
+        await asyncio.to_thread(
+            database.append_dialogue_turn,
+            session_id=session_id,
+            customer_text=customer_message,
+            agent_text=agent_reply,
+            customer_name=customer_name,
+            model_of_interest=model_of_interest,
+            channel=channel
+        )
+
         return web.json_response({
             "agent_response": agent_reply,
             "customer_text": customer_message,
-            "session_id": session_id
+            "session_id": session_id,
+            "is_call_ended": is_call_ended
         })
     except Exception as e:
         logging.exception("Error in handle_dialogue_turn")

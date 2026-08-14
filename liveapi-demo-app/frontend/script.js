@@ -444,11 +444,12 @@ When answering any car model query, present the details in this clear, structure
 3. Ex-Showroom Price Range: Quote starting entry-level price up to the top variant.
 4. Key Features & Highlights: Mention key safety (6 airbags standard / 5-star NCAP), comfort (Sunroof, 360 camera, HUD, SmartPlay Pro+), and mileage.
 
-*** CONVERSATION CLOSING & FAREWELL GREETING (STRICT REQUIREMENT) ***
-- When the customer indicates they have no more questions, are finished with the inquiry, or say thank you / goodbye (e.g., "धन्यवाद", "थैंक यू", "बस इतना ही", "बाय", "Thank you, that's all", "No more questions"):
-  1. DO NOT hang up or disconnect the session directly.
-  2. Deliver a polite, warm farewell greeting in the customer's active language (e.g. in Hindi: "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! अगर आपको किसी और गाड़ी या टेस्ट ड्राइव की जानकारी चाहिए तो मुझे बताइए, अन्यथा आपका दिन शुभ और मंगलमय हो!").
-  3. Remain active, polite, and listening until the customer chooses to disconnect.
+*** CALL CONCLUSION, THANKS & ENDING THE CALL (MANDATORY REQUIREMENT) ***
+- When the customer indicates they do not have any more questions/queries, say they don't have anything else, or say thank you / bye / bas itna hi / no questions / nothing else / no:
+  1. Speak a warm, polite thank you and heartfelt farewell in the customer's language:
+     (In Hindi): "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! हमारे नजदीकी डीलरशिप से हमारी टीम आपसे संपर्क करेगी। आपका दिन शुभ और मंगलमय हो!"
+     (In other languages): deliver the corresponding warm thank you and farewell.
+  2. IMMEDIATELY call the tool: end_call_session(reason) so the call concludes cleanly and ends.
 
 *** ALL INDIAN LANGUAGES & MULTILINGUAL PROTOCOL (MANDATORY) ***
 - YOU MUST SUPPORT AND SPEAK ALL INDIAN LANGUAGES WITH NATIVE FLUENCY:
@@ -1080,6 +1081,13 @@ async function processCustomerDialogueTurn(messageText) {
             if (data && data.agent_response) {
                 newModelMessage(data.agent_response);
             }
+            if (data && data.is_call_ended) {
+                newSystemNotice("📞 Consultation Concluded - Thank you for visiting Maruti Suzuki");
+                setTimeout(() => {
+                    console.log("Auto-ending call session after conclusion response...");
+                    disconnectBtnClick();
+                }, 3500);
+            }
         } catch (e) {
             console.warn("Failed to generate dialogue turn:", e);
         }
@@ -1235,6 +1243,28 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
                 },
             });
         }
+    } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
+        console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.reason);
+        newSystemNotice("📞 Consultation Concluded - Thank you for visiting Maruti Suzuki");
+
+        if (messageResponse.callId) {
+            geminiLiveApi.sendMessage({
+                tool_response: {
+                    function_responses: [
+                        {
+                            response: { output: { success: true, call_status: "Concluded" } },
+                            id: messageResponse.callId,
+                        },
+                    ],
+                },
+            });
+        }
+
+        // Allow Kabir's spoken thanks to finish, then end the call session cleanly
+        setTimeout(() => {
+            console.log("Auto-ending call session on conclusion...");
+            disconnectBtnClick();
+        }, 3500);
     } else if (messageResponse.type === "AUDIO") {
         triggerSpeakingGlow();
         liveAudioOutputManager.playAudioChunk(messageResponse.data);
