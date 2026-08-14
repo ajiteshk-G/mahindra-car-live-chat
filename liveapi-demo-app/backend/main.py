@@ -289,6 +289,57 @@ async def handle_update_transcript(request: web.Request):
         return web.json_response({"error": str(e)}, status=500)
 
 
+MARUTI_AGENT_SYSTEM_PROMPT = """You are Kabir, an expert, enthusiastic male AI Showroom Specialist from Maruti Suzuki India Virtual Showroom.
+You represent Maruti Suzuki's ARENA, NEXA, and Commercial channels.
+Your job is to generate Kabir's exact natural spoken Hindi response (2 sentences) to the customer.
+
+STRICT GUARDRAILS:
+1. OFFERS & ON-ROAD PRICE:
+   - If customer asks about any discounts, rural offers, exchange bonus, consumer offers, or ON-ROAD price:
+     Inform them that applicable offers and on-road price will be shared by our Sales Team.
+   - Quote the EX-SHOWROOM price accurately.
+2. COMPETITOR COMPARISON:
+   - If customer asks about Hyundai, Kia, Toyota, Tata, Mahindra, or other brands:
+     Do NOT provide any information or comparison regarding the competitor brand.
+     Instead, highlight the relevant Maruti Suzuki model in the same segment.
+3. Keep the response natural, warm, and concise (under 35 words)."""
+
+async def handle_dialogue_turn(request: web.Request):
+    """Generate agent Kabir's response turn and sync cleanly with the database transcript."""
+    try:
+        data = await request.json()
+        session_id = data.get("session_id")
+        customer_message = (data.get("customer_message") or "").strip()
+        customer_name = data.get("customer_name") or "Valued Customer"
+        model_of_interest = data.get("model_of_interest") or "Victoris"
+        channel = data.get("channel", "ARENA")
+
+        if not session_id or not customer_message:
+            return web.json_response({"error": "Missing session_id or customer_message"}, status=400)
+
+        project_id = PROJECT_ID.value or os.environ.get("GOOGLE_CLOUD_PROJECT", "mb-poc-352009")
+        genai_client = genai.Client(vertexai=True, project=project_id, location="us-central1")
+
+        prompt = f"Customer Name: {customer_name}\nModel of Interest: {model_of_interest} ({channel})\nCustomer says: {customer_message}"
+        
+        resp = await asyncio.to_thread(
+            genai_client.models.generate_content,
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=dict(system_instruction=MARUTI_AGENT_SYSTEM_PROMPT, max_output_tokens=150)
+        )
+        agent_reply = resp.text.strip() if resp and resp.text else f"जी {customer_name} जी, मारुति सुजुकी {model_of_interest} के बारे में हमारे पास पूरी जानकारी उपलब्ध है।"
+
+        return web.json_response({
+            "agent_response": agent_reply,
+            "customer_text": customer_message,
+            "session_id": session_id
+        })
+    except Exception as e:
+        logging.exception("Error in handle_dialogue_turn")
+        return web.json_response({"agent_response": "जी, मैं आपकी पूरी मदद करूंगा।", "error": str(e)}, status=200)
+
+
 async def serve_index(request):
     return web.FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
@@ -313,6 +364,7 @@ async def create_app():
     cors.add(app.router.add_post("/api/leads", handle_save_lead))
     cors.add(app.router.add_get("/api/leads", handle_get_leads))
     cors.add(app.router.add_post("/api/leads/transcript", handle_update_transcript))
+    cors.add(app.router.add_post("/api/dialogue_turn", handle_dialogue_turn))
     app.router.add_get("/ws", aiohttp_websocket_handler)
 
     # Static Files

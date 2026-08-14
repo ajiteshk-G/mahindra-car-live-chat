@@ -878,11 +878,15 @@ function setAgentSpeaking(speaking) {
     if (speaking) {
         isAgentSpeaking = true;
         if (agentSpeakingTimeout) clearTimeout(agentSpeakingTimeout);
+        if (currentInterimBubble) {
+            currentInterimBubble.remove();
+            currentInterimBubble = null;
+        }
     } else {
         if (agentSpeakingTimeout) clearTimeout(agentSpeakingTimeout);
         agentSpeakingTimeout = setTimeout(() => {
             isAgentSpeaking = false;
-        }, 800);
+        }, 1200);
     }
 }
 
@@ -902,7 +906,7 @@ function triggerSpeakingGlow() {
         previewContainer.classList.remove("active-speaking");
         setAppStatus("connected");
         setAgentSpeaking(false);
-    }, 1200);
+    }, 1400);
 }
 
 let isFirstTurn = true;
@@ -952,6 +956,16 @@ function initSpeechRecognition() {
         speechRecognizer.lang = currentSpeechLang || "hi-IN";
 
         speechRecognizer.onresult = (event) => {
+            // Strictly reject any recognition if the avatar / speaker is active
+            if (isAgentSpeaking) {
+                console.log("Ignoring speech chunk during avatar audio playback (echo suppression)");
+                if (currentInterimBubble) {
+                    currentInterimBubble.remove();
+                    currentInterimBubble = null;
+                }
+                return;
+            }
+
             let interimText = "";
             let finalText = "";
 
@@ -967,7 +981,7 @@ function initSpeechRecognition() {
             const textChat = document.getElementById("text-chat");
 
             // Live interim speech indicator bubble
-            if (interimText.trim()) {
+            if (interimText.trim() && !isAgentSpeaking) {
                 if (!currentInterimBubble && textChat) {
                     currentInterimBubble = document.createElement("p");
                     currentInterimBubble.className = "user-bubble interim";
@@ -979,7 +993,7 @@ function initSpeechRecognition() {
                 }
             }
 
-            if (finalText.trim()) {
+            if (finalText.trim() && !isAgentSpeaking) {
                 if (currentInterimBubble) {
                     currentInterimBubble.remove();
                     currentInterimBubble = null;
@@ -992,8 +1006,6 @@ function initSpeechRecognition() {
                 const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ") || lower.includes("kabir")) && lower.includes("वर्चुअल शोरूम");
                 if (!isEcho) {
                     newUserTranscriptMessage(speechStr);
-                    detectCarInTranscript(speechStr);
-                    extractCustomerDetailsFromText(speechStr);
                 }
             }
         };
@@ -1018,8 +1030,8 @@ function initSpeechRecognition() {
                 currentInterimBubble.remove();
                 currentInterimBubble = null;
             }
-            // Automatically restart if microphone and session are active
-            if (geminiLiveApi && geminiLiveApi.webSocket && geminiLiveApi.webSocket.readyState === WebSocket.OPEN && micBtn && !micBtn.hidden) {
+            // Automatically restart if microphone and session are active and avatar is not speaking
+            if (geminiLiveApi && geminiLiveApi.webSocket && geminiLiveApi.webSocket.readyState === WebSocket.OPEN && micBtn && !micBtn.hidden && !isAgentSpeaking) {
                 try { speechRecognizer.start(); } catch (e) {}
             }
         };
@@ -1027,6 +1039,37 @@ function initSpeechRecognition() {
         console.log("Speech recognition initialized for:", speechRecognizer.lang);
     } catch (e) {
         console.error("Speech recognition init error:", e);
+    }
+}
+
+async function processCustomerDialogueTurn(messageText) {
+    if (!messageText || !messageText.trim()) return;
+    const cleanText = messageText.trim();
+
+    detectCarInTranscript(cleanText);
+    extractCustomerDetailsFromText(cleanText);
+
+    // Generate Kabir's response turn via backend for exact transcript synchronization
+    if (geminiLiveApi && geminiLiveApi.sessionId) {
+        try {
+            const resp = await fetch("/api/dialogue_turn", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    session_id: geminiLiveApi.sessionId,
+                    customer_message: cleanText,
+                    customer_name: activeCustomerName || "Valued Customer",
+                    model_of_interest: activeModelOfInterest || currentSelectedCarId,
+                    channel: (MARUTI_VEHICLES[currentSelectedCarId] || {}).channel || "ARENA"
+                })
+            });
+            const data = await resp.json();
+            if (data && data.agent_response) {
+                newModelMessage(data.agent_response);
+            }
+        } catch (e) {
+            console.warn("Failed to generate dialogue turn:", e);
+        }
     }
 }
 
@@ -1132,6 +1175,8 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         // Proactively greet customer in Hindi and ask for Name and Model of Interest
         if (isFirstTurn) {
             isFirstTurn = false;
+            currentSessionTranscript = ["Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"];
+            syncTranscriptToBackend();
             setTimeout(() => {
                 geminiLiveApi.sendTextMessage("Start the conversation now. Greet the customer warmly in Hindi as Kabir, male AI Showroom Specialist from Maruti Suzuki Virtual Showroom. Politely ask for their Name and which Maruti Suzuki car model they would like to explore today.");
             }, 600);
@@ -1255,9 +1300,9 @@ function newUserMessage() {
     }
 
     currentSessionTranscript.push("Customer: " + message);
-    detectCarInTranscript(message);
     textMessage.value = "";
     syncTranscriptToBackend();
+    processCustomerDialogueTurn(message);
 }
 
 function newUserTranscriptMessage(text) {
@@ -1266,12 +1311,13 @@ function newUserTranscriptMessage(text) {
 
     const p = document.createElement("p");
     p.className = "user-bubble";
-    p.textContent = "🎙️ " + text;
+    p.textContent = text;
     textChat.appendChild(p);
     textChat.scrollTop = textChat.scrollHeight;
 
-    currentSessionTranscript.push("Customer (Voice): " + text);
+    currentSessionTranscript.push("Customer: " + text);
     syncTranscriptToBackend();
+    processCustomerDialogueTurn(text);
 }
 
 // --- Leads & Inquiries CRM Dashboard Logic ---

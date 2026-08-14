@@ -63,18 +63,20 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             entity = client.get(key)
             if not entity:
                 entity = datastore.Entity(key=key)
+            
             existing_transcript = entity.get('transcript', '')
             final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
             
-            entity.update({
-                'session_id': str(session_id),
-                'customer_name': str(customer_name).strip() if customer_name else entity.get('customer_name', "Valued Customer"),
-                'model_of_interest': str(model_of_interest).strip() if model_of_interest else entity.get('model_of_interest', "Victoris"),
-                'channel': str(channel).strip().upper() if channel else entity.get('channel', "ARENA"),
-                'transcript': final_transcript,
-                'status': str(status),
-                'last_updated': now_utc
-            })
+            entity['session_id'] = str(session_id)
+            entity['customer_name'] = str(customer_name).strip() if customer_name else entity.get('customer_name', "Valued Customer")
+            entity['model_of_interest'] = str(model_of_interest).strip() if model_of_interest else entity.get('model_of_interest', "Victoris")
+            entity['channel'] = str(channel).strip().upper() if channel else entity.get('channel', "ARENA")
+            entity['transcript'] = final_transcript
+            entity['status'] = str(status)
+            entity['last_updated'] = now_utc
+            if not entity.get('call_date'):
+                entity['call_date'] = now_utc
+
             client.put(entity)
             logging.info(f"Lead saved to Cloud Datastore: {customer_name} ({model_of_interest}) [Session: {session_id}]")
             return {"success": True, "source": "datastore", "session_id": session_id}
@@ -133,6 +135,9 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
             final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
             entity['transcript'] = final_transcript
             entity['last_updated'] = now_utc
+            if not entity.get('call_date'):
+                entity['call_date'] = now_utc
+
             client.put(entity)
             logging.info(f"Transcript synced in Datastore for session {session_id} ({len(final_transcript)} chars)")
             return {"success": True, "source": "datastore"}
@@ -166,10 +171,24 @@ def get_all_leads():
     if client:
         try:
             query = client.query(kind="CustomerLead")
-            query.order = ["-call_date"]
             results = list(query.fetch(limit=100))
+            
+            # Robust in-memory sort so missing index or null call_date never drops any lead
+            def sort_key(item):
+                dt = item.get("call_date") or item.get("last_updated")
+                if dt is None:
+                    return datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)
+                if isinstance(dt, str):
+                    try:
+                        return datetime.datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                    except Exception:
+                        return datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)
+                return dt
+
+            results.sort(key=sort_key, reverse=True)
+
             for item in results:
-                call_dt = item.get("call_date")
+                call_dt = item.get("call_date") or item.get("last_updated") or datetime.datetime.now(datetime.timezone.utc)
                 call_date_str = call_dt.isoformat() if hasattr(call_dt, "isoformat") else str(call_dt)
                 leads.append({
                     "id": item.key.name or str(item.key.id),
