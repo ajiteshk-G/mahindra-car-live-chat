@@ -877,8 +877,8 @@ function disconnectBtnClick() {
     cameraOffBtn.querySelector('button').disabled = true;
     screenBtn.disabled = true;
 
-    // Immediately sync final transcript to database and refresh leads dashboard
-    syncTranscriptToBackend();
+    // Immediately flush final full transcript to database and refresh leads dashboard
+    syncTranscriptImmediate();
     setTimeout(() => {
         updateLeadsCountBadge();
         const leadsModal = document.getElementById("leads-modal");
@@ -1155,11 +1155,70 @@ async function saveLeadToBackend(customerName, modelOfInterest) {
     }
 }
 
-async function syncTranscriptToBackend() {
-    if (!geminiLiveApi.sessionId || currentSessionTranscript.length === 0) return;
-    const vehicle = MARUTI_VEHICLES[activeModelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || MARUTI_VEHICLES[currentSelectedCarId];
+function getLiveTranscriptFromChat() {
+    const textChat = document.getElementById("text-chat");
+    if (!textChat) return currentSessionTranscript.join("\n");
+
+    const lines = [];
+    const bubbles = textChat.querySelectorAll("p.user-bubble:not(.interim), p.model-bubble");
+    bubbles.forEach(b => {
+        const text = b.textContent.trim();
+        if (!text) return;
+        if (b.classList.contains("user-bubble")) {
+            lines.push(`Customer: ${text.replace(/^🎙️\s*/, "")}`);
+        } else if (b.classList.contains("model-bubble")) {
+            lines.push(`Kabir: ${text}`);
+        }
+    });
+
+    if (lines.length > 0) {
+        return lines.join("\n");
+    }
+    return currentSessionTranscript.join("\n");
+}
+
+let syncDebounceTimer = null;
+function syncTranscriptToBackend() {
+    if (!geminiLiveApi || !geminiLiveApi.sessionId) return;
+
+    const fullTranscript = getLiveTranscriptFromChat();
+    if (!fullTranscript || !fullTranscript.trim()) return;
+
+    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "victoris") + "").toLowerCase().trim().replace(/\s+/g, "-");
+    const vehicle = MARUTI_VEHICLES[modelKey] || MARUTI_VEHICLES[currentSelectedCarId] || MARUTI_VEHICLES["victoris"];
     const channel = vehicle ? vehicle.channel : "ARENA";
-    const carName = vehicle ? vehicle.name : activeModelOfInterest;
+    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Victoris");
+
+    if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(async () => {
+        try {
+            await fetch("/api/leads/transcript", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    session_id: geminiLiveApi.sessionId,
+                    transcript: fullTranscript,
+                    customer_name: activeCustomerName || "Valued Customer",
+                    model_of_interest: carName || "Victoris",
+                    channel: channel
+                })
+            });
+            console.log("Synced live chat transcript to Datastore (" + fullTranscript.split("\n").length + " turns)");
+        } catch (e) {
+            console.warn("Failed to sync transcript:", e);
+        }
+    }, 200);
+}
+
+async function syncTranscriptImmediate() {
+    if (!geminiLiveApi || !geminiLiveApi.sessionId) return;
+    const fullTranscript = getLiveTranscriptFromChat();
+    if (!fullTranscript || !fullTranscript.trim()) return;
+
+    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "victoris") + "").toLowerCase().trim().replace(/\s+/g, "-");
+    const vehicle = MARUTI_VEHICLES[modelKey] || MARUTI_VEHICLES[currentSelectedCarId] || MARUTI_VEHICLES["victoris"];
+    const channel = vehicle ? vehicle.channel : "ARENA";
+    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Victoris");
 
     try {
         await fetch("/api/leads/transcript", {
@@ -1167,14 +1226,15 @@ async function syncTranscriptToBackend() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 session_id: geminiLiveApi.sessionId,
-                transcript: currentSessionTranscript.join("\n"),
+                transcript: fullTranscript,
                 customer_name: activeCustomerName || "Valued Customer",
                 model_of_interest: carName || "Victoris",
                 channel: channel
             })
         });
+        console.log("Immediate final transcript flush completed (" + fullTranscript.split("\n").length + " turns)");
     } catch (e) {
-        console.warn("Failed to sync transcript:", e);
+        console.warn("Failed to sync immediate transcript:", e);
     }
 }
 
