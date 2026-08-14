@@ -13,6 +13,7 @@ import websockets
 import session_management
 import websocket_handler
 import get_credentials
+import database
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Navigate to the frontend folder (assuming it's a sibling to the backend folder)
@@ -222,6 +223,61 @@ def initialize_gemini_chat_session(location: str):
     )
 
 
+async def handle_save_lead(request: web.Request):
+    """Save or update customer lead information."""
+    try:
+        data = await request.json()
+        session_id = data.get("session_id")
+        customer_name = data.get("customer_name") or data.get("name")
+        model_of_interest = data.get("model_of_interest") or data.get("model")
+        channel = data.get("channel", "ARENA")
+        transcript = data.get("transcript", "")
+        status = data.get("status", "Auto-Qualified Inquiry")
+
+        if not session_id or not customer_name or not model_of_interest:
+            return web.json_response({"error": "Missing required fields: session_id, customer_name, model_of_interest"}, status=400)
+
+        result = await asyncio.to_thread(
+            database.save_or_update_lead,
+            session_id=session_id,
+            customer_name=customer_name,
+            model_of_interest=model_of_interest,
+            channel=channel,
+            transcript=transcript,
+            status=status
+        )
+        return web.json_response(result)
+    except Exception as e:
+        logging.exception("Error saving lead")
+        return web.json_response({"error": str(e)}, status=500)
+
+
+async def handle_get_leads(request: web.Request):
+    """Retrieve all captured customer leads."""
+    try:
+        leads = await asyncio.to_thread(database.get_all_leads)
+        return web.json_response({"leads": leads})
+    except Exception as e:
+        logging.exception("Error retrieving leads")
+        return web.json_response({"error": str(e)}, status=500)
+
+
+async def handle_update_transcript(request: web.Request):
+    """Update conversation transcript for a session."""
+    try:
+        data = await request.json()
+        session_id = data.get("session_id")
+        transcript = data.get("transcript", "")
+        if not session_id:
+            return web.json_response({"error": "Missing session_id"}, status=400)
+
+        result = await asyncio.to_thread(database.update_lead_transcript, session_id, transcript)
+        return web.json_response(result)
+    except Exception as e:
+        logging.exception("Error updating transcript")
+        return web.json_response({"error": str(e)}, status=500)
+
+
 async def serve_index(request):
     return web.FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
@@ -243,6 +299,9 @@ async def create_app():
     # API and WS Routes
     cors.add(app.router.add_post("/api/post_endpoint", handle_fr_post_request))
     cors.add(app.router.add_post("/api/control", handle_control_request))
+    cors.add(app.router.add_post("/api/leads", handle_save_lead))
+    cors.add(app.router.add_get("/api/leads", handle_get_leads))
+    cors.add(app.router.add_post("/api/leads/transcript", handle_update_transcript))
     app.router.add_get("/ws", aiohttp_websocket_handler)
 
     # Static Files

@@ -1,10 +1,10 @@
 /**
  * Maruti Suzuki AI Live Virtual Showroom Experience
  * Real-Time Multimodal Avatar & Dynamic Vehicle Showroom
- * Includes ARENA, NEXA, and COMMERCIAL channels
+ * Includes ARENA, NEXA, and COMMERCIAL channels with Lead Capture & Guardrails
  */
 
-// --- Official Maruti Suzuki Complete Vehicle Knowledge Base with Multilingual Keywords ---
+// --- Official Maruti Suzuki Complete Vehicle Knowledge Base with Multilingual Keywords & Structured Specs ---
 const MARUTI_VEHICLES = {
     "victoris": {
         id: "victoris",
@@ -13,7 +13,10 @@ const MARUTI_VEHICLES = {
         category: "suv",
         categoryLabel: "All-New Launch SUV",
         tagline: "Your Victoris, Built To Your Vision. Bold Stance & Dynamic Presence.",
-        price: "₹10.49 Lakh*",
+        price: "₹10.49 Lakh* – ₹19.98 Lakh*",
+        priceRange: "₹10.49 Lakh* to ₹19.98 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+ (Dual Tone Available)",
         mileage: "Up to 21.50 km/l (Petrol) | 26.50 km/kg (S-CNG)",
         engine: "1.5L K-Series DualJet Dual VVT Engine",
         transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
@@ -28,7 +31,10 @@ const MARUTI_VEHICLES = {
         category: "suv",
         categoryLabel: "Flagship Strong Hybrid SUV",
         tagline: "Rule Every Terrain. Intelligent Electric Hybrid & ALLGRIP AWD.",
-        price: "₹10.76 Lakh*",
+        price: "₹10.76 Lakh* – ₹20.09 Lakh*",
+        priceRange: "₹10.76 Lakh* to ₹20.09 Lakh* (Ex-Showroom)",
+        fuelTypes: "Intelligent Electric Hybrid (Strong) & Smart Hybrid Petrol / S-CNG",
+        variantRange: "Sigma, Delta, Zeta, Alpha, Zeta+ (Hybrid), Alpha+ (Hybrid)",
         mileage: "Up to 27.97 km/l (Hybrid) | 26.6 km/kg (CNG)",
         engine: "1.5L Intelligent Electric Hybrid / 1.5L K15C Smart Hybrid",
         transmission: "e-CVT / 6-Speed AT / 5-Speed MT",
@@ -43,7 +49,10 @@ const MARUTI_VEHICLES = {
         category: "hatchback",
         categoryLabel: "Iconic Sporty Hatchback",
         tagline: "The Epic New Swift. Thrill in Every Drive.",
-        price: "₹5.79 Lakh*",
+        price: "₹5.79 Lakh* – ₹9.59 Lakh*",
+        priceRange: "₹5.79 Lakh* to ₹9.59 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, VXi (O), ZXi, ZXi+",
         mileage: "Up to 25.75 km/l (Petrol) | 32.85 km/kg (S-CNG)",
         engine: "All-New 1.2L Z-Series 3-Cylinder Engine",
         transmission: "5-Speed MT / AGS (Automatic)",
@@ -58,7 +67,10 @@ const MARUTI_VEHICLES = {
         category: "suv",
         categoryLabel: "Compact Urban SUV",
         tagline: "More Power To Your Play. India's Favorite Compact SUV.",
-        price: "₹8.34 Lakh*",
+        price: "₹8.34 Lakh* – ₹14.14 Lakh*",
+        priceRange: "₹8.34 Lakh* to ₹14.14 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+",
         mileage: "Up to 19.89 km/l (Petrol) | 25.51 km/kg (S-CNG)",
         engine: "1.5L K-Series DualJet Dual VVT Engine with Smart Hybrid",
         transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
@@ -73,7 +85,10 @@ const MARUTI_VEHICLES = {
         category: "suv",
         categoryLabel: "Turbo Crossover Coupe SUV",
         tagline: "Shape New Trends. Aerodynamic Coupe Stance & Boosterjet Power.",
-        price: "₹6.85 Lakh*",
+        price: "₹6.85 Lakh* – ₹12.98 Lakh*",
+        priceRange: "₹6.85 Lakh* to ₹12.98 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (1.0L Turbo / 1.2L DualJet) & S-CNG",
+        variantRange: "Sigma, Delta, Delta+, Zeta, Alpha",
         mileage: "Up to 22.89 km/l (Petrol) | 28.51 km/kg (CNG)",
         engine: "1.0L Turbo Boosterjet / 1.2L K-Series DualJet",
         transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT / AGS",
@@ -88,7 +103,10 @@ const MARUTI_VEHICLES = {
         category: "suv",
         categoryLabel: "Authentic 4x4 Off-Road Legend",
         tagline: "Purity of Function. Conquering Global Trails since 1970.",
-        price: "₹12.32 Lakh*",
+        price: "₹12.32 Lakh* – ₹14.89 Lakh*",
+        priceRange: "₹12.32 Lakh* to ₹14.89 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (High Off-Road Torque Delivery)",
+        variantRange: "Zeta, Alpha (Dual Tone Option)",
         mileage: "Up to 16.94 km/l",
         engine: "1.5L K15B Petrol Engine with Optimized Off-Road Torque",
         transmission: "4-Speed AT / 5-Speed MT with Low-Range 4WD Transfer Case",
@@ -103,7 +121,10 @@ const MARUTI_VEHICLES = {
         category: "mpv",
         categoryLabel: "Opulent Strong Hybrid Luxury MUV",
         tagline: "The Art of Opulence. Unmatched Comfort and Hybrid Tech.",
-        price: "₹24.97 Lakh*",
+        price: "₹24.97 Lakh* – ₹28.92 Lakh*",
+        priceRange: "₹24.97 Lakh* to ₹28.92 Lakh* (Ex-Showroom)",
+        fuelTypes: "Intelligent Electric Hybrid (Strong Hybrid Pure EV Mode)",
+        variantRange: "Zeta+ (7-Seater / 8-Seater), Alpha+ (7-Seater)",
         mileage: "21.19 km/l (Intelligent Electric Hybrid)",
         engine: "2.0L Intelligent Electric Hybrid System",
         transmission: "e-CVT (Electric Continuous Variable Transmission)",
@@ -118,7 +139,10 @@ const MARUTI_VEHICLES = {
         category: "sedan",
         categoryLabel: "India's #1 Sedan (5-Star Safety)",
         tagline: "India's Most Loved Sedan. 5-Star 2026 Global NCAP Safety.",
-        price: "₹6.25 Lakh*",
+        price: "₹6.25 Lakh* – ₹10.14 Lakh*",
+        priceRange: "₹6.25 Lakh* to ₹10.14 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+",
         mileage: "Up to 25.71 km/l (Petrol) | 33.73 km/kg (S-CNG)",
         engine: "All-New 1.2L Z-Series 3-Cylinder Engine",
         transmission: "5-Speed MT / AGS (Automatic)",
@@ -133,7 +157,10 @@ const MARUTI_VEHICLES = {
         category: "hatchback",
         categoryLabel: "Premium Intelligent Hatchback",
         tagline: "Tech Goes Bold. India's Top Premium Hatchback.",
-        price: "₹5.99 Lakh*",
+        price: "₹5.99 Lakh* – ₹9.88 Lakh*",
+        priceRange: "₹5.99 Lakh* to ₹9.88 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "Sigma, Delta, Zeta, Alpha",
         mileage: "Up to 22.94 km/l (Petrol) | 30.61 km/kg (CNG)",
         engine: "1.2L DualJet Dual VVT Engine with Idle Start-Stop",
         transmission: "AGS (Auto Gear Shift) / 5-Speed MT",
@@ -148,7 +175,10 @@ const MARUTI_VEHICLES = {
         category: "mpv",
         categoryLabel: "India's Best-Selling 7-Seater MPV",
         tagline: "Move Together in Comfort. Space and Efficiency for Families.",
-        price: "₹8.80 Lakh*",
+        price: "₹8.80 Lakh* – ₹13.03 Lakh*",
+        priceRange: "₹8.80 Lakh* to ₹13.03 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+",
         mileage: "Up to 20.51 km/l (Petrol) | 26.11 km/kg (S-CNG)",
         engine: "Next-Gen 1.5L K-Series DualJet Smart Hybrid Engine",
         transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
@@ -163,7 +193,10 @@ const MARUTI_VEHICLES = {
         category: "mpv",
         categoryLabel: "Premium 6-Seater MPV with Captain Seats",
         tagline: "Feels Just Right. Sophisticated Comfort and Luxury.",
-        price: "₹11.52 Lakh*",
+        price: "₹11.52 Lakh* – ₹14.67 Lakh*",
+        priceRange: "₹11.52 Lakh* to ₹14.67 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
+        variantRange: "Zeta, Alpha, Alpha+",
         mileage: "Up to 20.97 km/l (Petrol) | 26.32 km/kg (CNG)",
         engine: "1.5L K15C DualJet Dual VVT Smart Hybrid",
         transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
@@ -178,7 +211,10 @@ const MARUTI_VEHICLES = {
         category: "hatchback",
         categoryLabel: "Iconic Tallboy Hatchback",
         tagline: "Dil Se Strong. India's Favorite Spacious Tallboy.",
-        price: "₹5.54 Lakh*",
+        price: "₹5.54 Lakh* – ₹7.42 Lakh*",
+        priceRange: "₹5.54 Lakh* to ₹7.42 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (1.0L / 1.2L) & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+",
         mileage: "Up to 24.35 km/l (Petrol) | 34.05 km/kg (S-CNG)",
         engine: "Advanced 1.0L and 1.2L K-Series DualJet Engines",
         transmission: "AGS / 5-Speed MT",
@@ -193,7 +229,10 @@ const MARUTI_VEHICLES = {
         category: "city",
         categoryLabel: "Smart Urban City Car",
         tagline: "Peheli Matlab Maruti. India's Most Accessible Car.",
-        price: "₹3.69 Lakh*",
+        price: "₹3.69 Lakh* – ₹5.96 Lakh*",
+        priceRange: "₹3.69 Lakh* to ₹5.96 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "Std, LXi, VXi, VXi+",
         mileage: "Up to 24.90 km/l (Petrol) | 33.85 km/kg (S-CNG)",
         engine: "Next-Gen 1.0L K-Series DualJet Dual VVT Engine",
         transmission: "AGS / 5-Speed MT",
@@ -208,7 +247,10 @@ const MARUTI_VEHICLES = {
         category: "city",
         categoryLabel: "Mileage Champion Hatchback",
         tagline: "Drive With Drive. India's Most Fuel Efficient Petrol Car.",
-        price: "₹4.69 Lakh*",
+        price: "₹4.69 Lakh* – ₹7.04 Lakh*",
+        priceRange: "₹4.69 Lakh* to ₹7.04 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "LXi, VXi, ZXi, ZXi+",
         mileage: "Up to 26.68 km/l (Petrol) | 35.60 km/kg (S-CNG)",
         engine: "DualJet 1.0L K10C with Idle Start-Stop",
         transmission: "AGS / 5-Speed MT",
@@ -223,7 +265,10 @@ const MARUTI_VEHICLES = {
         category: "city",
         categoryLabel: "Bold Mini-SUV",
         tagline: "Live Bold. Mini-SUV with High Ground Clearance.",
-        price: "₹3.49 Lakh*",
+        price: "₹3.49 Lakh* – ₹6.12 Lakh*",
+        priceRange: "₹3.49 Lakh* to ₹6.12 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "Std, LXi, VXi, VXi+",
         mileage: "Up to 25.30 km/l (Petrol) | 32.73 km/kg (S-CNG)",
         engine: "1.0L K-Series DualJet Dual VVT Engine",
         transmission: "AGS / 5-Speed MT",
@@ -238,7 +283,10 @@ const MARUTI_VEHICLES = {
         category: "mpv",
         categoryLabel: "Multi-Purpose Family & Utility Van",
         tagline: "Hamesha Saath Nibhaye. India's Trusted Multi-Purpose Van.",
-        price: "₹5.18 Lakh*",
+        price: "₹5.18 Lakh* – ₹6.58 Lakh*",
+        priceRange: "₹5.18 Lakh* to ₹6.58 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "5-Seater Std, 7-Seater Std, 5-Seater AC, 5-Seater CNG AC",
         mileage: "Up to 19.71 km/l (Petrol) | 26.78 km/kg (S-CNG)",
         engine: "Advanced 1.2L K-Series Engine",
         transmission: "5-Speed MT",
@@ -253,7 +301,10 @@ const MARUTI_VEHICLES = {
         category: "commercial",
         categoryLabel: "Mini-Truck & Commercial Goods Carrier",
         tagline: "Pragati Ka Dumdaar Saathi. India's Trusted Mini-Truck.",
-        price: "₹5.15 Lakh*",
+        price: "₹5.15 Lakh* – ₹6.30 Lakh*",
+        priceRange: "₹5.15 Lakh* to ₹6.30 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "Flat Deck, Cab Chassis, S-CNG Deck",
         mileage: "High Fuel Economy | S-CNG Dual Fuel Technology",
         engine: "Advanced 4-Cylinder 1.2L K-Series Engine",
         transmission: "5-Speed MT with High Torque Delivery",
@@ -268,7 +319,10 @@ const MARUTI_VEHICLES = {
         category: "commercial",
         categoryLabel: "Commercial Fleet Sedan",
         tagline: "The Reliable Business Sedan. Exceptional Mileage & Passenger Comfort.",
-        price: "₹6.51 Lakh*",
+        price: "₹6.51 Lakh* – ₹7.46 Lakh*",
+        priceRange: "₹6.51 Lakh* to ₹7.46 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "Tour S STD (Petrol), Tour S STD (S-CNG)",
         mileage: "Up to 31.12 km/kg (S-CNG) | 23.15 km/l (Petrol)",
         engine: "1.2L K-Series DualJet Dual VVT Engine",
         transmission: "5-Speed MT with Speed Limiting Function",
@@ -283,7 +337,10 @@ const MARUTI_VEHICLES = {
         category: "commercial",
         categoryLabel: "Commercial 7-Seater Fleet MPV",
         tagline: "Move More, Earn More. The Ultimate 7-Seater Fleet Solution.",
-        price: "₹9.75 Lakh*",
+        price: "₹9.75 Lakh* – ₹10.70 Lakh*",
+        priceRange: "₹9.75 Lakh* to ₹10.70 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
+        variantRange: "Tour M (Petrol), Tour M (S-CNG)",
         mileage: "Up to 26.11 km/kg (S-CNG) | 20.51 km/l (Petrol)",
         engine: "1.5L K-Series Smart Hybrid Engine",
         transmission: "5-Speed MT",
@@ -298,7 +355,10 @@ const MARUTI_VEHICLES = {
         category: "commercial",
         categoryLabel: "Commercial Multi-Passenger & Utility Van",
         tagline: "Trusted Van for School, Staff & Commercial Transit.",
-        price: "₹5.24 Lakh*",
+        price: "₹5.24 Lakh* – ₹6.51 Lakh*",
+        priceRange: "₹5.24 Lakh* to ₹6.51 Lakh* (Ex-Showroom)",
+        fuelTypes: "Petrol & Factory-Fitted S-CNG",
+        variantRange: "5-Seater Tour V, 7-Seater Tour V, Tour V CNG AC",
         mileage: "Up to 26.78 km/kg (S-CNG) | 19.71 km/l (Petrol)",
         engine: "1.2L Advanced K-Series DualJet Engine",
         transmission: "5-Speed MT",
@@ -313,7 +373,10 @@ const MARUTI_VEHICLES = {
         category: "ev",
         categoryLabel: "Upcoming Global Electric SUV",
         tagline: "The Future is Electric. Maruti Suzuki's Global Pure EV.",
-        price: "Upcoming Preview",
+        price: "Upcoming Preview (Expected ₹18.00 Lakh* – ₹24.00 Lakh*)",
+        priceRange: "Upcoming Preview / Expected ₹18.00 Lakh* to ₹24.00 Lakh* (Ex-Showroom)",
+        fuelTypes: "100% Pure Electric (Dedicated EV Architecture)",
+        variantRange: "49kWh Battery Pack, 61kWh Battery Pack (ALLGRIP-e AWD)",
         mileage: "500+ km Range per charge",
         engine: "Dedicated Pure EV Architecture (49kWh & 61kWh Battery Options)",
         transmission: "eAxle with ALLGRIP-e Electric 4WD",
@@ -324,79 +387,81 @@ const MARUTI_VEHICLES = {
 };
 
 let currentSelectedCarId = "victoris";
+let activeCustomerName = "";
+let activeModelOfInterest = "";
 
-// --- System Instruction Prompt for Maruti Suzuki Consultant "Kabir" ---
-const MARUTI_SYSTEM_INSTRUCTION = `You are Kabir, a male AI Showroom Specialist and Virtual Consultant for Maruti Suzuki India across all retail and commercial business channels: ARENA, NEXA, and COMMERCIAL / TOUR FLEET.
+// --- System Instruction Prompt for Maruti Suzuki Consultant "Kabir" with Flow & Guardrails ---
+const MARUTI_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Specialist and Virtual Consultant for Maruti Suzuki India across all retail and commercial business channels: ARENA, NEXA, and COMMERCIAL / TOUR FLEET.
 
-*** MALE GENDER & IDENTITY INSTRUCTIONS (STRICT REQUIREMENT) ***
+*** MALE GENDER & IDENTITY (STRICT REQUIREMENT) ***
 - YOU MUST ALWAYS SPEAK AS A MALE. NEVER SPEAK OR REFER TO YOURSELF AS A FEMALE.
 - YOUR NAME IS KABIR.
 - IN HINDI, ALWAYS USE MASCULINE GRAMMATICAL ENDINGS AND VERBS:
-  - Say: "नमस्ते! मैं कबीर हूँ, मारुति सुजुकी वर्चुअल शोरूम से। मैं आपकी पूरी मदद करूँगा। आप कौन सी गाड़ी देखना चाहते हैं?"
+  - Say: "नमस्ते! मैं कबीर हूँ, मारुति सुजुकी वर्चुअल शोरूम से। मैं आपकी पूरी मदद करूँगा।"
   - Use masculine verbs: "बताता हूँ", "दिखाता हूँ", "करूँगा", "समझता हूँ".
   - NEVER use feminine verb endings (e.g. NEVER say "करूँगी", "बताती हूँ", "दिखाती हूँ").
 - IN ENGLISH OR OTHER LANGUAGES, ALWAYS MAINTAIN A CONFIDENT, ENTHUSIASTIC, PROFESSIONAL MALE SHOWROOM EXPERT PERSONA.
 
-*** LANGUAGE INSTRUCTIONS ***
+*** MANDATORY INITIAL CALL FLOW & LEAD CAPTURE ***
+- The conversation MUST start with:
+  1. Greet customer in Hindi warmly as Kabir.
+  2. Ask for the Customer's Name.
+  3. Ask which Maruti Suzuki model they are interested in exploring.
+- Once the customer provides their name and car model (or if they give their name / model in their reply), you MUST IMMEDIATELY execute the tool:
+  record_customer_lead(customer_name, model_of_interest)
+  This auto-qualifies the customer inquiry in the CRM database.
+- ALSO call switch_vehicle_showroom(car_name) to display the vehicle on stage.
+
+*** GUARDRAIL 1: OFFERS & ON-ROAD PRICE RULES (STRICT REQUIREMENT) ***
+1. CONSUMER / RURAL / EXCHANGE OFFERS:
+   - If a customer asks about consumer offers, rural offers, seasonal discounts, exchange bonus, corporate schemes, or any other offer:
+     Do NOT quote specific discount amounts. Politely inform the customer:
+     "हमारे सभी स्पेशल ऑफर्स, रूरल स्कीम्स और डिस्काउंट्स की विस्तृत जानकारी हमारी मारुति सुजुकी सेल्स टीम आपके शोरूम विज़िट या बुकिंग के समय आपके साथ साझा करेगी।"
+2. ON-ROAD PRICE:
+   - If a customer asks for the ON-ROAD price of any car:
+     Do NOT quote or calculate on-road price. Politely inform them:
+     "ऑन-रोड कीमत में राज्य आरटीओ (RTO) टैक्स, इंश्योरेंस और स्थानीय रजिस्ट्रेशन शामिल होते हैं, इसलिए सटीक ऑन-रोड कीमत हमारी सेल्स टीम आपके साथ साझा करेगी।"
+3. EX-SHOWROOM PRICE:
+   - You CAN and SHOULD provide the official EX-SHOWROOM price range starting from the entry-level variant up to the top variant (e.g. "विक्टोरिस की एक्स-शोरूम कीमत 10.49 लाख रुपये से शुरू होकर टॉप वैरिएंट के लिए 19.98 लाख रुपये तक है।").
+
+*** GUARDRAIL 2: COMPETITION COMPARISON DEFLECTION (STRICT REQUIREMENT) ***
+- If a customer asks for a comparison with ANY competitor model or other brand (such as Hyundai Creta/Venue/i20, Kia Seltos/Sonet, Tata Nexon/Punch/Harrier, Honda Elevate/City, Mahindra Thar/Scorpio/XUV700, Toyota Hyryder/Innova, etc.):
+  1. NEVER provide any information, analysis, or specs regarding the competitor model.
+  2. NEVER say negative or positive comments about the competitor brand.
+  3. INSTEAD, POLITELY DEFLECT and SUGGEST the relevant Maruti Suzuki model available in that exact segment.
+  - Segment Deflection Guide:
+    * Asked about Creta / Seltos / Elevate -> Suggest Maruti Suzuki Victoris & Grand Vitara.
+    * Asked about Venue / Sonet / Nexon / Punch -> Suggest Maruti Suzuki Brezza & FRONX.
+    * Asked about i20 / Altroz -> Suggest Maruti Suzuki Baleno & Swift.
+    * Asked about Thar -> Suggest Maruti Suzuki Jimny ALLGRIP PRO 4x4.
+    * Asked about Innova / Carens / XUV700 -> Suggest Maruti Suzuki Invicto, XL6, and Ertiga.
+- NOTE: You ARE fully encouraged to compare two or more Maruti Suzuki cars with each other (e.g. Victoris vs Brezza vs Grand Vitara).
+
+*** GUARDRAIL 4: MODEL-RELATED INFORMATION STRUCTURED FLOW ***
+When answering any car model query, present the details in this clear, structured order:
+1. Available Fuel Types: Mention Petrol, Factory-Fitted S-CNG, Intelligent Electric Hybrid, or Pure EV.
+2. Variant Range: Mention the variant lineup (e.g., LXi to ZXi+ for ARENA; Sigma to Alpha+ for NEXA).
+3. Ex-Showroom Price Range: Quote starting entry-level price up to the top variant.
+4. Key Features & Highlights: Mention key safety (6 airbags standard / 5-star NCAP), comfort (Sunroof, 360 camera, HUD, SmartPlay Pro+), and mileage.
+
+*** LANGUAGE PROTOCOL ***
 - YOU MUST START THE CONVERSATION IN HINDI.
 - IF THE USER RESPONDS IN ENGLISH OR ANY OTHER INDIAN LANGUAGE (E.G., KANNADA, TAMIL, TELUGU, MARATHI, GUJARATI, BENGALI), SWITCH TO THAT LANGUAGE AND CONTINUE.
-- IF SPEAKING IN HINDI, SAY NUMBERS IN HINDI (E.G., TEES HAZAAR RUPAY, PACHAS HAZAAR RUPAY, DAS LAKH PACHAS HAZAAR RUPAY, GYARAH LAKH, PANDRAH HAZAAR). FOR OTHER LANGUAGES, USE THEIR NATURAL NUMBER CONVENTIONS.
-
-*** STRICT BRAND EXCLUSIVITY POLICY ***
-- YOU REPRESENT MARUTI SUZUKI EXCLUSIVELY.
-- TALK ONLY ABOUT MARUTI SUZUKI CARS (ARENA, NEXA, AND COMMERCIAL / TOUR).
-- NEVER MENTION, ACKNOWLEDGE, DISCUSS, OR COMPARE AGAINST ANY OTHER BRAND OR COMPETITOR CAR (E.G., HYUNDAI, TATA, HONDA, MAHINDRA, KIA, TOYOTA, ETC.).
-- IF A USER ASKS ABOUT ANOTHER BRAND OR A COMPETITOR CAR, POLITELY REFOCUS AND REDIRECT THEM EXCLUSIVELY TO SUITABLE MARUTI SUZUKI VEHICLES.
-- YOU CAN AND SHOULD FREELY COMPARE TWO OR MORE MARUTI SUZUKI CARS WITH EACH OTHER (E.G., VICTORIS VS BREZZA VS GRAND VITARA, SWIFT VS BALENO, ERTIGA VS XL6, DZIRE VS TOUR S).
-
-*** DYNAMIC SHOWROOM BACKDROP SYNC RULE ***
-- WHENEVER the user asks about, discusses, compares, or transitions to any Maruti Suzuki car model, you MUST call the tool "switch_vehicle_showroom" with the corresponding car_name key (e.g. victoris, grand-vitara, swift, brezza, dzire, fronx, jimny, invicto, baleno, ertiga, xl6, wagonr, alto-k10, celerio, s-presso, eeco, super-carry, tour-s, tour-m, tour-v, e-vitara).
+- IF SPEAKING IN HINDI, SAY NUMBERS IN HINDI (E.G., DAS LAKH UNCHAAS HAZAAR RUPAY, PAANCH LAKH UNASI HAZAAR RUPAY). FOR OTHER LANGUAGES, USE THEIR NATURAL NUMBER CONVENTIONS.
 
 *** CONVERSATIONAL & LISTENING PROTOCOL ***
 - ITS VERY IMPORTANT IN YOUR JOB TO LISTEN, PAUSE AND ANSWER. IF USER SPEAKS, STOP AND LISTEN.
 - IF USER SPEAKS PLEASE DO NOT SPEAK. WAIT FOR USER TO FINISH.
-- REMEMBER FOLLOWING INSTRUCTION IS IMPORTANT FOR YOU TO DO YOUR JOB.
-- Keep your spoken responses concise (2-3 sentences), warm, engaging, and conversational for an interactive live avatar.
-- Always mention the vehicle model name clearly so the showroom stage can display it.
-
-*** OFFICIAL VEHICLE KNOWLEDGE BASE ***
-
-1. ALL-NEW LAUNCH HIGHLIGHT:
-- Maruti Suzuki Victoris (Starts ₹10.49 Lakh* / Das Lakh Unchaas Hazaar Rupay): All-new launch SUV with wrap-around aerodynamic design, bold-cut LED DRLs and headlamps, segmented rear LED tail lamps, precision-cut R17 alloy wheels, 1.5L K-Series DualJet engine (up to 21.5 km/l & 26.5 km/kg S-CNG), 6-speed AT with paddle shifters, 6 airbags.
-
-2. ARENA LINEUP:
-- Swift (Starts ₹5.79 Lakh* / Paanch Lakh Unasi Hazaar Rupay): Epic New Swift with all-new 1.2L Z-Series 3-cylinder engine (25.75 km/l & 32.85 km/kg CNG), 6 airbags standard, 9-inch screen, cruise control.
-- New Brezza (Starts ₹8.34 Lakh* / Aath Lakh Chautis Hazaar Rupay): Compact urban SUV with 1.5L DualJet Smart Hybrid, electric sunroof, 360 camera, HUD, wireless charging, 6 airbags.
-- All-New Dzire (Starts ₹6.25 Lakh* / Chheh Lakh Pachis Hazaar Rupay): India's #1 sedan with 5-Star Global NCAP safety rating, electric sunroof, 360 camera, 1.2L Z-Series engine (33.73 km/kg S-CNG).
-- Ertiga (Starts ₹8.80 Lakh* / Aath Lakh Assi Hazaar Rupay): India's best-selling 7-seater MPV with 1.5L Smart Hybrid (20.51 km/l & 26.11 km/kg S-CNG), 3-row flexible seating.
-- WagonR (Starts ₹5.54 Lakh* / Paanch Lakh Chauwan Hazaar Rupay): Spacious tallboy hatchback with 1.0L and 1.2L engines, high mileage (34.05 km/kg CNG).
-- Alto K10 (Starts ₹3.69 Lakh* / Teen Lakh Unhattar Hazaar Rupay): Smart urban city car, 1.0L DualJet engine, AGS option.
-- Celerio (Starts ₹4.69 Lakh* / Chaar Lakh Unhattar Hazaar Rupay): Segment-highest petrol fuel efficiency (up to 26.68 km/l & 35.6 km/kg CNG).
-- S-Presso (Starts ₹3.49 Lakh* / Teen Lakh Unchaas Hazaar Rupay): Bold mini-SUV with 180mm high ground clearance, digital cockpit.
-- Eeco (Starts ₹5.18 Lakh* / Paanch Lakh Atharah Hazaar Rupay): Multi-purpose family and utility van, 5/7 seater options, 1.2L K-series engine.
-
-3. NEXA PREMIUM LINEUP:
-- Grand Vitara (Starts ₹10.76 Lakh* / Das Lakh Chhihattar Hazaar Rupay): Flagship SUV with Intelligent Electric Hybrid (27.97 km/l), Smart Hybrid, ALLGRIP SELECT AWD, Panoramic Sunroof, HUD, 360 Camera, ventilated seats.
-- FRONX (Starts ₹6.85 Lakh* / Chheh Lakh Pachasi Hazaar Rupay): Crossover coupe SUV with 1.0L Turbo Boosterjet & 1.2L DualJet.
-- Jimny (Starts ₹12.32 Lakh* / Baarah Lakh Battis Hazaar Rupay): Authentic 4x4 off-roader with ALLGRIP PRO 4WD (low-range transfer case), ladder frame chassis, 3-link rigid axle.
-- Invicto (Starts ₹24.97 Lakh* / Chaubis Lakh Satanve Hazaar Rupay): Luxury strong hybrid MUV with 2.0L hybrid engine (21.19 km/l), captain ottoman seats, panoramic sunroof.
-- Baleno (Starts ₹5.99 Lakh* / Paanch Lakh Ninnanve Hazaar Rupay): Premium hatchback with 1.2L DualJet (22.94 km/l & 30.61 km/kg CNG), HUD, 360 camera.
-- XL6 (Starts ₹11.52 Lakh* / Gyaarah Lakh Baavan Hazaar Rupay): Premium 6-seater MPV with 2nd-row captain seats, ventilated front seats.
-- e-Vitara / eVX (Upcoming Preview): Maruti's global electric SUV with 49kWh/61kWh battery options, 500+ km range, ALLGRIP-e electric 4WD.
-
-4. COMMERCIAL & TOUR FLEET CHANNEL:
-- Super Carry (Starts ₹5.15 Lakh* / Paanch Lakh Pandrah Hazaar Rupay): Powerful 4-cylinder 1.2L mini-truck, 740kg payload, flat cargo deck, S-CNG.
-- Tour S (Starts ₹6.51 Lakh* / Chheh Lakh Ikkyawan Hazaar Rupay): Dzire commercial fleet sedan for taxi operators, speed limiter, 31.12 km/kg CNG.
-- Tour M (Starts ₹9.75 Lakh* / Nau Lakh Pachhattar Hazaar Rupay): Ertiga 7-seater commercial fleet MPV, dual AC, 26.11 km/kg CNG.
-- Tour V (Starts ₹5.24 Lakh* / Paanch Lakh Chaubis Hazaar Rupay): Eeco commercial passenger van for school & staff transit, 5/7 seater.`;
+- Keep spoken responses concise (2-3 sentences), warm, engaging, and clear.`;
 
 // Media Managers
 const liveAudioOutputManager = new LiveAudioOutputManager();
 let liveVideoOutputManager = null;
+let currentSessionTranscript = [];
 
 // --- UI Initialization ---
 window.addEventListener("load", () => {
-    console.log("Maruti Suzuki Virtual Showroom Loaded");
+    console.log("Maruti Suzuki Virtual Showroom Loaded with Lead Capture & Guardrails");
     
     // Inject system instructions
     const systemInstructionsInput = document.getElementById("systemInstructions");
@@ -410,6 +475,7 @@ window.addEventListener("load", () => {
     setAvailableCamerasOptions();
     setAvailableMicrophoneOptions();
     setAppStatus("disconnected");
+    updateLeadsCountBadge();
 });
 
 // Setup Channel Switcher in Header
@@ -515,14 +581,12 @@ function filterLineupByChannel(channel) {
 
 // Switch Active Car & Background
 function selectCar(carId) {
-    // Normalize car ID if formatted differently by LLM
     const cleanId = String(carId).toLowerCase().trim().replace(/\s+/g, "-");
     let matchedId = null;
 
     if (MARUTI_VEHICLES[cleanId]) {
         matchedId = cleanId;
     } else {
-        // Match against keywords or partial ids
         for (const [id, vehicle] of Object.entries(MARUTI_VEHICLES)) {
             if (id === cleanId || vehicle.name.toLowerCase() === cleanId || vehicle.keywords.some(kw => kw === cleanId || cleanId.includes(kw))) {
                 matchedId = id;
@@ -554,7 +618,6 @@ function switchCarBackground(carId) {
     const bgLayerNext = document.getElementById("backdrop-image-next");
 
     if (bgLayer && bgLayerNext) {
-        // Crossfade animation
         bgLayerNext.style.backgroundImage = `url('${vehicle.bgImage}')`;
         bgLayerNext.classList.add("active");
         bgLayer.classList.remove("active");
@@ -570,6 +633,8 @@ function switchCarBackground(carId) {
     const titleEl = document.getElementById("car-title");
     const taglineEl = document.getElementById("car-tagline");
     const priceEl = document.getElementById("car-price");
+    const fuelEl = document.getElementById("car-fuel");
+    const variantsEl = document.getElementById("car-variants");
     const mileageEl = document.getElementById("car-mileage");
     const engineEl = document.getElementById("car-engine");
     const transmissionEl = document.getElementById("car-transmission");
@@ -582,7 +647,9 @@ function switchCarBackground(carId) {
 
     if (titleEl) titleEl.textContent = vehicle.name;
     if (taglineEl) taglineEl.textContent = vehicle.tagline;
-    if (priceEl) priceEl.textContent = vehicle.price;
+    if (priceEl) priceEl.textContent = vehicle.priceRange || vehicle.price;
+    if (fuelEl) fuelEl.textContent = vehicle.fuelTypes || "Petrol & S-CNG";
+    if (variantsEl) variantsEl.textContent = vehicle.variantRange || "Multiple Variants";
     if (mileageEl) mileageEl.textContent = vehicle.mileage;
     if (engineEl) engineEl.textContent = vehicle.engine;
     if (transmissionEl) transmissionEl.textContent = vehicle.transmission;
@@ -637,14 +704,14 @@ function askQuickPrompt(promptText) {
 function askAboutCurrentCar() {
     const vehicle = MARUTI_VEHICLES[currentSelectedCarId];
     if (vehicle) {
-        askQuickPrompt(`Tell me more about the ${vehicle.name}, its features, pricing, and why I should buy it.`);
+        askQuickPrompt(`Tell me about the Maruti Suzuki ${vehicle.name}, its fuel types, variant range, ex-showroom price, and key features.`);
     }
 }
 
 function bookTestDriveCurrentCar() {
     const vehicle = MARUTI_VEHICLES[currentSelectedCarId];
     if (vehicle) {
-        askQuickPrompt(`I would like to book a test drive for the Maruti Suzuki ${vehicle.name}. Can you help me schedule it?`);
+        askQuickPrompt(`I would like to schedule a test drive for the Maruti Suzuki ${vehicle.name}. My name is ${activeCustomerName || 'Customer'}.`);
     }
 }
 
@@ -719,6 +786,7 @@ function getSystemInstructions() {
 async function connectBtnClick() {
     setAppStatus("connecting");
     console.log("Connecting to Gemini Live API...");
+    currentSessionTranscript = [];
 
     // Initialize Video Output Manager on user gesture
     if (!liveVideoOutputManager) {
@@ -779,6 +847,9 @@ function disconnectBtnClick() {
     cameraOffBtn.hidden = false;
     cameraOffBtn.querySelector('button').disabled = true;
     screenBtn.disabled = true;
+
+    // Sync final transcript to database
+    syncTranscriptToBackend();
 }
 
 let speakingTimeout = null;
@@ -801,6 +872,55 @@ function triggerSpeakingGlow() {
 
 let isFirstTurn = true;
 
+// Lead Submission Handler to Backend
+async function saveLeadToBackend(customerName, modelOfInterest) {
+    activeCustomerName = customerName;
+    activeModelOfInterest = modelOfInterest;
+
+    const vehicle = MARUTI_VEHICLES[modelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(modelOfInterest.toLowerCase()));
+    const channel = vehicle ? vehicle.channel : "ARENA";
+
+    const transcriptText = currentSessionTranscript.join("\n");
+    const payload = {
+        session_id: geminiLiveApi.sessionId,
+        customer_name: customerName,
+        model_of_interest: vehicle ? vehicle.name : modelOfInterest,
+        channel: channel,
+        transcript: transcriptText,
+        status: "Auto-Qualified Inquiry"
+    };
+
+    try {
+        console.log("Submitting mandatory lead to backend database:", payload);
+        const resp = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        console.log("Lead database response:", data);
+        updateLeadsCountBadge();
+    } catch (e) {
+        console.error("Failed to save lead to backend:", e);
+    }
+}
+
+async function syncTranscriptToBackend() {
+    if (!geminiLiveApi.sessionId || currentSessionTranscript.length === 0) return;
+    try {
+        await fetch("/api/leads/transcript", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                session_id: geminiLiveApi.sessionId,
+                transcript: currentSessionTranscript.join("\n")
+            })
+        });
+    } catch (e) {
+        console.warn("Failed to sync transcript:", e);
+    }
+}
+
 geminiLiveApi.onReceiveResponse = (messageResponse) => {
     if (messageResponse.type === "SETUP COMPLETE") {
         console.log("Live Avatar Setup complete! Ready for voice/text.");
@@ -809,20 +929,37 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         micBtn.hidden = false;
         micOffBtn.hidden = true;
 
-        // Proactively greet customer in Hindi as requested
+        // Proactively greet customer in Hindi and ask for Name and Model of Interest
         if (isFirstTurn) {
             isFirstTurn = false;
             setTimeout(() => {
-                geminiLiveApi.sendTextMessage("Start the conversation now. Greet the customer warmly in Hindi as Kabir, the male AI Showroom Specialist from Maruti Suzuki Virtual Showroom, and ask which car they would like to explore today.");
+                geminiLiveApi.sendTextMessage("Start the conversation now. Greet the customer warmly in Hindi as Kabir, male AI Showroom Specialist from Maruti Suzuki Virtual Showroom. Politely ask for their Name and which Maruti Suzuki car model they would like to explore today.");
             }, 600);
+        }
+    } else if (messageResponse.type === "TOOL_CALL_RECORD_LEAD") {
+        console.log("Gemini Live Tool Call: record_customer_lead ->", messageResponse.customerName, messageResponse.modelOfInterest);
+        saveLeadToBackend(messageResponse.customerName, messageResponse.modelOfInterest);
+        selectCar(messageResponse.modelOfInterest);
+
+        // Acknowledge tool execution
+        if (messageResponse.callId) {
+            geminiLiveApi.sendMessage({
+                tool_response: {
+                    function_responses: [
+                        {
+                            response: { output: { success: true, lead_status: "Auto-Qualified in CRM Database", customer: messageResponse.customerName } },
+                            id: messageResponse.callId,
+                        },
+                    ],
+                },
+            });
         }
     } else if (messageResponse.type === "TOOL_CALL_SWITCH_CAR") {
         console.log("Gemini Live Tool Call: switch_vehicle_showroom ->", messageResponse.carName);
         selectCar(messageResponse.carName);
         
-        // Return tool response to Gemini Live API
         if (messageResponse.callId) {
-            const toolResponseMsg = {
+            geminiLiveApi.sendMessage({
                 tool_response: {
                     function_responses: [
                         {
@@ -831,8 +968,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
                         },
                     ],
                 },
-            };
-            geminiLiveApi.sendMessage(toolResponseMsg);
+            });
         }
     } else if (messageResponse.type === "AUDIO") {
         triggerSpeakingGlow();
@@ -877,7 +1013,7 @@ function setAppStatus(status) {
     }
 }
 
-// --- Chat Messages Display ---
+// --- Chat Messages Display & Transcript Sync ---
 function newModelMessage(message) {
     const textChat = document.getElementById("text-chat");
     if (!textChat) return;
@@ -887,6 +1023,9 @@ function newModelMessage(message) {
     p.textContent = message;
     textChat.appendChild(p);
     textChat.scrollTop = textChat.scrollHeight;
+
+    currentSessionTranscript.push("Kabir: " + message);
+    syncTranscriptToBackend();
 }
 
 function newUserMessage() {
@@ -905,8 +1044,10 @@ function newUserMessage() {
         textChat.scrollTop = textChat.scrollHeight;
     }
 
+    currentSessionTranscript.push("Customer: " + message);
     detectCarInTranscript(message);
     textMessage.value = "";
+    syncTranscriptToBackend();
 }
 
 function newUserTranscriptMessage(text) {
@@ -918,6 +1059,96 @@ function newUserTranscriptMessage(text) {
     p.textContent = "🎙️ " + text;
     textChat.appendChild(p);
     textChat.scrollTop = textChat.scrollHeight;
+
+    currentSessionTranscript.push("Customer (Voice): " + text);
+    syncTranscriptToBackend();
+}
+
+// --- Leads & Inquiries CRM Dashboard Logic ---
+async function updateLeadsCountBadge() {
+    try {
+        const resp = await fetch("/api/leads");
+        const data = await resp.json();
+        const count = data.leads ? data.leads.length : 0;
+        const badge = document.getElementById("leads-count-badge");
+        if (badge) {
+            badge.textContent = count;
+        }
+    } catch (e) {
+        console.warn("Could not fetch lead count:", e);
+    }
+}
+
+async function fetchAndRenderLeads() {
+    const tableBody = document.getElementById("leads-table-body");
+    if (!tableBody) return;
+
+    tableBody.innerHTML = `<tr><td colspan="6" class="leads-loading">Loading captured leads from Cloud Datastore...</td></tr>`;
+
+    try {
+        const resp = await fetch("/api/leads");
+        const data = await resp.json();
+        const leads = data.leads || [];
+
+        const badge = document.getElementById("leads-count-badge");
+        if (badge) badge.textContent = leads.length;
+
+        if (leads.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" class="leads-empty">No leads recorded yet. Start a live session to capture inquiries!</td></tr>`;
+            return;
+        }
+
+        tableBody.innerHTML = "";
+        leads.forEach(lead => {
+            const tr = document.createElement("tr");
+            const dateStr = lead.call_date ? new Date(lead.call_date).toLocaleString() : "Recent";
+            const channelClass = (lead.channel || "ARENA").toLowerCase();
+
+            tr.innerHTML = `
+                <td>${dateStr}</td>
+                <td class="lead-name">${lead.customer_name}</td>
+                <td><strong>${lead.model_of_interest}</strong></td>
+                <td><span class="card-channel-pill ${channelClass}">${lead.channel}</span></td>
+                <td><span class="lead-status-pill"><span class="material-icons" style="font-size:12px;">verified</span> ${lead.status}</span></td>
+                <td>
+                    <button class="btn-view-transcript" onclick='showTranscriptViewer(${JSON.stringify(lead.customer_name)}, ${JSON.stringify(lead.transcript || "No transcript available")})'>
+                        View Transcript
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    } catch (e) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="leads-empty" style="color:#ef4444;">Error loading leads: ${e.message}</td></tr>`;
+    }
+}
+
+function showTranscriptViewer(customerName, transcript) {
+    const viewer = document.getElementById("transcript-viewer");
+    const title = document.getElementById("transcript-viewer-title");
+    const body = document.getElementById("transcript-viewer-body");
+
+    if (viewer && title && body) {
+        title.textContent = `Call Transcript - ${customerName}`;
+        body.textContent = transcript || "No spoken messages logged.";
+        viewer.style.display = "block";
+        viewer.scrollIntoView({ behavior: "smooth" });
+    }
+}
+
+function closeTranscriptViewer() {
+    const viewer = document.getElementById("transcript-viewer");
+    if (viewer) viewer.style.display = "none";
+}
+
+function toggleLeadsModal() {
+    const modal = document.getElementById("leads-modal");
+    if (!modal) return;
+    const isHidden = modal.style.display === "none" || modal.style.display === "";
+    modal.style.display = isHidden ? "flex" : "none";
+    if (isHidden) {
+        fetchAndRenderLeads();
+    }
 }
 
 // --- Audio & Media Streaming Input ---

@@ -267,7 +267,7 @@ class GeminiLiveAPI {
             return;
         }
 
-        // Handle tool calls (e.g. switch_vehicle_showroom)
+        // Handle tool calls (switch_vehicle_showroom and record_customer_lead)
         const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
         if (toolCalls && toolCalls.length > 0) {
             for (const call of toolCalls) {
@@ -275,6 +275,14 @@ class GeminiLiveAPI {
                     this.onReceiveResponse({
                         type: "TOOL_CALL_SWITCH_CAR",
                         carName: call.args.car_name,
+                        callId: call.id,
+                        raw: messageData
+                    });
+                } else if (call.name === "record_customer_lead" && call.args) {
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_RECORD_LEAD",
+                        customerName: call.args.customer_name,
+                        modelOfInterest: call.args.model_of_interest,
                         callId: call.id,
                         raw: messageData
                     });
@@ -344,12 +352,11 @@ class GeminiLiveAPI {
     }
 
     sendInitialSetupMessages() {
-        console.log("Sending initial Gemini Live setup message with vehicle tool declarations...");
+        console.log("Sending initial Gemini Live setup message with showroom & lead capture tools...");
 
         const modelUri = `projects/${this.projectId || "mb-poc-352009"}/locations/${this.location}/publishers/google/models/${this.model}`;
         
-        // Built-in tool declaration for instant backdrop switching
-        const vehicleSwitchTool = {
+        const showroomTools = {
             function_declarations: [
                 {
                     name: "switch_vehicle_showroom",
@@ -363,6 +370,24 @@ class GeminiLiveAPI {
                             }
                         },
                         required: ["car_name"]
+                    }
+                },
+                {
+                    name: "record_customer_lead",
+                    description: "Mandatory lead qualification tool. Call this tool immediately when the customer shares their name and vehicle model of interest to record and auto-qualify the lead in the inquiry database.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            customer_name: {
+                                type: "string",
+                                description: "The customer's full or first name as provided"
+                            },
+                            model_of_interest: {
+                                type: "string",
+                                description: "The Maruti Suzuki vehicle model the customer is interested in (e.g. Victoris, Grand Vitara, Swift, Brezza, Dzire, Jimny, Fronx, Invicto, Baleno, Ertiga, XL6, WagonR, Alto K10, Celerio, S-Presso, Eeco, Super Carry, Tour S, Tour M, Tour V, e-Vitara)"
+                            }
+                        },
+                        required: ["customer_name", "model_of_interest"]
                     }
                 }
             ]
@@ -389,7 +414,7 @@ class GeminiLiveAPI {
                         language_code: this.voiceLocale || "hi-IN",
                     },
                 },
-                tools: [vehicleSwitchTool],
+                tools: [showroomTools],
                 avatar_config: {
                     avatar_name: "Jay"
                 }
