@@ -268,10 +268,21 @@ async def handle_update_transcript(request: web.Request):
         data = await request.json()
         session_id = data.get("session_id")
         transcript = data.get("transcript", "")
+        customer_name = data.get("customer_name") or data.get("name")
+        model_of_interest = data.get("model_of_interest") or data.get("model")
+        channel = data.get("channel", "ARENA")
+
         if not session_id:
             return web.json_response({"error": "Missing session_id"}, status=400)
 
-        result = await asyncio.to_thread(database.update_lead_transcript, session_id, transcript)
+        result = await asyncio.to_thread(
+            database.update_lead_transcript,
+            session_id=session_id,
+            transcript=transcript,
+            customer_name=customer_name,
+            model_of_interest=model_of_interest,
+            channel=channel
+        )
         return web.json_response(result)
     except Exception as e:
         logging.exception("Error updating transcript")

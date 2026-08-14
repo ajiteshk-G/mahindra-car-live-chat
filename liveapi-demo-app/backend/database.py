@@ -53,27 +53,29 @@ init_sqlite_db()
 def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: str, channel: str = "ARENA", transcript: str = "", status: str = "Auto-Qualified Inquiry"):
     """Saves or updates a customer lead record in Cloud Datastore (or SQLite fallback)."""
     client = get_datastore_client()
-    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    now_iso = now_utc.isoformat()
 
     if client:
         try:
+            from google.cloud import datastore
             key = client.key("CustomerLead", str(session_id))
             entity = client.get(key)
             if not entity:
-                entity = client.datastore.Entity(key=key) if hasattr(client, 'datastore') else __import__('google.cloud.datastore', fromlist=['Entity']).Entity(key=key)
-                entity['call_date'] = datetime.datetime.now(datetime.timezone.utc)
+                entity = datastore.Entity(key=key)
+                entity['call_date'] = now_utc
             
             entity.update({
                 'session_id': str(session_id),
-                'customer_name': str(customer_name).strip(),
-                'model_of_interest': str(model_of_interest).strip(),
-                'channel': str(channel).strip().upper(),
+                'customer_name': str(customer_name).strip() if customer_name else "Valued Customer",
+                'model_of_interest': str(model_of_interest).strip() if model_of_interest else "Victoris",
+                'channel': str(channel).strip().upper() if channel else "ARENA",
                 'transcript': str(transcript),
                 'status': str(status),
-                'last_updated': datetime.datetime.now(datetime.timezone.utc)
+                'last_updated': now_utc
             })
             client.put(entity)
-            logging.info(f"Lead saved to Cloud Datastore: {customer_name} ({model_of_interest})")
+            logging.info(f"Lead saved to Cloud Datastore: {customer_name} ({model_of_interest}) [Session: {session_id}]")
             return {"success": True, "source": "datastore", "session_id": session_id}
         except Exception as e:
             logging.error(f"Failed to write lead to Datastore: {e}. Falling back to SQLite.")
@@ -101,27 +103,51 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
         return {"success": False, "error": str(e)}
 
 
-def update_lead_transcript(session_id: str, transcript: str):
-    """Updates only the transcript of an existing session."""
+def update_lead_transcript(session_id: str, transcript: str, customer_name: str = None, model_of_interest: str = None, channel: str = "ARENA"):
+    """Updates the transcript. If the lead entity doesn't exist yet, automatically creates it."""
     client = get_datastore_client()
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
     if client:
         try:
+            from google.cloud import datastore
             key = client.key("CustomerLead", str(session_id))
             entity = client.get(key)
-            if entity:
-                entity['transcript'] = str(transcript)
-                entity['last_updated'] = datetime.datetime.now(datetime.timezone.utc)
-                client.put(entity)
-                return {"success": True, "source": "datastore"}
+            if not entity:
+                entity = datastore.Entity(key=key)
+                entity['session_id'] = str(session_id)
+                entity['customer_name'] = str(customer_name or "Valued Customer").strip()
+                entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
+                entity['channel'] = str(channel or "ARENA").strip().upper()
+                entity['call_date'] = now_utc
+                entity['status'] = "Auto-Qualified Inquiry"
+            else:
+                if customer_name and entity.get('customer_name') in ["Valued Customer", "Inquiry in Progress", "Unknown", None, ""]:
+                    entity['customer_name'] = str(customer_name).strip()
+                if model_of_interest and entity.get('model_of_interest') in ["Victoris", "Unknown", None, ""]:
+                    entity['model_of_interest'] = str(model_of_interest).strip()
+                if channel:
+                    entity['channel'] = str(channel).strip().upper()
+
+            entity['transcript'] = str(transcript)
+            entity['last_updated'] = now_utc
+            client.put(entity)
+            logging.info(f"Transcript synced in Datastore for session {session_id} ({len(transcript)} chars)")
+            return {"success": True, "source": "datastore"}
         except Exception as e:
             logging.error(f"Failed to update transcript in Datastore: {e}")
 
     try:
         conn = sqlite3.connect(SQLITE_DB_PATH)
         cursor = conn.cursor()
+        now_iso = now_utc.isoformat()
         cursor.execute("""
-            UPDATE customer_leads SET transcript = ? WHERE session_id = ?
-        """, (transcript, session_id))
+            INSERT INTO customer_leads (session_id, customer_name, model_of_interest, channel, transcript, call_date, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(session_id) DO UPDATE SET
+                transcript = excluded.transcript,
+                customer_name = CASE WHEN customer_leads.customer_name IN ('Valued Customer', 'Inquiry in Progress', 'Unknown') THEN excluded.customer_name ELSE customer_leads.customer_name END,
+                model_of_interest = CASE WHEN customer_leads.model_of_interest IN ('Victoris', 'Unknown') THEN excluded.model_of_interest ELSE customer_leads.model_of_interest END;
+        """, (session_id, customer_name or "Valued Customer", model_of_interest or "Victoris", channel or "ARENA", transcript, now_iso, "Auto-Qualified Inquiry"))
         conn.commit()
         conn.close()
         return {"success": True, "source": "sqlite"}
@@ -145,8 +171,8 @@ def get_all_leads():
                 leads.append({
                     "id": item.key.name or str(item.key.id),
                     "session_id": item.get("session_id", ""),
-                    "customer_name": item.get("customer_name", "Unknown"),
-                    "model_of_interest": item.get("model_of_interest", "Unknown"),
+                    "customer_name": item.get("customer_name", "Valued Customer"),
+                    "model_of_interest": item.get("model_of_interest", "Victoris"),
                     "channel": item.get("channel", "ARENA"),
                     "transcript": item.get("transcript", ""),
                     "call_date": call_date_str,
@@ -167,8 +193,8 @@ def get_all_leads():
             leads.append({
                 "id": str(row["id"]),
                 "session_id": row["session_id"],
-                "customer_name": row["customer_name"],
-                "model_of_interest": row["model_of_interest"],
+                "customer_name": row["customer_name"] or "Valued Customer",
+                "model_of_interest": row["model_of_interest"] or "Victoris",
                 "channel": row["channel"] or "ARENA",
                 "transcript": row["transcript"] or "",
                 "call_date": row["call_date"],

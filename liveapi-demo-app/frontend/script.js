@@ -825,6 +825,9 @@ async function connectBtnClick() {
         micOffBtn.querySelector('button').disabled = false;
         cameraOffBtn.querySelector('button').disabled = false;
         screenBtn.disabled = false;
+
+        // Auto-create initial session record in Datastore
+        saveLeadToBackend(activeCustomerName || "Valued Customer", currentSelectedCarId);
     };
 }
 
@@ -896,6 +899,7 @@ function initSpeechRecognition() {
                         console.log("Live Speech Transcript captured:", transcript);
                         newUserTranscriptMessage(transcript);
                         detectCarInTranscript(transcript);
+                        extractCustomerDetailsFromText(transcript);
                     }
                 }
             }
@@ -915,32 +919,57 @@ function initSpeechRecognition() {
     }
 }
 
+// Extract customer name & car from spoken voice or text
+function extractCustomerDetailsFromText(text) {
+    if (!text) return;
+    const namePatterns = [
+        /(?:मेरा नाम|मैं|नाम है|name is|i am|this is|myself)\s+([a-zA-Z\u0900-\u097F]+)/i,
+        /([a-zA-Z\u0900-\u097F]+)\s+(?:बात कर रहा हूँ|बात कर रहा हूं|बोल रहा हूँ|here)/i
+    ];
+    
+    for (const pattern of namePatterns) {
+        const match = text.match(pattern);
+        if (match && match[1]) {
+            const potentialName = match[1].trim();
+            const stopWords = ["maruti", "suzuki", "kabir", "tara", "car", "gaadi", "gadi", "auto", "namaste", "hello", "hi", "sir", "bhai", "ji", "ek", "yeh", "woh", "the", "a", "an", "here"];
+            if (potentialName.length >= 2 && !stopWords.includes(potentialName.toLowerCase())) {
+                console.log("Auto-extracted customer name:", potentialName);
+                activeCustomerName = potentialName;
+                saveLeadToBackend(activeCustomerName, activeModelOfInterest || currentSelectedCarId);
+                break;
+            }
+        }
+    }
+}
+
 // Lead Submission Handler to Backend
 async function saveLeadToBackend(customerName, modelOfInterest) {
-    activeCustomerName = customerName;
-    activeModelOfInterest = modelOfInterest;
+    activeCustomerName = customerName || activeCustomerName || "Valued Customer";
+    activeModelOfInterest = modelOfInterest || activeModelOfInterest || currentSelectedCarId;
 
-    const vehicle = MARUTI_VEHICLES[modelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(modelOfInterest.toLowerCase()));
+    const vehicle = MARUTI_VEHICLES[activeModelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(activeModelOfInterest.toLowerCase())) || MARUTI_VEHICLES[currentSelectedCarId];
     const channel = vehicle ? vehicle.channel : "ARENA";
+    const carName = vehicle ? vehicle.name : activeModelOfInterest;
 
     if (currentSessionTranscript.length === 0) {
         currentSessionTranscript.push(`Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?`);
-        currentSessionTranscript.push(`Customer: ${customerName} (Inquired about Maruti Suzuki ${vehicle ? vehicle.name : modelOfInterest})`);
-        currentSessionTranscript.push(`Kabir: Namaste ${customerName} ji! Main aapko Maruti Suzuki ${vehicle ? vehicle.name : modelOfInterest} ke features, variant range aur ex-showroom pricing ke baare mein batata hoon.`);
+        if (activeCustomerName && activeCustomerName !== "Valued Customer") {
+            currentSessionTranscript.push(`Customer: ${activeCustomerName} (Inquired about Maruti Suzuki ${carName})`);
+        }
     }
 
     const transcriptText = currentSessionTranscript.join("\n");
     const payload = {
         session_id: geminiLiveApi.sessionId,
-        customer_name: customerName,
-        model_of_interest: vehicle ? vehicle.name : modelOfInterest,
+        customer_name: activeCustomerName,
+        model_of_interest: carName,
         channel: channel,
         transcript: transcriptText,
         status: "Auto-Qualified Inquiry"
     };
 
     try {
-        console.log("Submitting mandatory lead to backend database:", payload);
+        console.log("Submitting lead to backend Datastore database:", payload);
         const resp = await fetch("/api/leads", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -956,13 +985,20 @@ async function saveLeadToBackend(customerName, modelOfInterest) {
 
 async function syncTranscriptToBackend() {
     if (!geminiLiveApi.sessionId || currentSessionTranscript.length === 0) return;
+    const vehicle = MARUTI_VEHICLES[activeModelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || MARUTI_VEHICLES[currentSelectedCarId];
+    const channel = vehicle ? vehicle.channel : "ARENA";
+    const carName = vehicle ? vehicle.name : activeModelOfInterest;
+
     try {
         await fetch("/api/leads/transcript", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 session_id: geminiLiveApi.sessionId,
-                transcript: currentSessionTranscript.join("\n")
+                transcript: currentSessionTranscript.join("\n"),
+                customer_name: activeCustomerName || "Valued Customer",
+                model_of_interest: carName || "Victoris",
+                channel: channel
             })
         });
     } catch (e) {
