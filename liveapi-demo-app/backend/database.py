@@ -62,7 +62,9 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             key = client.key("CustomerLead", str(session_id))
             entity = client.get(key)
             if not entity:
-                entity = datastore.Entity(key=key)
+                entity = datastore.Entity(key=key, exclude_from_indexes=['transcript'])
+            else:
+                entity.exclude_from_indexes.add('transcript')
             
             existing_transcript = entity.get('transcript', '')
             final_transcript = str(transcript) if len(str(transcript)) >= len(str(existing_transcript)) else str(existing_transcript)
@@ -77,6 +79,7 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             if not entity.get('call_date'):
                 entity['call_date'] = now_utc
 
+            entity.exclude_from_indexes.add('transcript')
             client.put(entity)
             logging.info(f"Lead saved to Cloud Datastore: {customer_name} ({model_of_interest}) [Session: {session_id}]")
             return {"success": True, "source": "datastore", "session_id": session_id}
@@ -116,7 +119,7 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
             key = client.key("CustomerLead", str(session_id))
             entity = client.get(key)
             if not entity:
-                entity = datastore.Entity(key=key)
+                entity = datastore.Entity(key=key, exclude_from_indexes=['transcript'])
                 entity['session_id'] = str(session_id)
                 entity['customer_name'] = str(customer_name or "Valued Customer").strip()
                 entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
@@ -124,6 +127,7 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
                 entity['call_date'] = now_utc
                 entity['status'] = "Auto-Qualified Inquiry"
             else:
+                entity.exclude_from_indexes.add('transcript')
                 if customer_name and customer_name not in ["Valued Customer", "Unknown", ""]:
                     entity['customer_name'] = str(customer_name).strip()
                 if model_of_interest and model_of_interest not in ["Victoris", "Unknown", ""]:
@@ -137,8 +141,9 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
             if not entity.get('call_date'):
                 entity['call_date'] = now_utc
 
+            entity.exclude_from_indexes.add('transcript')
             client.put(entity)
-            logging.info(f"Transcript synced in Datastore for session {session_id} ({len(final_transcript)} chars)")
+            logging.info(f"Transcript synced in Datastore for session {session_id} ({len(str(transcript))} chars)")
             return {"success": True, "source": "datastore"}
         except Exception as e:
             logging.error(f"Failed to update transcript in Datastore: {e}")
@@ -154,7 +159,7 @@ def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, c
             key = client.key("CustomerLead", str(session_id))
             entity = client.get(key)
             if not entity:
-                entity = datastore.Entity(key=key)
+                entity = datastore.Entity(key=key, exclude_from_indexes=['transcript'])
                 entity['session_id'] = str(session_id)
                 entity['customer_name'] = str(customer_name or "Valued Customer").strip()
                 entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
@@ -163,6 +168,7 @@ def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, c
                 entity['status'] = "Auto-Qualified Inquiry"
                 existing_transcript = "Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"
             else:
+                entity.exclude_from_indexes.add('transcript')
                 existing_transcript = entity.get('transcript', '')
                 if customer_name and entity.get('customer_name') in ["Valued Customer", "Inquiry in Progress", "Unknown", None, ""]:
                     entity['customer_name'] = str(customer_name).strip()
@@ -182,6 +188,7 @@ def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, c
             if not entity.get('call_date'):
                 entity['call_date'] = now_utc
 
+            entity.exclude_from_indexes.add('transcript')
             client.put(entity)
             logging.info(f"Atomic turn appended to Datastore for {session_id} ({len(lines)} turns)")
             return {"success": True, "source": "datastore", "turns": len(lines)}
