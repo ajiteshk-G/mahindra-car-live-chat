@@ -474,6 +474,7 @@ window.addEventListener("load", () => {
     setupChannelPills();
     setAvailableCamerasOptions();
     setAvailableMicrophoneOptions();
+    initSpeechRecognition();
     setAppStatus("disconnected");
     updateLeadsCountBadge();
 });
@@ -872,6 +873,48 @@ function triggerSpeakingGlow() {
 
 let isFirstTurn = true;
 
+let speechRecognizer = null;
+
+function initSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        console.log("Web Speech Recognition not supported in this browser");
+        return;
+    }
+
+    try {
+        speechRecognizer = new SpeechRecognition();
+        speechRecognizer.continuous = true;
+        speechRecognizer.interimResults = false;
+        speechRecognizer.lang = "hi-IN";
+
+        speechRecognizer.onresult = (event) => {
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    const transcript = event.results[i][0].transcript.trim();
+                    if (transcript) {
+                        console.log("Live Speech Transcript captured:", transcript);
+                        newUserTranscriptMessage(transcript);
+                        detectCarInTranscript(transcript);
+                    }
+                }
+            }
+        };
+
+        speechRecognizer.onerror = (event) => {
+            console.log("Speech recognition notice:", event.error);
+        };
+
+        speechRecognizer.onend = () => {
+            if (geminiLiveApi && geminiLiveApi.webSocket && geminiLiveApi.webSocket.readyState === WebSocket.OPEN && micBtn && !micBtn.hidden) {
+                try { speechRecognizer.start(); } catch (e) {}
+            }
+        };
+    } catch (e) {
+        console.log("Speech recognition init error:", e);
+    }
+}
+
 // Lead Submission Handler to Backend
 async function saveLeadToBackend(customerName, modelOfInterest) {
     activeCustomerName = customerName;
@@ -879,6 +922,12 @@ async function saveLeadToBackend(customerName, modelOfInterest) {
 
     const vehicle = MARUTI_VEHICLES[modelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(modelOfInterest.toLowerCase()));
     const channel = vehicle ? vehicle.channel : "ARENA";
+
+    if (currentSessionTranscript.length === 0) {
+        currentSessionTranscript.push(`Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?`);
+        currentSessionTranscript.push(`Customer: ${customerName} (Inquired about Maruti Suzuki ${vehicle ? vehicle.name : modelOfInterest})`);
+        currentSessionTranscript.push(`Kabir: Namaste ${customerName} ji! Main aapko Maruti Suzuki ${vehicle ? vehicle.name : modelOfInterest} ke features, variant range aur ex-showroom pricing ke baare mein batata hoon.`);
+    }
 
     const transcriptText = currentSessionTranscript.join("\n");
     const payload = {
@@ -1199,6 +1248,10 @@ async function startAudioInput() {
         inputWorkletNode.connect(dummyGain);
         dummyGain.connect(inputAudioContext.destination);
 
+        if (speechRecognizer) {
+            try { speechRecognizer.start(); } catch (e) {}
+        }
+
         console.log("Microphone live streaming active at rate:", inputAudioContext.sampleRate);
     } catch (err) {
         console.error("Microphone access error:", err);
@@ -1206,6 +1259,9 @@ async function startAudioInput() {
 }
 
 function stopAudioInput() {
+    if (speechRecognizer) {
+        try { speechRecognizer.stop(); } catch (e) {}
+    }
     if (inputMediaStream) {
         inputMediaStream.getTracks().forEach((track) => track.stop());
         inputMediaStream = null;
