@@ -267,7 +267,7 @@ class GeminiLiveAPI {
             return;
         }
 
-        // Handle tool calls (switch_vehicle_showroom and record_customer_lead)
+        // Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session)
         const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
         if (toolCalls && toolCalls.length > 0) {
             for (const call of toolCalls) {
@@ -286,11 +286,26 @@ class GeminiLiveAPI {
                         callId: call.id,
                         raw: messageData
                     });
+                } else if (call.name === "end_call_session" && call.args) {
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_END_CALL",
+                        summary: call.args.closing_summary || "Inquiry completed",
+                        callId: call.id,
+                        raw: messageData
+                    });
                 }
             }
         }
 
         const serverContent = messageData?.serverContent || messageData?.server_content;
+        const turnComplete = serverContent?.turnComplete || serverContent?.turn_complete || serverContent?.endOfTurn || serverContent?.end_of_turn;
+        if (turnComplete) {
+            this.onReceiveResponse({
+                type: "END_OF_TURN",
+                raw: messageData
+            });
+        }
+
         const modelTurn = serverContent?.modelTurn || serverContent?.model_turn;
         const parts = modelTurn?.parts;
 
@@ -388,6 +403,19 @@ class GeminiLiveAPI {
                             }
                         },
                         required: ["customer_name", "model_of_interest"]
+                    }
+                },
+                {
+                    name: "end_call_session",
+                    description: "Call this tool to politely conclude and hang up the showroom session after the customer indicates they have finished (e.g. saying thank you, bye, no more questions, or that's all).",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            closing_summary: {
+                                type: "string",
+                                description: "Brief summary of the completed inquiry"
+                            }
+                        }
                     }
                 }
             ]

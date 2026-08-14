@@ -97,6 +97,16 @@ class LiveVideoOutputManager {
 
         video.muted = false;
 
+        video.addEventListener('playing', () => {
+            if (typeof setAgentSpeaking === 'function') setAgentSpeaking(true);
+        });
+        video.addEventListener('pause', () => {
+            if (typeof setAgentSpeaking === 'function') setAgentSpeaking(false);
+        });
+        video.addEventListener('ended', () => {
+            if (typeof setAgentSpeaking === 'function') setAgentSpeaking(false);
+        });
+
         if ('MediaSource' in window && MediaSource.isTypeSupported(this.codec)) {
             this.mediaSource = new MediaSource();
             video.src = URL.createObjectURL(this.mediaSource);

@@ -444,6 +444,12 @@ When answering any car model query, present the details in this clear, structure
 3. Ex-Showroom Price Range: Quote starting entry-level price up to the top variant.
 4. Key Features & Highlights: Mention key safety (6 airbags standard / 5-star NCAP), comfort (Sunroof, 360 camera, HUD, SmartPlay Pro+), and mileage.
 
+*** CALL CONCLUSION & SESSION END (STRICT REQUIREMENT) ***
+- When the customer indicates they have no more questions or are finished with the inquiry (e.g., saying "धन्यवाद", "थैंक यू", "बस इतना ही", "बाय", "Thank you, that is all", "No more questions"):
+  1. Deliver a polite, warm Hindi farewell:
+     "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए बहुत-बहुत धन्यवाद! हमारे नजदीकी डीलरशिप से हमारी टीम आपसे संपर्क करेगी। आपका दिन शुभ हो!"
+  2. IMMEDIATELY execute the tool: end_call_session(closing_summary) to conclude the session cleanly.
+
 *** LANGUAGE PROTOCOL ***
 - YOU MUST START THE CONVERSATION IN HINDI.
 - IF THE USER RESPONDS IN ENGLISH OR ANY OTHER INDIAN LANGUAGE (E.G., KANNADA, TAMIL, TELUGU, MARATHI, GUJARATI, BENGALI), SWITCH TO THAT LANGUAGE AND CONTINUE.
@@ -852,17 +858,40 @@ function disconnectBtnClick() {
     cameraOffBtn.querySelector('button').disabled = true;
     screenBtn.disabled = true;
 
-    // Sync final transcript to database
+    // Immediately sync final transcript to database and refresh leads dashboard
     syncTranscriptToBackend();
+    setTimeout(() => {
+        updateLeadsCountBadge();
+        const leadsModal = document.getElementById("leads-modal");
+        if (leadsModal && leadsModal.style.display !== "none") {
+            fetchAndRenderLeads();
+        }
+    }, 400);
 }
 
 let speakingTimeout = null;
+let isAgentSpeaking = false;
+let agentSpeakingTimeout = null;
+
+function setAgentSpeaking(speaking) {
+    if (speaking) {
+        isAgentSpeaking = true;
+        if (agentSpeakingTimeout) clearTimeout(agentSpeakingTimeout);
+    } else {
+        if (agentSpeakingTimeout) clearTimeout(agentSpeakingTimeout);
+        agentSpeakingTimeout = setTimeout(() => {
+            isAgentSpeaking = false;
+        }, 800);
+    }
+}
+
 function triggerSpeakingGlow() {
     const previewContainer = document.getElementById("video-preview-container");
     if (!previewContainer) return;
 
     previewContainer.classList.add("active-speaking");
     setAppStatus("speaking");
+    setAgentSpeaking(true);
 
     if (speakingTimeout) {
         clearTimeout(speakingTimeout);
@@ -871,6 +900,7 @@ function triggerSpeakingGlow() {
     speakingTimeout = setTimeout(() => {
         previewContainer.classList.remove("active-speaking");
         setAppStatus("connected");
+        setAgentSpeaking(false);
     }, 1200);
 }
 
@@ -892,11 +922,24 @@ function initSpeechRecognition() {
         speechRecognizer.lang = "hi-IN";
 
         speechRecognizer.onresult = (event) => {
+            // Echo suppression: Ignore if avatar / Kabir is currently speaking
+            if (isAgentSpeaking) {
+                console.log("Speaker loopback ignored while Kabir is speaking");
+                return;
+            }
+
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     const transcript = event.results[i][0].transcript.trim();
-                    if (transcript) {
-                        console.log("Live Speech Transcript captured:", transcript);
+                    if (transcript && transcript.length > 1) {
+                        // Extra echo check: Filter out common prompt sentences spoken by agent
+                        const lower = transcript.toLowerCase();
+                        if (lower.includes("कबीर") || lower.includes("वर्चुअल शोरूम") || lower.includes("शुभ नाम") || lower.includes("kabir") || lower.includes("virtual showroom")) {
+                            console.log("Filtered speaker echo:", transcript);
+                            return;
+                        }
+
+                        console.log("Live Customer Speech Captured:", transcript);
                         newUserTranscriptMessage(transcript);
                         detectCarInTranscript(transcript);
                         extractCustomerDetailsFromText(transcript);
@@ -1055,6 +1098,25 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
                 },
             });
         }
+    } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
+        console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.summary);
+        if (messageResponse.callId) {
+            geminiLiveApi.sendMessage({
+                tool_response: {
+                    function_responses: [
+                        {
+                            response: { output: { success: true, call_status: "Concluded" } },
+                            id: messageResponse.callId,
+                        },
+                    ],
+                },
+            });
+        }
+        // Auto-conclude call cleanly after goodbye speech finishes
+        setTimeout(() => {
+            console.log("Auto-ending call on conversation conclusion...");
+            disconnectBtnClick();
+        }, 3500);
     } else if (messageResponse.type === "AUDIO") {
         triggerSpeakingGlow();
         liveAudioOutputManager.playAudioChunk(messageResponse.data);
@@ -1063,6 +1125,8 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         if (liveVideoOutputManager) {
             liveVideoOutputManager.playVideoChunk(messageResponse.data);
         }
+    } else if (messageResponse.type === "END_OF_TURN") {
+        setAgentSpeaking(false);
     } else if (messageResponse.type === "TEXT") {
         newModelMessage(messageResponse.data);
         detectCarInTranscript(messageResponse.data);
@@ -1075,6 +1139,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
     } else if (messageResponse.type === "INTERRUPT") {
         console.log("Consultant Interrupted - Listening to user");
         liveAudioOutputManager.interrupt();
+        setAgentSpeaking(false);
     }
 };
 
@@ -1256,7 +1321,12 @@ async function startAudioInput() {
 
         const selectedMic = micSelect ? micSelect.value : null;
         const constraints = {
-            audio: selectedMic ? { deviceId: { exact: selectedMic } } : true,
+            audio: {
+                deviceId: selectedMic ? { exact: selectedMic } : undefined,
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            },
         };
 
         inputMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
