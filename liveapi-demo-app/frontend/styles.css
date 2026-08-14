@@ -566,6 +566,30 @@ body {
   margin-right: 6px;
 }
 
+.lang-select-dropdown {
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.lang-select-dropdown:hover, .lang-select-dropdown:focus {
+  background: rgba(0, 229, 255, 0.25);
+  border-color: var(--maruti-cyan);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+}
+
+.lang-select-dropdown option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
 .lang-pill {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);

@@ -256,17 +256,30 @@
       <!-- Conversation Chat Window -->
       <div id="chat-container" class="live-chat-box">
         <div class="chat-box-header">
-          <span class="material-icons">forum</span> Live Transcript & Chat
+          <span class="material-icons">translate</span> Language:
           <div class="chat-lang-toggle">
-            <button id="lang-hi-btn" class="lang-pill active" onclick="setSpeechLanguage('hi-IN')" title="Listen in Hindi">🇮🇳 Hindi</button>
-            <button id="lang-en-btn" class="lang-pill" onclick="setSpeechLanguage('en-IN')" title="Listen in English / Hinglish">🇬🇧 English</button>
+            <select id="active-indian-lang-select" class="lang-select-dropdown" onchange="setSpeechLanguage(this.value)" title="Select Indian Language for Voice & Consultation">
+              <option value="hi-IN" selected>🇮🇳 Hindi (हिन्दी)</option>
+              <option value="en-IN">🇬🇧 English / Hinglish</option>
+              <option value="ta-IN">🇮🇳 Tamil (தமிழ்)</option>
+              <option value="te-IN">🇮🇳 Telugu (తెలుగు)</option>
+              <option value="kn-IN">🇮🇳 Kannada (ಕನ್ನಡ)</option>
+              <option value="mr-IN">🇮🇳 Marathi (मराठी)</option>
+              <option value="bn-IN">🇮🇳 Bengali (বাংলা)</option>
+              <option value="gu-IN">🇮🇳 Gujarati (ગુજરાતી)</option>
+              <option value="ml-IN">🇮🇳 Malayalam (മലയാളം)</option>
+              <option value="pa-IN">🇮🇳 Punjabi (ਪੰਜਾਬੀ)</option>
+              <option value="or-IN">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
+              <option value="ur-IN">🇮🇳 Urdu (اردو)</option>
+              <option value="as-IN">🇮🇳 Assamese (অসমীয়া)</option>
+            </select>
           </div>
           <span class="chat-status-dot"></span>
         </div>
         <div id="text-chat" class="chat-scroll-area">
           <div class="chat-welcome-card">
             <p class="welcome-title">👋 Namaste! Welcome to Maruti Suzuki.</p>
-            <p class="welcome-desc">Ask Kabir anything across ARENA, NEXA & Commercial channels in English, Hindi, or Hinglish.</p>
+            <p class="welcome-desc">Kabir supports <strong>all Indian languages</strong> (Hindi, Tamil, Telugu, Kannada, Marathi, Bengali, Gujarati, Malayalam, Punjabi, English & more).</p>
             <div class="suggested-questions">
               <button class="suggestion-chip" onclick="askQuickPrompt('Tell me about the new launch Maruti Victoris SUV')">New Victoris SUV</button>
               <button class="suggestion-chip" onclick="askQuickPrompt('Tell me about the Grand Vitara Hybrid')">Grand Vitara Hybrid</button>

@@ -447,14 +447,27 @@ When answering any car model query, present the details in this clear, structure
 *** CONVERSATION CLOSING & FAREWELL GREETING (STRICT REQUIREMENT) ***
 - When the customer indicates they have no more questions, are finished with the inquiry, or say thank you / goodbye (e.g., "धन्यवाद", "थैंक यू", "बस इतना ही", "बाय", "Thank you, that's all", "No more questions"):
   1. DO NOT hang up or disconnect the session directly.
-  2. Deliver a polite, warm farewell greeting in Hindi (or customer's language):
-     "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! अगर आपको किसी और गाड़ी या टेस्ट ड्राइव की जानकारी चाहिए तो मुझे बताइए, अन्यथा आपका दिन शुभ और मंगलमय हो!"
+  2. Deliver a polite, warm farewell greeting in the customer's active language (e.g. in Hindi: "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! अगर आपको किसी और गाड़ी या टेस्ट ड्राइव की जानकारी चाहिए तो मुझे बताइए, अन्यथा आपका दिन शुभ और मंगलमय हो!").
   3. Remain active, polite, and listening until the customer chooses to disconnect.
 
-*** LANGUAGE PROTOCOL ***
-- YOU MUST START THE CONVERSATION IN HINDI.
-- IF THE USER RESPONDS IN ENGLISH OR ANY OTHER INDIAN LANGUAGE (E.G., KANNADA, TAMIL, TELUGU, MARATHI, GUJARATI, BENGALI), SWITCH TO THAT LANGUAGE AND CONTINUE.
-- IF SPEAKING IN HINDI, SAY NUMBERS IN HINDI (E.G., DAS LAKH UNCHAAS HAZAAR RUPAY, PAANCH LAKH UNASI HAZAAR RUPAY). FOR OTHER LANGUAGES, USE THEIR NATURAL NUMBER CONVENTIONS.
+*** ALL INDIAN LANGUAGES & MULTILINGUAL PROTOCOL (MANDATORY) ***
+- YOU MUST SUPPORT AND SPEAK ALL INDIAN LANGUAGES WITH NATIVE FLUENCY:
+  * Hindi (हिन्दी)
+  * English & Hinglish
+  * Tamil (தமிழ்)
+  * Telugu (తెలుగు)
+  * Kannada (ಕನ್ನಡ)
+  * Malayalam (മലയാളം)
+  * Marathi (मराठी)
+  * Gujarati (ગુજરાતી)
+  * Bengali (বাংলা)
+  * Punjabi (ਪੰਜਾਬੀ)
+  * Odia (ଓଡ଼ିଆ)
+  * Urdu (اردو)
+  * Assamese (অসমীয়া)
+- If the customer speaks or asks in ANY Indian language, IMMEDIATELY respond in that EXACT SAME Indian language with native fluency, cultural politeness, and appropriate regional phrasing.
+- If the customer asks in English or mixed Hinglish/Tanglish/etc., respond naturally in that same mixed style.
+- State all vehicle prices, numbers, and specifications in the natural numbering system of that chosen language.
 
 *** CONVERSATIONAL & LISTENING PROTOCOL ***
 - ITS VERY IMPORTANT IN YOUR JOB TO LISTEN, PAUSE AND ANSWER. IF USER SPEAKS, STOP AND LISTEN.
@@ -916,25 +929,25 @@ let currentInterimBubble = null;
 let currentSpeechLang = "hi-IN";
 
 function setSpeechLanguage(lang) {
-    currentSpeechLang = lang;
-    const hiBtn = document.getElementById("lang-hi-btn");
-    const enBtn = document.getElementById("lang-en-btn");
-    if (hiBtn) hiBtn.classList.toggle("active", lang === "hi-IN");
-    if (enBtn) enBtn.classList.toggle("active", lang === "en-IN");
+    currentSpeechLang = lang || "hi-IN";
+    const langSelect = document.getElementById("active-indian-lang-select");
+    if (langSelect && langSelect.value !== currentSpeechLang) {
+        langSelect.value = currentSpeechLang;
+    }
 
     const voiceLocaleSelect = document.getElementById("voiceLocale");
-    if (voiceLocaleSelect) voiceLocaleSelect.value = lang;
+    if (voiceLocaleSelect) voiceLocaleSelect.value = currentSpeechLang;
 
     if (speechRecognizer) {
         try {
             speechRecognizer.abort();
         } catch (e) {}
         initSpeechRecognition();
-        if (micBtn && !micBtn.hidden) {
+        if (micBtn && !micBtn.hidden && !isAgentSpeaking) {
             try { speechRecognizer.start(); } catch (e) {}
         }
     }
-    console.log("Speech recognition language set to:", lang);
+    console.log("Speech recognition language set to:", currentSpeechLang);
 }
 
 function initSpeechRecognition() {
