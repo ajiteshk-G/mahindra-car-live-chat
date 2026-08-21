@@ -1028,6 +1028,59 @@ function initSpeechRecognition() {
     }
 }
 
+
+let pendingCallEndTimeout = null;
+let isCallConcluding = false;
+
+function scheduleGracefulCallEnd(reason = "Consultation Concluded") {
+    isCallConcluding = true;
+    console.log("Graceful call end initiated. Waiting for Kabir to completely finish speaking the farewell turn...");
+    newSystemNotice("📞 " + reason);
+
+    if (pendingCallEndTimeout) {
+        clearTimeout(pendingCallEndTimeout);
+    }
+
+    function checkAndDisconnect() {
+        if (!isCallConcluding) {
+            console.log("Call conclusion was cancelled by user.");
+            return;
+        }
+
+        // If the avatar is still speaking or audio is active, keep waiting
+        if (isAgentSpeaking) {
+            console.log("Kabir is still speaking farewell message... waiting for speech completion...");
+            pendingCallEndTimeout = setTimeout(checkAndDisconnect, 1200);
+            return;
+        }
+
+        // Wait 3.5 seconds of silence AFTER Kabir finishes speaking before closing the session
+        pendingCallEndTimeout = setTimeout(() => {
+            if (!isAgentSpeaking && isCallConcluding) {
+                console.log("Kabir has finished speaking farewell message. Concluding live session.");
+                isCallConcluding = false;
+                disconnectBtnClick();
+            } else if (isAgentSpeaking) {
+                checkAndDisconnect();
+            }
+        }, 3500);
+    }
+
+    // Give minimum 5 seconds for the farewell message turn to start and play
+    pendingCallEndTimeout = setTimeout(checkAndDisconnect, 5000);
+}
+
+function cancelGracefulCallEnd() {
+    if (isCallConcluding) {
+        console.log("Customer resumed speaking: Cancelling pending call conclusion.");
+        isCallConcluding = false;
+        if (pendingCallEndTimeout) {
+            clearTimeout(pendingCallEndTimeout);
+            pendingCallEndTimeout = null;
+        }
+    }
+}
+
 async function processCustomerDialogueTurn(messageText) {
     if (!messageText || !messageText.trim()) return;
     const cleanText = messageText.trim();
@@ -1054,11 +1107,7 @@ async function processCustomerDialogueTurn(messageText) {
                 newModelMessage(data.agent_response);
             }
             if (data && data.is_call_ended) {
-                newSystemNotice("📞 Consultation Concluded - Thank you for visiting Mahindra Auto");
-                setTimeout(() => {
-                    console.log("Auto-ending call session after conclusion response...");
-                    disconnectBtnClick();
-                }, 3500);
+                scheduleGracefulCallEnd("Consultation Concluded - Thank you for visiting Mahindra Auto");
             }
         } catch (e) {
             console.warn("Failed to generate dialogue turn:", e);
@@ -1277,26 +1326,13 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         }
     } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
         console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.reason);
-        newSystemNotice("📞 Consultation Concluded - Thank you for visiting Mahindra Auto");
-
         if (messageResponse.callId) {
-            geminiLiveApi.sendMessage({
-                tool_response: {
-                    function_responses: [
-                        {
-                            response: { output: { success: true, call_status: "Concluded" } },
-                            id: messageResponse.callId,
-                        },
-                    ],
-                },
+            geminiLiveApi.sendToolResponse(messageResponse.callId, "end_call_session", {
+                status: "success",
+                call_status: "Concluded"
             });
         }
-
-        // Allow Kabir's spoken thanks to finish, then end the call session cleanly
-        setTimeout(() => {
-            console.log("Auto-ending call session on conclusion...");
-            disconnectBtnClick();
-        }, 3500);
+        scheduleGracefulCallEnd("Consultation Concluded - Thank you for visiting Mahindra Auto");
     } else if (messageResponse.type === "AUDIO") {
         triggerSpeakingGlow();
         liveAudioOutputManager.playAudioChunk(messageResponse.data);
@@ -1431,6 +1467,7 @@ function newModelMessage(text) {
 }
 
 function newUserMessage() {
+    cancelGracefulCallEnd();
     const input = document.getElementById("text-message");
     if (!input || !input.value.trim()) return;
 
@@ -1459,6 +1496,7 @@ function newUserMessage() {
 }
 
 function newUserTranscriptMessage(text) {
+    cancelGracefulCallEnd();
     if (!text || !text.trim()) return;
     const cleanText = text.trim();
 
