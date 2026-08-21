@@ -1754,12 +1754,8 @@ async function startCameraStream() {
             await videoEl.play().catch(err => console.log("Camera video play error:", err));
         }
 
-        const pip = document.getElementById("camera-pip");
-        if (pip) {
-            pip.style.display = "flex";
-            const pipLabel = pip.querySelector(".pip-label");
-            if (pipLabel) pipLabel.textContent = "You (Live)";
-        }
+        const pip = document.getElementById("customer-video-pane"); const stage = document.getElementById("video-preview-container");
+        if (pip) { pip.style.display = "flex"; } if (stage) { stage.classList.add("dual-video"); }
 
         cameraBtn.hidden = false;
         cameraOffBtn.hidden = true;
@@ -1787,10 +1783,8 @@ function stopCameraStream() {
     if (videoEl) {
         videoEl.srcObject = null;
     }
-    const pip = document.getElementById("camera-pip");
-    if (pip) {
-        pip.style.display = "none";
-    }
+    const pip = document.getElementById("customer-video-pane"); const stage = document.getElementById("video-preview-container");
+    if (pip) { pip.style.display = "none"; } if (stage) { stage.classList.remove("dual-video"); }
 
     cameraBtn.hidden = true;
     cameraOffBtn.hidden = false;
@@ -1859,7 +1853,7 @@ async function screenShareBtnClick() {
             await videoEl.play().catch(err => console.log("Screen video play error:", err));
         }
 
-        const pip = document.getElementById("camera-pip");
+        const pip = document.getElementById("customer-video-pane"); const stage = document.getElementById("video-preview-container");
         if (pip) {
             pip.style.display = "flex";
             const pipLabel = pip.querySelector(".pip-label");

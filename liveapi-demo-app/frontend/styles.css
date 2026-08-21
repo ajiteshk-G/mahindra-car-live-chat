@@ -466,34 +466,95 @@ body {
   animation: pulse-slow 2s infinite ease-in-out;
 }
 
-.camera-pip-wrapper {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 136px;
-  height: 102px;
+.avatar-stage {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #020408;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+}
+
+.avatar-stage.dual-video .avatar-output-wrapper {
+  flex: 1 1 50%;
+}
+
+.avatar-stage.dual-video .customer-video-wrapper {
+  flex: 1 1 50%;
+  display: flex !important;
+}
+
+.avatar-output-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
   border-radius: 10px;
   overflow: hidden;
-  border: 2px solid rgba(0, 229, 255, 0.7);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 229, 255, 0.25);
-  background: #020617;
-  z-index: 10;
-  display: flex;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: flex 0.3s ease;
+}
+
+.customer-video-wrapper {
+  height: 100%;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #090d16;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
   flex-direction: column;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
-.camera-pip-wrapper:hover {
-  transform: scale(1.08);
-  border-color: #38bdf8;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 16px rgba(56, 189, 248, 0.4);
-}
-
-.camera-pip-wrapper #video {
+.customer-video-wrapper #video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1); /* Mirror view for natural self-preview */
+  transform: scaleX(-1); /* Mirror self-view */
+}
+
+.video-pane-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #f8fafc;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.video-pane-badge.kabir-badge {
+  border-color: rgba(0, 229, 255, 0.3);
+}
+
+.video-pane-badge.customer-badge {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.badge-dot-cyan {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 6px #00e5ff;
 }
 
 .pip-header {

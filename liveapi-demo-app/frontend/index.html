@@ -195,9 +195,10 @@
         </div>
       </div>
 
-      <!-- Avatar Video Stage -->
+      <!-- Avatar & Customer Dual Video Communication Stage -->
       <div id="video-preview-container" class="avatar-stage">
-        <div class="avatar-output-wrapper">
+        <!-- Pane 1: Kabir AI Consultant -->
+        <div class="avatar-output-wrapper" id="avatar-output-pane">
           <video id="video_player" autoplay playsinline></video>
           <div class="avatar-placeholder-overlay" id="avatar-placeholder">
             <div class="avatar-pulse-circle">
@@ -205,13 +206,17 @@
             </div>
             <p>Click <strong>Start Live Session</strong> to talk with Kabir</p>
           </div>
+          <div class="video-pane-badge kabir-badge">
+            <span class="badge-dot-cyan"></span>
+            <span>Kabir (AI)</span>
+          </div>
         </div>
 
-        <!-- Camera PiP Preview -->
-        <div class="camera-pip-wrapper" id="camera-pip" style="display: none;">
+        <!-- Pane 2: Customer Live Video Feed -->
+        <div class="customer-video-wrapper" id="customer-video-pane" style="display: none;">
           <video id="video" autoplay playsinline muted></video>
           <canvas id="canvas" style="display: none;"></canvas>
-          <div class="pip-header">
+          <div class="video-pane-badge customer-badge">
             <span class="pip-live-dot"></span>
             <span class="pip-label">You (Live)</span>
           </div>

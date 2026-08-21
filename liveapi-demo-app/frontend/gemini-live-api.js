@@ -458,7 +458,7 @@ class GeminiLiveAPI {
         const modelUri = `projects/${this.projectId || "mb-poc-352009"}/locations/${this.location}/publishers/google/models/${this.model}`;
         
         const showroomTools = {
-            function_declarations: [
+            functionDeclarations: [
                 {
                     name: "switch_vehicle_showroom",
                     description: "Call this tool to switch the showroom backdrop and display specs whenever the user asks about, compares, or mentions any Mahindra SUV or vehicle model.",
@@ -567,35 +567,35 @@ class GeminiLiveAPI {
         const sessionSetupMessage = {
             setup: {
                 model: modelUri,
-                generation_config: {
-                    response_modalities: this.responseModalities,
-                    speech_config: {
-                        voice_config: this.customVoiceSample
+                generationConfig: {
+                    responseModalities: this.responseModalities,
+                    speechConfig: {
+                        voiceConfig: this.customVoiceSample
                             ? {
-                                replicated_voice_config: {
-                                    voice_sample_audio: this.customVoiceSample,
-                                    mime_type: "audio/pcm;rate=24000",
+                                replicatedVoiceConfig: {
+                                    voiceSampleAudio: this.customVoiceSample,
+                                    mimeType: "audio/pcm;rate=24000",
                                 },
                               }
                             : {
-                                prebuilt_voice_config: {
-                                    voice_name: this.voiceName || "orus",
+                                prebuiltVoiceConfig: {
+                                    voiceName: this.voiceName || "orus",
                                 },
                               },
-                        language_code: this.voiceLocale || "hi-IN",
+                        languageCode: this.voiceLocale || "hi-IN",
                     },
                 },
                 tools: [showroomTools],
-                input_audio_transcription: {},
-                output_audio_transcription: {},
-                avatar_config: {
-                    avatar_name: "Jay"
+                inputAudioTranscription: {},
+                outputAudioTranscription: {},
+                avatarConfig: {
+                    avatarName: "Jay"
                 }
             },
         };
 
         if (this.systemInstructions && this.systemInstructions.trim()) {
-            sessionSetupMessage.setup.system_instruction = {
+            sessionSetupMessage.setup.systemInstruction = {
                 parts: [{ text: this.systemInstructions }],
             };
         }
