@@ -625,7 +625,11 @@ function toggleSettingsModal() {
     }
 }
 
-// --- Live WebSocket Protocol & Media Setup ---
+// Detect if loaded via HTTP-only proxy.googlers.com
+if (window.location.hostname.includes("proxy.googlers.com")) {
+    console.warn("Detected proxy.googlers.com environment. Note: proxy.googlers.com does not support WebSocket upgrades. Please access via direct Cloudtop URL: http://ajiteshk.c.googlers.com:8081");
+}
+
 const isHttps = window.location.protocol === "https:";
 const wsProtocol = isHttps ? "wss:" : "ws:";
 const host = window.location.host;
@@ -660,7 +664,7 @@ const geminiLiveApi = new GeminiLiveAPI(PROXY_URL, CONTROL_URL, FR_SERVICE_URL);
 
 geminiLiveApi.onErrorMessage = (message) => {
     console.warn("Live API Notice:", message);
-    if (message.includes("closed") || message.includes("ended") || message.includes("failed")) {
+    if (message.includes("closed") || message.includes("ended") || message.includes("failed") || message.includes("error")) {
         setAppStatus("disconnected");
         stopAudioInput();
         const connectBtn = document.getElementById("connectBtn");
@@ -669,6 +673,10 @@ geminiLiveApi.onErrorMessage = (message) => {
         if (disconnectBtn) disconnectBtn.style.display = "none";
         const placeholder = document.getElementById("avatar-placeholder");
         if (placeholder) placeholder.classList.remove("hidden");
+
+        if (window.location.hostname.includes("proxy.googlers.com")) {
+            newSystemNotice("⚠️ Notice: The *.proxy.googlers.com web preview does not support WebSockets. Please open http://ajiteshk.c.googlers.com:8081 directly in your browser.");
+        }
     }
 };
 
