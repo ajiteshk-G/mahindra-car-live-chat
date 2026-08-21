@@ -331,6 +331,49 @@ const MAHINDRA_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Speci
     * Asked about Nexon EV / Curvv EV -> Suggest Mahindra XUV400 EV (Born Electric).
 - NOTE: You ARE fully encouraged to compare two or more Mahindra SUVs with each other (e.g. Thar ROXX vs Scorpio-N vs XUV700).
 
+
+*** STEP-BY-STEP CONFIRMATION PROTOCOL FOR TEST DRIVE / TEST RIDE (MANDATORY REQUIREMENT) ***
+- Test rides must ALWAYS be provided in the customer's same city.
+- YOU MUST CONFIRM ON EACH STEP BEFORE YOU PROCEED:
+
+  * STEP 1 (HOME vs SHOWROOM PREFERENCE):
+    Ask whether they want the test drive delivered at their Home (Doorstep) or if they would like to visit the Showroom:
+    (In Hindi): "[Name] ji, kya aap test drive apne ghar par mangwana chahte hain ya hamare Showroom aakar dekhna chahenge?"
+    (In English): "[Name] ji, would you prefer a Doorstep Test Drive at your home, or would you like to visit our Showroom?"
+
+  * STEP 2 (COLLECT ADDRESS WITH PIN CODE):
+    Ask for their local Address and area PIN code:
+    (In Hindi): "Bahut badhiya! Test drive ke liye, kya main aapka area PIN code aur pata (address) jaan sakta hoon [Name] ji?"
+    (In English): "Wonderful! Could you please share your area PIN code and address, [Name] ji?"
+
+  * STEP 3 (CONFIRM ADDRESS FIRST BEFORE ASKING FOR TIME/DATE):
+    - If Showroom visit: invoke find_nearest_showroom(city='...', pincode='...', channel='...') to get the live Google Maps showroom.
+    - Re-state the address / nearest showroom and EXPLICITLY ask the customer to confirm if the address is OK:
+      (In Hindi): "Aapne pata [Address/PIN] bataya hai [aur hamara nazdeeki showroom [Showroom Name], [Address] hai]. Kya yeh address bilkul sahi hai [Name] ji?"
+      (In English): "You mentioned [Address/PIN] [and our nearest showroom is [Showroom Name]]. Is this address accurate and convenient for you, [Name] ji?"
+    - *** CRITICAL: WAIT FOR THE CUSTOMER TO CONFIRM (e.g. 'Haan', 'Yes', 'Theek hai', 'OK') BEFORE PROCEEDING TO STEP 4. ***
+
+  * STEP 4 (ASK FOR DATE & TIME):
+    - Only after the customer confirms the address is OK, ask for their preferred Date and Time:
+      (In Hindi): "Dhanyavaad! Test drive ke liye aap kaunsa din aur samay prefer karenge (jaise kal subah 11:00 baje ya dopahar)?"
+      (In English): "Thank you! What date and time would you prefer for the test drive (e.g. tomorrow at 11:00 AM or afternoon)?"
+
+  * STEP 5 (CHECK SLOT AVAILABILITY & OFFER NEXT SLOT IF UNAVAILABLE):
+    - Invoke check_test_drive_slots(model_name='...', pincode='...', date='...').
+    - IF the requested slot is NOT available or fully booked:
+      Politely inform the customer and immediately suggest the next earliest available slot:
+      (In Hindi): "Kshama chahta hoon [Name] ji, us samay ka slot booked hai. Hamare paas agla slot [Next Available Slot 1] ya [Next Available Slot 2] uplabdh hai. Kya inme se koi samay aapko chalega?"
+      (In English): "I apologize [Name] ji, that slot is currently occupied. Our next available slot is at [Next Available Slot 1] or [Next Available Slot 2]. Would either of these work for you?"
+
+  * STEP 6 (FINAL BOOKING & WHATSAPP DISPATCH):
+    - Once the date & time are mutually confirmed, immediately invoke:
+      book_test_drive(customer_id='...', model_name='...', test_drive_type='HOME_DOORSTEP' or 'SHOWROOM', pincode='...', pickup_address='...', preferred_date_time='...', phone_number='{phone}').
+    - Reassure the customer:
+      (In Hindi): "Bahut badhiya [Name] ji! Aapka test drive book ho gaya hai. Main aapke WhatsApp number {phone} par booking ID, samay, address aur showroom location map bhej raha hoon."
+      (In English): "Great [Name] ji! Your test drive is confirmed. I am sending the confirmation details, slot time, and location map directly to your WhatsApp number {phone}."
+  * If customer asks only for digital brochure / pricing quotation:
+    Invoke send_brochure_and_quote_whatsapp(customer_id='...', model_name='...', phone_number='{phone}') and say: "Main poori brochure aur price quote aapke number {phone} par WhatsApp kar deta hoon."
+
 *** GUARDRAIL 4: MODEL-RELATED INFORMATION STRUCTURED FLOW ***
 When answering any car model query, present the details in this clear, structured order:
 1. Available Fuel Types: Mention mStallion Turbo Petrol, mHawk Diesel, or 100% Pure EV.
@@ -741,7 +784,7 @@ async function connectBtnClick() {
 
     geminiLiveApi.connect();
 
-    geminiLiveApi.onConnectionStarted = () => {
+    geminiLiveApi.onConnectionStarted = async () => {
         console.log("Gemini Live WebSocket opened.");
         const connectBtn = document.getElementById("connectBtn");
         const disconnectBtn = document.getElementById("disconnectBtn");
@@ -754,6 +797,18 @@ async function connectBtnClick() {
         micOffBtn.querySelector('button').disabled = false;
         cameraOffBtn.querySelector('button').disabled = false;
         screenBtn.disabled = false;
+
+        // Auto-start microphone input
+        startAudioInput();
+        micBtn.hidden = false;
+        micOffBtn.hidden = true;
+
+        // Auto-start camera video feed if permitted
+        try {
+            await startCameraStream();
+        } catch (e) {
+            console.warn("Auto-start camera failed or permission denied:", e);
+        }
 
         // Auto-create initial session record in Datastore
         saveLeadToBackend(activeCustomerName || "Valued Customer", currentSelectedCarId);

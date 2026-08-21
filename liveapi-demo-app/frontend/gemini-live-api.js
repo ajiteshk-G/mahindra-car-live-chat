@@ -302,6 +302,58 @@ class GeminiLiveAPI {
                         callId: call.id,
                         raw: messageData
                     });
+                } else if (call.name === "find_nearest_showroom") {
+                    const city = call.args?.city || "New Delhi";
+                    const pincode = call.args?.pincode || "110001";
+                    const showroomName = ;
+                    const address = ;
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "success",
+                            showroom_name: showroomName,
+                            address: address,
+                            city: city,
+                            pincode: pincode
+                        });
+                    }
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_FIND_SHOWROOM",
+                        showroomName: showroomName,
+                        address: address,
+                        raw: messageData
+                    });
+                } else if (call.name === "check_test_drive_slots") {
+                    const slots = ["Tomorrow 11:00 AM", "Tomorrow 3:30 PM", "Day after tomorrow 10:30 AM"];
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "success",
+                            available_slots: slots,
+                            earliest_available: slots[0]
+                        });
+                    }
+                } else if (call.name === "book_test_drive") {
+                    const bookingId = "MH-TD-" + Math.floor(100000 + Math.random() * 900000);
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "confirmed",
+                            booking_id: bookingId,
+                            message: "Test drive confirmed and dispatched to dealership"
+                        });
+                    }
+                    this.onReceiveResponse({
+                        type: "TOOL_CALL_BOOK_TEST_DRIVE",
+                        bookingId: bookingId,
+                        model: call.args?.model_name,
+                        date: call.args?.preferred_date_time,
+                        raw: messageData
+                    });
+                } else if (call.name === "send_brochure_and_quote_whatsapp") {
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "sent",
+                            message: "Official digital brochure and pricing quote sent via WhatsApp"
+                        });
+                    }
                 }
             }
         }
@@ -450,6 +502,62 @@ class GeminiLiveAPI {
                             }
                         },
                         required: ["reason"]
+                    }
+                },
+                {
+                    name: "find_nearest_showroom",
+                    description: "Finds the nearest authorized Mahindra Showroom and Experience Center based on city and pincode.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            city: { type: "string", description: "Customer city" },
+                            pincode: { type: "string", description: "Area 6-digit PIN code" },
+                            channel: { type: "string", description: "AUTHENTIC, TECH, EV, or UTILITY" }
+                        },
+                        required: ["city"]
+                    }
+                },
+                {
+                    name: "check_test_drive_slots",
+                    description: "Checks available calendar slots for a Mahindra test drive at home doorstep or showroom.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            model_name: { type: "string", description: "Mahindra vehicle model name" },
+                            pincode: { type: "string", description: "Customer area PIN code" },
+                            date: { type: "string", description: "Preferred date or day" }
+                        },
+                        required: ["model_name"]
+                    }
+                },
+                {
+                    name: "book_test_drive",
+                    description: "Confirms and finalizes the official test drive booking and dispatches instant WhatsApp confirmation.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            customer_id: { type: "string", description: "Customer name or ID" },
+                            model_name: { type: "string", description: "Mahindra vehicle model" },
+                            test_drive_type: { type: "string", enum: ["HOME_DOORSTEP", "SHOWROOM"], description: "Doorstep home delivery or showroom visit" },
+                            pincode: { type: "string", description: "Area PIN code" },
+                            pickup_address: { type: "string", description: "Customer address or showroom location" },
+                            preferred_date_time: { type: "string", description: "Confirmed date and time slot" },
+                            phone_number: { type: "string", description: "Customer WhatsApp / contact number" }
+                        },
+                        required: ["model_name", "test_drive_type", "preferred_date_time"]
+                    }
+                },
+                {
+                    name: "send_brochure_and_quote_whatsapp",
+                    description: "Dispatches the official digital brochure and quotation PDF to customer via WhatsApp.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            customer_id: { type: "string", description: "Customer name or ID" },
+                            model_name: { type: "string", description: "Mahindra vehicle model" },
+                            phone_number: { type: "string", description: "WhatsApp phone number" }
+                        },
+                        required: ["model_name"]
                     }
                 }
             ]
