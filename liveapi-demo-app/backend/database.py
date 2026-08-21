@@ -50,7 +50,7 @@ def init_sqlite_db():
 init_sqlite_db()
 
 
-def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: str, channel: str = "ARENA", transcript: str = "", status: str = "Auto-Qualified Inquiry"):
+def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: str, channel: str = "AUTHENTIC", transcript: str = "", status: str = "Auto-Qualified Inquiry"):
     """Saves or updates a customer lead record in Cloud Datastore (or SQLite fallback)."""
     client = get_datastore_client()
     now_utc = datetime.datetime.now(datetime.timezone.utc)
@@ -71,8 +71,8 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             
             entity['session_id'] = str(session_id)
             entity['customer_name'] = str(customer_name).strip() if customer_name else entity.get('customer_name', "Valued Customer")
-            entity['model_of_interest'] = str(model_of_interest).strip() if model_of_interest else entity.get('model_of_interest', "Victoris")
-            entity['channel'] = str(channel).strip().upper() if channel else entity.get('channel', "ARENA")
+            entity['model_of_interest'] = str(model_of_interest).strip() if model_of_interest else entity.get('model_of_interest', "Thar ROXX")
+            entity['channel'] = str(channel).strip().upper() if channel else entity.get('channel', "AUTHENTIC")
             entity['transcript'] = final_transcript
             entity['status'] = str(status)
             entity['last_updated'] = now_utc
@@ -95,7 +95,7 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
             VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(session_id) DO UPDATE SET
                 customer_name = CASE WHEN excluded.customer_name != 'Valued Customer' THEN excluded.customer_name ELSE customer_leads.customer_name END,
-                model_of_interest = CASE WHEN excluded.model_of_interest != 'Victoris' THEN excluded.model_of_interest ELSE customer_leads.model_of_interest END,
+                model_of_interest = CASE WHEN excluded.model_of_interest != 'Thar ROXX' THEN excluded.model_of_interest ELSE customer_leads.model_of_interest END,
                 channel = excluded.channel,
                 transcript = CASE WHEN length(excluded.transcript) >= length(customer_leads.transcript) THEN excluded.transcript ELSE customer_leads.transcript END,
                 status = excluded.status;
@@ -109,7 +109,7 @@ def save_or_update_lead(session_id: str, customer_name: str, model_of_interest: 
         return {"success": False, "error": str(e)}
 
 
-def update_lead_transcript(session_id: str, transcript: str, customer_name: str = None, model_of_interest: str = None, channel: str = "ARENA"):
+def update_lead_transcript(session_id: str, transcript: str, customer_name: str = None, model_of_interest: str = None, channel: str = "AUTHENTIC"):
     """Updates the transcript. If the lead entity doesn't exist yet, automatically creates it."""
     client = get_datastore_client()
     now_utc = datetime.datetime.now(datetime.timezone.utc)
@@ -122,15 +122,15 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
                 entity = datastore.Entity(key=key, exclude_from_indexes=['transcript'])
                 entity['session_id'] = str(session_id)
                 entity['customer_name'] = str(customer_name or "Valued Customer").strip()
-                entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
-                entity['channel'] = str(channel or "ARENA").strip().upper()
+                entity['model_of_interest'] = str(model_of_interest or "Thar ROXX").strip()
+                entity['channel'] = str(channel or "AUTHENTIC").strip().upper()
                 entity['call_date'] = now_utc
                 entity['status'] = "Auto-Qualified Inquiry"
             else:
                 entity.exclude_from_indexes.add('transcript')
                 if customer_name and customer_name not in ["Valued Customer", "Unknown", ""]:
                     entity['customer_name'] = str(customer_name).strip()
-                if model_of_interest and model_of_interest not in ["Victoris", "Unknown", ""]:
+                if model_of_interest and model_of_interest not in ["Thar ROXX", "Victoris", "Unknown", ""]:
                     entity['model_of_interest'] = str(model_of_interest).strip()
                 if channel:
                     entity['channel'] = str(channel).strip().upper()
@@ -148,7 +148,7 @@ def update_lead_transcript(session_id: str, transcript: str, customer_name: str 
         except Exception as e:
             logging.error(f"Failed to update transcript in Datastore: {e}")
 
-def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, customer_name: str = None, model_of_interest: str = None, channel: str = "ARENA"):
+def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, customer_name: str = None, model_of_interest: str = None, channel: str = "AUTHENTIC"):
     """Atomically appends customer and agent dialogue turns to the lead record in Datastore & SQLite."""
     client = get_datastore_client()
     now_utc = datetime.datetime.now(datetime.timezone.utc)
@@ -162,17 +162,17 @@ def append_dialogue_turn(session_id: str, customer_text: str, agent_text: str, c
                 entity = datastore.Entity(key=key, exclude_from_indexes=['transcript'])
                 entity['session_id'] = str(session_id)
                 entity['customer_name'] = str(customer_name or "Valued Customer").strip()
-                entity['model_of_interest'] = str(model_of_interest or "Victoris").strip()
-                entity['channel'] = str(channel or "ARENA").strip().upper()
+                entity['model_of_interest'] = str(model_of_interest or "Thar ROXX").strip()
+                entity['channel'] = str(channel or "AUTHENTIC").strip().upper()
                 entity['call_date'] = now_utc
                 entity['status'] = "Auto-Qualified Inquiry"
-                existing_transcript = "Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"
+                existing_transcript = "Kabir: Namaste! Main Kabir hoon, Mahindra Auto Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si Mahindra SUV dekhna chahte hain?"
             else:
                 entity.exclude_from_indexes.add('transcript')
                 existing_transcript = entity.get('transcript', '')
                 if customer_name and entity.get('customer_name') in ["Valued Customer", "Inquiry in Progress", "Unknown", None, ""]:
                     entity['customer_name'] = str(customer_name).strip()
-                if model_of_interest and entity.get('model_of_interest') in ["Victoris", "Unknown", None, ""]:
+                if model_of_interest and entity.get('model_of_interest') in ["Thar ROXX", "Victoris", "Unknown", None, ""]:
                     entity['model_of_interest'] = str(model_of_interest).strip()
                 if channel:
                     entity['channel'] = str(channel).strip().upper()

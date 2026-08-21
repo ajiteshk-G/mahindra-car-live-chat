@@ -1,403 +1,241 @@
 /**
- * Maruti Suzuki AI Live Virtual Showroom Experience
+ * Mahindra Auto AI Live Virtual Showroom Experience
  * Real-Time Multimodal Avatar & Dynamic Vehicle Showroom
- * Includes ARENA, NEXA, and COMMERCIAL channels with Lead Capture & Guardrails
+ * Includes Authentic SUVs, Tech SUVs, Born Electric, and Tough Utility/Commercial Range
  */
 
-// --- Official Maruti Suzuki Complete Vehicle Knowledge Base with Multilingual Keywords & Structured Specs ---
-const MARUTI_VEHICLES = {
-    "victoris": {
-        id: "victoris",
-        name: "Victoris",
-        channel: "ARENA",
-        category: "suv",
-        categoryLabel: "All-New Launch SUV",
-        tagline: "Your Victoris, Built To Your Vision. Bold Stance & Dynamic Presence.",
-        price: "₹10.49 Lakh* – ₹19.98 Lakh*",
-        priceRange: "₹10.49 Lakh* to ₹19.98 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+ (Dual Tone Available)",
-        mileage: "Up to 21.50 km/l (Petrol) | 26.50 km/kg (S-CNG)",
-        engine: "1.5L K-Series DualJet Dual VVT Engine",
-        transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
-        highlights: "Wrap-Around Aerodynamic Design, Bold-Cut LED DRLs & Headlamps, Segmented Rear LED Tail Lamps, Precision-Cut R17 Alloy Wheels, 9-inch SmartPlay Pro+, 6 Airbags",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:e9333d51-7e6e-4332-b704-811262b78ba0/as/Car-Details-Page_desktop.jpg?height=1171&width=2000&preferwebp=true",
-        keywords: ["victoris", "victories", "victor", "new launch suv", "victoris suv", "विक्टोरिस", "विक्टर", "विक्टोरियस"]
+// --- Official Mahindra Auto Complete Vehicle Knowledge Base with Multilingual Keywords & Structured Specs ---
+const MAHINDRA_VEHICLES = {
+    "thar-roxx": {
+        id: "thar-roxx",
+        name: "Thar ROXX",
+        channel: "AUTHENTIC",
+        category: "4x4",
+        categoryLabel: "Flagship 5-Door 4x4 SUV",
+        tagline: "The SUV of SUVs. Unmatched Presence, Luxury & Unstoppable 4x4 Capability.",
+        price: "₹12.52 Lakh* – ₹23.52 Lakh*",
+        priceRange: "₹12.52 Lakh* to ₹23.52 Lakh* (Ex-Showroom)",
+        fuelTypes: "mStallion Turbo Petrol & mHawk Diesel",
+        variantRange: "MX1, MX3, AX3L, MX5, AX5L, AX7L",
+        mileage: "5-Star Bharat NCAP (Highest Ever Rated Body-on-Frame SUV)",
+        engine: "2.0L mStallion Turbo Petrol (177PS, 380Nm) & 2.2L mHawk Diesel (175PS, 370Nm)",
+        transmission: "6-Speed AISIN Torque Converter Automatic / 6-Speed Manual",
+        highlights: "Panoramic Skyroof, Level 2 ADAS (10 Active Safety Features), Twin 10.25-inch HD Digital Screens, Harman Kardon 9-Speaker Audio with QuantumLogic 3D, Ventilated Front Seats, 4XPLOR Intelligent Terrain Management with Electronic Locking Differential, 5-Door Practicality",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/174987/thar-roxx-exterior-right-front-three-quarter-31.jpeg?isig=0&q=80",
+        keywords: ["thar roxx", "roxx", "5 door thar", "5-door thar", "thar 5 door", "thar 5-door", "थार रॉक्स", "रॉक्स", "5 डोर थार"]
     },
-    "grand-vitara": {
-        id: "grand-vitara",
-        name: "Grand Vitara",
-        channel: "NEXA",
-        category: "suv",
-        categoryLabel: "Flagship Strong Hybrid SUV",
-        tagline: "Rule Every Terrain. Intelligent Electric Hybrid & ALLGRIP AWD.",
-        price: "₹10.76 Lakh* – ₹20.09 Lakh*",
-        priceRange: "₹10.76 Lakh* to ₹20.09 Lakh* (Ex-Showroom)",
-        fuelTypes: "Intelligent Electric Hybrid (Strong) & Smart Hybrid Petrol / S-CNG",
-        variantRange: "Sigma, Delta, Zeta, Alpha, Zeta+ (Hybrid), Alpha+ (Hybrid)",
-        mileage: "Up to 27.97 km/l (Hybrid) | 26.6 km/kg (CNG)",
-        engine: "1.5L Intelligent Electric Hybrid / 1.5L K15C Smart Hybrid",
-        transmission: "e-CVT / 6-Speed AT / 5-Speed MT",
-        highlights: "Panoramic Sunroof, ALLGRIP SELECT 4WD, Head-Up Display (HUD), 360 View Camera, Ventilated Front Seats, 6 Airbags",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:88fa185a-917c-4284-aa87-546b65d38888/as/GV_8_Sec_Desktop_Image.png?height=1440&width=2560",
-        keywords: ["grand vitara", "vitara", "grandvitara", "hybrid suv", "allgrip", "ग्रैंड विटारा", "विटारा", "ग्रैंडविटारा"]
+    "scorpio-n": {
+        id: "scorpio-n",
+        name: "Scorpio-N",
+        channel: "AUTHENTIC",
+        category: "luxury",
+        categoryLabel: "The Big Daddy of SUVs",
+        tagline: "Makes Way For No One. Unrivalled Road Presence & 4XPLOR Terrain Capability.",
+        price: "₹13.69 Lakh* – ₹25.49 Lakh*",
+        priceRange: "₹13.69 Lakh* to ₹25.49 Lakh* (Ex-Showroom)",
+        fuelTypes: "mStallion Turbo Petrol & mHawk Diesel",
+        variantRange: "Z2, Z4, Z6, Z8, Z8 Select, Z8L (6 & 7-Seater Options)",
+        mileage: "5-Star Global NCAP & Bharat NCAP Safety",
+        engine: "2.0L mStallion Turbo Petrol (200PS) & 2.2L mHawk Diesel (175PS, 400Nm)",
+        transmission: "6-Speed Automatic & 6-Speed Manual with 4XPLOR 4WD",
+        highlights: "Commanding High Seating, 4XPLOR Intelligent Terrain Modes (Normal, Grass/Gravel/Snow, Mud/Ruts, Sand), Sony 12-Speaker 3D Immersive Sound with Dual Channel Subwoofer, Electric Sunroof, Dual-Zone Climate Control, Alexa Built-in",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/40432/scorpio-n-exterior-right-front-three-quarter-75.jpeg?isig=0&q=80",
+        keywords: ["scorpio-n", "scorpio n", "scorpion", "big daddy", "scorpio-n 4x4", "स्कॉर्पियो एन", "स्कॉर्पियो n", "बिग डैडी"]
     },
-    "swift": {
-        id: "swift",
-        name: "Epic New Swift",
-        channel: "ARENA",
-        category: "hatchback",
-        categoryLabel: "Iconic Sporty Hatchback",
-        tagline: "The Epic New Swift. Thrill in Every Drive.",
-        price: "₹5.79 Lakh* – ₹9.59 Lakh*",
-        priceRange: "₹5.79 Lakh* to ₹9.59 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, VXi (O), ZXi, ZXi+",
-        mileage: "Up to 25.75 km/l (Petrol) | 32.85 km/kg (S-CNG)",
-        engine: "All-New 1.2L Z-Series 3-Cylinder Engine",
-        transmission: "5-Speed MT / AGS (Automatic)",
-        highlights: "6 Airbags Standard across all variants, 9-inch SmartPlay Pro+ Infotainment, LED Projector Headlamps, Wireless Charger, Cruise Control",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:32eca14a-3c99-4d68-9056-57c4bb6f8234/as/AR-AM-Swift-SMP-OP02-SHOT-2024-v4.jpg?height=1667&width=2500",
-        keywords: ["swift", "new swift", "epic swift", "epic new swift", "z-series", "स्विफ्ट", "स्वीफ्ट", "नई स्विफ्ट"]
+    "xuv700": {
+        id: "xuv700",
+        name: "XUV700",
+        channel: "TECH",
+        category: "luxury",
+        categoryLabel: "Flagship Tech & Luxury SUV",
+        tagline: "Rush of Pure Adrenaline. Level 2 ADAS, Dual Superscreens & All-Wheel Drive.",
+        price: "₹13.99 Lakh* – ₹25.94 Lakh*",
+        priceRange: "₹13.99 Lakh* to ₹25.94 Lakh* (Ex-Showroom)",
+        fuelTypes: "mStallion Turbo Petrol & mHawk Diesel",
+        variantRange: "MX, AX3, AX5, AX5 Select, AX7, AX7L (5 & 7 Seater with AWD)",
+        mileage: "5-Star Global NCAP (Safer Choice Award)",
+        engine: "2.0L mStallion Turbo Petrol (200PS) & 2.2L mHawk Diesel (185PS, 450Nm)",
+        transmission: "6-Speed Automatic / 6-Speed Manual with Optional All-Wheel Drive (AWD)",
+        highlights: "Dual 10.25-inch Floating Superscreen Cockpit, Level 2 ADAS (Adaptive Cruise Control, Auto Emergency Braking, Lane Departure Prevention), Panoramic Skyroof, Sony 3D Sound with 12 Speakers, Flush Smart Door Handles, Wireless Apple CarPlay & Android Auto",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/42355/xuv700-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+        keywords: ["xuv700", "xuv 700", "xuv", "700", "xuv 7xo", "xuv7xo", "adas", "एक्सयूवी 700", "एक्सयूवी700"]
     },
-    "brezza": {
-        id: "brezza",
-        name: "New Brezza",
-        channel: "ARENA",
-        category: "suv",
-        categoryLabel: "Compact Urban SUV",
-        tagline: "More Power To Your Play. India's Favorite Compact SUV.",
-        price: "₹8.34 Lakh* – ₹14.14 Lakh*",
-        priceRange: "₹8.34 Lakh* to ₹14.14 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+",
-        mileage: "Up to 19.89 km/l (Petrol) | 25.51 km/kg (S-CNG)",
-        engine: "1.5L K-Series DualJet Dual VVT Engine with Smart Hybrid",
-        transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
-        highlights: "Electric Sunroof, Head-Up Display (HUD), 360 View Camera, SmartPlay Pro+ 9-inch Display with Arkamys sound, 6 Airbags, Wireless Charging",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:88eb5a34-6769-4fe9-8435-714c88f6338d/as/TB-dual-tone.png?height=1440&width=2560",
-        keywords: ["brezza", "new brezza", "vitara brezza", "urban suv", "ब्रेज़ा", "ब्रेजा", "नई ब्रेजा"]
+    "xuv-3xo": {
+        id: "xuv-3xo",
+        name: "XUV 3XO",
+        channel: "TECH",
+        category: "compact",
+        categoryLabel: "Next-Gen Tech Compact SUV",
+        tagline: "Everything You Want & More. Segment-First Skyroof & Level 2 ADAS.",
+        price: "₹7.79 Lakh* – ₹15.04 Lakh*",
+        priceRange: "₹7.79 Lakh* to ₹15.04 Lakh* (Ex-Showroom)",
+        fuelTypes: "Turbo Petrol (TCMPFi / TGDi) & mHawk Diesel",
+        variantRange: "MX1, MX2, MX3, MX3 Pro, AX5, AX5L, AX7, AX7L",
+        mileage: "Up to 21.2 km/l (Diesel) | 20.1 km/l (Petrol)",
+        engine: "1.2L mStallion Turbo Petrol (111PS), 1.2L TGDi Turbo (130PS) & 1.5L Diesel (117PS)",
+        transmission: "AISIN 6-Speed Torque Converter AT & 6-Speed Manual",
+        highlights: "Segment-Largest Panoramic Skyroof, Level 2 ADAS with 360-Degree Surround Camera, Dual-Zone Climate Control, 6 Airbags Standard across all variants, Harman Kardon Premium Audio, Dual 10.25-inch High-Definition Displays",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/156405/xuv-3xo-exterior-right-front-three-quarter-33.jpeg?isig=0&q=80",
+        keywords: ["xuv 3xo", "xuv3xo", "3xo", "xuv 300", "xuv300", "compact suv", "एक्सयूवी 3एक्सओ", "3एक्सओ"]
     },
-    "fronx": {
-        id: "fronx",
-        name: "FRONX",
-        channel: "NEXA",
-        category: "suv",
-        categoryLabel: "Turbo Crossover Coupe SUV",
-        tagline: "Shape New Trends. Aerodynamic Coupe Stance & Boosterjet Power.",
-        price: "₹6.85 Lakh* – ₹12.98 Lakh*",
-        priceRange: "₹6.85 Lakh* to ₹12.98 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (1.0L Turbo / 1.2L DualJet) & S-CNG",
-        variantRange: "Sigma, Delta, Delta+, Zeta, Alpha",
-        mileage: "Up to 22.89 km/l (Petrol) | 28.51 km/kg (CNG)",
-        engine: "1.0L Turbo Boosterjet / 1.2L K-Series DualJet",
-        transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT / AGS",
-        highlights: "1.0L Turbo Boosterjet Acceleration, Head-Up Display, 360 View Camera, Sculpted Aerodynamic Silhouette, 9-inch SmartPlay Pro+",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:cbaaf7a8-eef9-4137-9e91-8e914f6ba4f2/as/fronx_fold_Desktop_Image.png?width=2000&id=1&preferwebp=true",
-        keywords: ["fronx", "boosterjet", "turbo fronx", "crossover", "coupe", "फ्रोंक्स", "फ्रांक्स"]
+    "thar": {
+        id: "thar",
+        name: "Thar (3-Door)",
+        channel: "AUTHENTIC",
+        category: "4x4",
+        categoryLabel: "Iconic 4x4 Off-Roader",
+        tagline: "Explore The Impossible. Born For Extreme Adventure & Off-Road Trails.",
+        price: "₹10.32 Lakh* – ₹18.00 Lakh*",
+        priceRange: "₹10.32 Lakh* to ₹18.00 Lakh* (Ex-Showroom)",
+        fuelTypes: "mStallion Turbo Petrol & mHawk Diesel",
+        variantRange: "AX Opt & LX (Hard Top & Convertible Top Options with 4x4 / RWD)",
+        mileage: "4-Star Global NCAP Safety Rating",
+        engine: "2.0L mStallion TGDi Petrol (150PS) / 2.2L mHawk Diesel (130PS) / 1.5L Diesel",
+        transmission: "6-Speed AT / 6-Speed MT with Shift-on-Fly 4WD Transfer Case",
+        highlights: "Iconic 2-Door Stance, Mechanical Locking Rear Differential (MLD), 650mm Water Wading Capacity, Removable Roof Top, IP54 Drizzle-Resistant Interior Switches, Washable Floor with Drain Plugs",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/40087/thar-exterior-right-front-three-quarter-35.jpeg?isig=0&q=80",
+        keywords: ["thar", "thar 3 door", "3 door thar", "classic thar", "4x4", "off road", "offroader", "थार", "3 डोर थार"]
     },
-    "jimny": {
-        id: "jimny",
-        name: "Jimny",
-        channel: "NEXA",
-        category: "suv",
-        categoryLabel: "Authentic 4x4 Off-Road Legend",
-        tagline: "Purity of Function. Conquering Global Trails since 1970.",
-        price: "₹12.32 Lakh* – ₹14.89 Lakh*",
-        priceRange: "₹12.32 Lakh* to ₹14.89 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (High Off-Road Torque Delivery)",
-        variantRange: "Zeta, Alpha (Dual Tone Option)",
-        mileage: "Up to 16.94 km/l",
-        engine: "1.5L K15B Petrol Engine with Optimized Off-Road Torque",
-        transmission: "4-Speed AT / 5-Speed MT with Low-Range 4WD Transfer Case",
-        highlights: "ALLGRIP PRO 4WD, Heavy-Duty Ladder Frame Chassis, 3-Link Rigid Axle Suspension, Hill Descent & Hold Control, 6 Airbags",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:5716197a-a15e-424a-ad05-52b52dada745/as/JIMNY_fold_desktop_image.png?width=2000&id=1&preferwebp=true",
-        keywords: ["jimny", "jimmy", "4x4", "allgrip pro", "offroad", "off-road", "जिम्नी", "जिम्मी"]
+    "scorpio-classic": {
+        id: "scorpio-classic",
+        name: "Scorpio Classic",
+        channel: "AUTHENTIC",
+        category: "luxury",
+        categoryLabel: "The Undisputed Legend",
+        tagline: "The Legend Is Back. Robust mHawk Power & Timeless Macho Character.",
+        price: "₹13.37 Lakh* – ₹17.40 Lakh*",
+        priceRange: "₹13.37 Lakh* to ₹17.40 Lakh* (Ex-Showroom)",
+        fuelTypes: "All-Aluminum 2.2L GEN-2 mHawk Diesel",
+        variantRange: "Classic S & Classic S11 (7-Seater & 9-Seater Options)",
+        mileage: "High Torque & Robust Long-Haul Highway Efficiency",
+        engine: "2.2L All-Aluminum GEN-2 mHawk Diesel Engine (132PS, 300Nm torque)",
+        transmission: "6-Speed Cable-Shift Manual Transmission with Rear-Wheel Drive (RWD)",
+        highlights: "Signature Tower Tail Lamps, New Redefined Grille with Twin Peaks Logo, 9-inch Touchscreen Infotainment with Bluetooth/Phone Mirroring, Micro-Hybrid Technology, Durable Ladder-Frame Chassis, Available in 7 and 9-Seater layouts",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/128413/scorpio-classic-exterior-right-front-three-quarter-47.jpeg?isig=0&q=80",
+        keywords: ["scorpio classic", "scorpio s11", "classic scorpio", "scorpio", "स्कॉर्पियो क्लासिक", "स्कॉर्पियो एस11"]
     },
-    "invicto": {
-        id: "invicto",
-        name: "Invicto",
-        channel: "NEXA",
-        category: "mpv",
-        categoryLabel: "Opulent Strong Hybrid Luxury MUV",
-        tagline: "The Art of Opulence. Unmatched Comfort and Hybrid Tech.",
-        price: "₹24.97 Lakh* – ₹28.92 Lakh*",
-        priceRange: "₹24.97 Lakh* to ₹28.92 Lakh* (Ex-Showroom)",
-        fuelTypes: "Intelligent Electric Hybrid (Strong Hybrid Pure EV Mode)",
-        variantRange: "Zeta+ (7-Seater / 8-Seater), Alpha+ (7-Seater)",
-        mileage: "21.19 km/l (Intelligent Electric Hybrid)",
-        engine: "2.0L Intelligent Electric Hybrid System",
-        transmission: "e-CVT (Electric Continuous Variable Transmission)",
-        highlights: "Captain Ottoman 2nd-Row Seats, Panoramic Sunroof with Ambient Mood Lighting, Powered Tailgate, Dual-Zone Climate Control, Suzuki Connect with 50+ Features",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:93db3aba-c00e-45a0-b973-12cfe59f25d9/as/Invicto_Banner_Image.png?width=2000&id=1&preferwebp=true",
-        keywords: ["invicto", "invecto", "luxury mpv", "strong hybrid muv", "ottoman", "इनविक्टो", "इन्विक्टो"]
+    "bolero-neo": {
+        id: "bolero-neo",
+        name: "Bolero Neo",
+        channel: "UTILITY",
+        category: "compact",
+        categoryLabel: "Tough Modern RWD Compact SUV",
+        tagline: "Tough Jo Dikhe, Tough Jo Kare. Authentic SUV with Multi-Terrain Technology.",
+        price: "₹8.99 Lakh* – ₹10.79 Lakh*",
+        priceRange: "₹8.99 Lakh* to ₹10.79 Lakh* (Ex-Showroom)",
+        fuelTypes: "1.5L mHawk100 Diesel",
+        variantRange: "N4, N8, N10, N10 (O) with Multi-Terrain Technology",
+        mileage: "Up to 17.29 km/l (Diesel)",
+        engine: "1.5L mHawk100 Turbo Diesel (100PS, 260Nm torque)",
+        transmission: "5-Speed Manual Transmission with Rear-Wheel Drive (RWD)",
+        highlights: "Authentic Body-on-Frame Construction, Multi-Terrain Technology (Mechanical Locking Differential - MLD on N10(O)), 7-Seater Layout, Micro-Hybrid Engine System, Premium Italian Themed Interiors, 7-inch Touchscreen",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/50823/bolero-neo-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+        keywords: ["bolero neo", "neo", "bolero n10", "n10", "बोलेरो नियो", "नियो"]
     },
-    "dzire": {
-        id: "dzire",
-        name: "All-New Dzire",
-        channel: "ARENA",
-        category: "sedan",
-        categoryLabel: "India's #1 Sedan (5-Star Safety)",
-        tagline: "India's Most Loved Sedan. 5-Star 2026 Global NCAP Safety.",
-        price: "₹6.25 Lakh* – ₹10.14 Lakh*",
-        priceRange: "₹6.25 Lakh* to ₹10.14 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+",
-        mileage: "Up to 25.71 km/l (Petrol) | 33.73 km/kg (S-CNG)",
-        engine: "All-New 1.2L Z-Series 3-Cylinder Engine",
-        transmission: "5-Speed MT / AGS (Automatic)",
-        highlights: "5-Star Global NCAP Safety Rating, Electric Sunroof, 360-Degree View Camera, Wireless Phone Charger, LED Crystal Vision Headlamps, Rear AC Vents",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:dcb80bf0-b7be-4ddc-9ba0-1b248acf6654/as/Dzire_TVC_Desktop_Dummy.png?width=2000&preferwebp=true",
-        keywords: ["dzire", "desire", "sedan", "new dzire", "5-star", "डिजायर", "डिज़ायर"]
+    "bolero-neo-plus": {
+        id: "bolero-neo-plus",
+        name: "Bolero Neo+",
+        channel: "UTILITY",
+        category: "utility",
+        categoryLabel: "9-Seater Family & Commercial SUV",
+        tagline: "Space For The Whole World. The Ultimate 9-Seater SUV with 2.2L mHawk Power.",
+        price: "₹11.39 Lakh* – ₹13.49 Lakh*",
+        priceRange: "₹11.39 Lakh* to ₹13.49 Lakh* (Ex-Showroom)",
+        fuelTypes: "2.2L mHawk Diesel",
+        variantRange: "P4 & P10 (9-Seater 2+3+4 Configuration)",
+        mileage: "Powerful & Reliable Long-Distance Cruiser",
+        engine: "2.2L mHawk Diesel Engine (120PS, 280Nm torque)",
+        transmission: "6-Speed Manual with Rear-Wheel Drive",
+        highlights: "Spacious 9-Seater Seating Arrangement (2 Front + 3 Middle + 4 Side-Facing Rear), 9-Inch Touchscreen Infotainment, Heavy Duty Suspension, Micro Hybrid Start-Stop System, ABS with EBD & Dual Airbags",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/174989/bolero-neo-plus-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        keywords: ["bolero neo plus", "bolero neo+", "bolero 9 seater", "9 seater", "9-seater", "बोलेरो नियो प्लस", "9 सीटर बोलेरो"]
     },
-    "baleno": {
-        id: "baleno",
-        name: "Baleno",
-        channel: "NEXA",
-        category: "hatchback",
-        categoryLabel: "Premium Intelligent Hatchback",
-        tagline: "Tech Goes Bold. India's Top Premium Hatchback.",
-        price: "₹5.99 Lakh* – ₹9.88 Lakh*",
-        priceRange: "₹5.99 Lakh* to ₹9.88 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "Sigma, Delta, Zeta, Alpha",
-        mileage: "Up to 22.94 km/l (Petrol) | 30.61 km/kg (CNG)",
-        engine: "1.2L DualJet Dual VVT Engine with Idle Start-Stop",
-        transmission: "AGS (Auto Gear Shift) / 5-Speed MT",
-        highlights: "Head-Up Display (HUD), 360 View Camera, 9-inch SmartPlay Pro+ with Surround Sense by Arkamys, 6 Airbags, UV Cut Glass",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:d1f6c965-1ce7-46c9-b3d5-46cac019f825/as/Baleno_Fold_Desktop_Image.png?width=2000&id=1&preferwebp=true",
-        keywords: ["baleno", "nexa baleno", "premium hatchback", "बलेनो", "बलेनो"]
+    "bolero": {
+        id: "bolero",
+        name: "Bolero",
+        channel: "UTILITY",
+        category: "utility",
+        categoryLabel: "The Undisputed Rural Metal Legend",
+        tagline: "India's Most Trusted Tough SUV. Solid Metal Construction & Unmatched Reliability.",
+        price: "₹8.49 Lakh* – ₹9.99 Lakh*",
+        priceRange: "₹8.49 Lakh* to ₹9.99 Lakh* (Ex-Showroom)",
+        fuelTypes: "1.5L mHawk75 Diesel",
+        variantRange: "B4, B6, B6 (Opt)",
+        mileage: "Up to 16.0 km/l (Diesel)",
+        engine: "1.5L mHawk75 Turbocharged Diesel Engine (75PS, 210Nm torque)",
+        transmission: "5-Speed Manual Transmission with Heavy Duty Rear-Wheel Drive",
+        highlights: "Solid Metal Front Bumper & High Ground Clearance, 7-Seater Configuration, Micro-Hybrid Technology, Unmatched Rural & Semi-Urban Durability, Proven Low Maintenance Cost, Driver Airbag, ABS with EBD",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/43482/bolero-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+        keywords: ["bolero", "classic bolero", "bolero b6", "bolero power plus", "बोलेरो", "क्लासिक बोलेरो"]
     },
-    "ertiga": {
-        id: "ertiga",
-        name: "Ertiga",
-        channel: "ARENA",
-        category: "mpv",
-        categoryLabel: "India's Best-Selling 7-Seater MPV",
-        tagline: "Move Together in Comfort. Space and Efficiency for Families.",
-        price: "₹8.80 Lakh* – ₹13.03 Lakh*",
-        priceRange: "₹8.80 Lakh* to ₹13.03 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+",
-        mileage: "Up to 20.51 km/l (Petrol) | 26.11 km/kg (S-CNG)",
-        engine: "Next-Gen 1.5L K-Series DualJet Smart Hybrid Engine",
-        transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
-        highlights: "3-Row Flexible Seating, Cooled Cup Holders, 7-inch SmartPlay Pro Display, Cruise Control, S-CNG Factory Fitted Option",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:25689afa-3e3d-4980-913f-03f695a1a37f/as/Key-Visual_2000x1171.jpg?height=1171&width=2000&preferwebp=true",
-        keywords: ["ertiga", "artiga", "7 seater", "7-seater", "family mpv", "अर्टिगा", "अर्टीगा"]
-    },
-    "xl6": {
-        id: "xl6",
-        name: "XL6",
-        channel: "NEXA",
-        category: "mpv",
-        categoryLabel: "Premium 6-Seater MPV with Captain Seats",
-        tagline: "Feels Just Right. Sophisticated Comfort and Luxury.",
-        price: "₹11.52 Lakh* – ₹14.67 Lakh*",
-        priceRange: "₹11.52 Lakh* to ₹14.67 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
-        variantRange: "Zeta, Alpha, Alpha+",
-        mileage: "Up to 20.97 km/l (Petrol) | 26.32 km/kg (CNG)",
-        engine: "1.5L K15C DualJet Dual VVT Smart Hybrid",
-        transmission: "6-Speed AT with Paddle Shifters / 5-Speed MT",
-        highlights: "2nd-Row Captain Seats, Ventilated Front Seats, 360 View Camera, Tire Pressure Monitoring System (TPMS), All-Black Interior with Stone Finish",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:f4a1c81c-8c3a-4a7b-94d3-d407e2d86ac5/as/XL6_Banner_Image_Desktop.png?width=2000&id=1&preferwebp=true",
-        keywords: ["xl6", "xl-6", "captain seats", "6 seater", "एक्सएल6", "एक्सएल 6"]
-    },
-    "wagonr": {
-        id: "wagonr",
-        name: "WagonR",
-        channel: "ARENA",
-        category: "hatchback",
-        categoryLabel: "Iconic Tallboy Hatchback",
-        tagline: "Dil Se Strong. India's Favorite Spacious Tallboy.",
-        price: "₹5.54 Lakh* – ₹7.42 Lakh*",
-        priceRange: "₹5.54 Lakh* to ₹7.42 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (1.0L / 1.2L) & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+",
-        mileage: "Up to 24.35 km/l (Petrol) | 34.05 km/kg (S-CNG)",
-        engine: "Advanced 1.0L and 1.2L K-Series DualJet Engines",
-        transmission: "AGS / 5-Speed MT",
-        highlights: "Spacious Tall Boy Stance, Split Folding Rear Seats, 7-inch SmartPlay Studio, Dual Airbags, Unmatched Legroom & Headroom",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:e4d500dc-a6ea-458f-8940-867a1ae4a10e/as/wagenr_TVC-Banner_2000x1171.jpg?height=1171&width=2000&preferwebp=true",
-        keywords: ["wagonr", "wagon-r", "wagon r", "tall boy", "tallboy", "वैगनआर", "वैगन आर"]
-    },
-    "alto-k10": {
-        id: "alto-k10",
-        name: "Alto K10",
-        channel: "ARENA",
-        category: "city",
-        categoryLabel: "Smart Urban City Car",
-        tagline: "Peheli Matlab Maruti. India's Most Accessible Car.",
-        price: "₹3.69 Lakh* – ₹5.96 Lakh*",
-        priceRange: "₹3.69 Lakh* to ₹5.96 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "Std, LXi, VXi, VXi+",
-        mileage: "Up to 24.90 km/l (Petrol) | 33.85 km/kg (S-CNG)",
-        engine: "Next-Gen 1.0L K-Series DualJet Dual VVT Engine",
-        transmission: "AGS / 5-Speed MT",
-        highlights: "Compact & Nimble for City Traffic, SmartPlay Studio, Digital Speedometer, High Fuel Efficiency, S-CNG Factory Fitted",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:17671701-80a4-42fa-a1f1-b3425350e910/as/TVC-Banner_desktop_2000x1171.jpg?height=1171&width=2000&preferwebp=true",
-        keywords: ["alto", "alto k10", "alto 800", "k10", "ऑल्टो", "अल्टो", "के10"]
-    },
-    "celerio": {
-        id: "celerio",
-        name: "Celerio",
-        channel: "ARENA",
-        category: "city",
-        categoryLabel: "Mileage Champion Hatchback",
-        tagline: "Drive With Drive. India's Most Fuel Efficient Petrol Car.",
-        price: "₹4.69 Lakh* – ₹7.04 Lakh*",
-        priceRange: "₹4.69 Lakh* to ₹7.04 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "LXi, VXi, ZXi, ZXi+",
-        mileage: "Up to 26.68 km/l (Petrol) | 35.60 km/kg (S-CNG)",
-        engine: "DualJet 1.0L K10C with Idle Start-Stop",
-        transmission: "AGS / 5-Speed MT",
-        highlights: "Segment-Best Petrol Mileage, 3D Organic Sculpted Design, Push Start-Stop Button with Smart Key, 7-inch Touchscreen",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:ed83cc03-2b30-4383-ba46-b52ca89fc2df/as/Variant-Banner-TVC-2000-1171.png?width=2000&preferwebp=true",
-        keywords: ["celerio", "highest mileage", "best mileage", "सेलेरियो", "सिलेरियो"]
-    },
-    "s-presso": {
-        id: "s-presso",
-        name: "S-Presso",
-        channel: "ARENA",
-        category: "city",
-        categoryLabel: "Bold Mini-SUV",
-        tagline: "Live Bold. Mini-SUV with High Ground Clearance.",
-        price: "₹3.49 Lakh* – ₹6.12 Lakh*",
-        priceRange: "₹3.49 Lakh* to ₹6.12 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "Std, LXi, VXi, VXi+",
-        mileage: "Up to 25.30 km/l (Petrol) | 32.73 km/kg (S-CNG)",
-        engine: "1.0L K-Series DualJet Dual VVT Engine",
-        transmission: "AGS / 5-Speed MT",
-        highlights: "SUV-Inspired Bold Design, 180mm High Ground Clearance, Dynamic Center Console, Digital Instrument Cluster, S-CNG",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:384b5c9e-5053-4518-9c28-e98f5da702f5/as/spresso_mob_750x1458.png?width=750&preferwebp=true",
-        keywords: ["s-presso", "spresso", "mini suv", "एस-प्रेसो", "एसप्रेसो"]
-    },
-    "eeco": {
-        id: "eeco",
-        name: "Eeco",
-        channel: "ARENA",
-        category: "mpv",
-        categoryLabel: "Multi-Purpose Family & Utility Van",
-        tagline: "Hamesha Saath Nibhaye. India's Trusted Multi-Purpose Van.",
-        price: "₹5.18 Lakh* – ₹6.58 Lakh*",
-        priceRange: "₹5.18 Lakh* to ₹6.58 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "5-Seater Std, 7-Seater Std, 5-Seater AC, 5-Seater CNG AC",
-        mileage: "Up to 19.71 km/l (Petrol) | 26.78 km/kg (S-CNG)",
-        engine: "Advanced 1.2L K-Series Engine",
-        transmission: "5-Speed MT",
-        highlights: "5-Seater & 7-Seater Seating Options, Flat Rear Cargo Floor, Digital Instrument Cluster, Dual Airbags, ABS with EBD",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:d0ee7111-dcb5-479c-b354-d01b87744c0c/as/Eeco_varient_2000x1117_desktop.png?width=2000&preferwebp=true",
-        keywords: ["eeco", "van", "ambulance", "cargo", "multi-purpose", "ईको", "इको"]
-    },
-    "super-carry": {
-        id: "super-carry",
-        name: "Super Carry",
-        channel: "COMMERCIAL",
-        category: "commercial",
-        categoryLabel: "Mini-Truck & Commercial Goods Carrier",
-        tagline: "Pragati Ka Dumdaar Saathi. India's Trusted Mini-Truck.",
-        price: "₹5.15 Lakh* – ₹6.30 Lakh*",
-        priceRange: "₹5.15 Lakh* to ₹6.30 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "Flat Deck, Cab Chassis, S-CNG Deck",
-        mileage: "High Fuel Economy | S-CNG Dual Fuel Technology",
-        engine: "Advanced 4-Cylinder 1.2L K-Series Engine",
-        transmission: "5-Speed MT with High Torque Delivery",
-        highlights: "Spacious Flat Cargo Deck, 740kg Payload Capacity, Front Disc Brakes, Reverse Parking Sensor, Large 70L CNG Tank",
-        bgImage: "https://www.marutisuzukicommercial.com/adobe/assets/urn:aaid:aem:75571ab6-5405-4fb1-b884-e1b5a7640f2e/as/supercarry-petrol.png?width=2000&id=1&preferwebp=true",
-        keywords: ["super carry", "supercarry", "mini truck", "commercial truck", "goods carrier", "chota hathi", "सुपर कैरी", "छोटा हाथी"]
-    },
-    "tour-s": {
-        id: "tour-s",
-        name: "Tour S (Dzire Fleet)",
-        channel: "COMMERCIAL",
-        category: "commercial",
-        categoryLabel: "Commercial Fleet Sedan",
-        tagline: "The Reliable Business Sedan. Exceptional Mileage & Passenger Comfort.",
-        price: "₹6.51 Lakh* – ₹7.46 Lakh*",
-        priceRange: "₹6.51 Lakh* to ₹7.46 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "Tour S STD (Petrol), Tour S STD (S-CNG)",
-        mileage: "Up to 31.12 km/kg (S-CNG) | 23.15 km/l (Petrol)",
-        engine: "1.2L K-Series DualJet Dual VVT Engine",
-        transmission: "5-Speed MT with Speed Limiting Function",
-        highlights: "Speed Limiter (80 km/h), Factory-Fitted S-CNG, Spacious Boot Space, Dual Airbags, ABS with EBD, Low Maintenance Cost",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:dcb80bf0-b7be-4ddc-9ba0-1b248acf6654/as/Dzire_TVC_Desktop_Dummy.png?width=2000&preferwebp=true",
-        keywords: ["tour s", "tour-s", "dzire tour", "commercial dzire", "taxi sedan", "टूर एस"]
-    },
-    "tour-m": {
-        id: "tour-m",
-        name: "Tour M (Ertiga Fleet)",
-        channel: "COMMERCIAL",
-        category: "commercial",
-        categoryLabel: "Commercial 7-Seater Fleet MPV",
-        tagline: "Move More, Earn More. The Ultimate 7-Seater Fleet Solution.",
-        price: "₹9.75 Lakh* – ₹10.70 Lakh*",
-        priceRange: "₹9.75 Lakh* to ₹10.70 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol (Smart Hybrid) & Factory-Fitted S-CNG",
-        variantRange: "Tour M (Petrol), Tour M (S-CNG)",
-        mileage: "Up to 26.11 km/kg (S-CNG) | 20.51 km/l (Petrol)",
-        engine: "1.5L K-Series Smart Hybrid Engine",
-        transmission: "5-Speed MT",
-        highlights: "7-Seater Passenger Layout, Dual AC Vents across all rows, Factory Fitted S-CNG, Speed Limiting Governor, Unmatched Passenger Legroom",
-        bgImage: "https://www.marutisuzuki.com/adobe/assets/urn:aaid:aem:25689afa-3e3d-4980-913f-03f695a1a37f/as/Key-Visual_2000x1171.jpg?height=1171&width=2000&preferwebp=true",
-        keywords: ["tour m", "tour-m", "ertiga tour", "commercial ertiga", "fleet mpv", "टूर एम"]
-    },
-    "tour-v": {
-        id: "tour-v",
-        name: "Tour V (Eeco Fleet)",
-        channel: "COMMERCIAL",
-        category: "commercial",
-        categoryLabel: "Commercial Multi-Passenger & Utility Van",
-        tagline: "Trusted Van for School, Staff & Commercial Transit.",
-        price: "₹5.24 Lakh* – ₹6.51 Lakh*",
-        priceRange: "₹5.24 Lakh* to ₹6.51 Lakh* (Ex-Showroom)",
-        fuelTypes: "Petrol & Factory-Fitted S-CNG",
-        variantRange: "5-Seater Tour V, 7-Seater Tour V, Tour V CNG AC",
-        mileage: "Up to 26.78 km/kg (S-CNG) | 19.71 km/l (Petrol)",
-        engine: "1.2L Advanced K-Series DualJet Engine",
-        transmission: "5-Speed MT",
-        highlights: "5-Seater & 7-Seater Options, Large Sliding Doors, High Headroom, Dual Airbags, ABS with EBD, Factory Fitted S-CNG",
-        bgImage: "https://www.marutisuzukicommercial.com/adobe/assets/urn:aaid:aem:5b236c91-89c1-4810-8a0c-3000f474c8fa/as/tourv1282x503-desktop.png?height=503&width=1282",
-        keywords: ["tour v", "tour-v", "eeco tour", "commercial eeco", "school van", "टूर वी"]
-    },
-    "e-vitara": {
-        id: "e-vitara",
-        name: "e-Vitara (eVX)",
-        channel: "NEXA",
+    "xuv400-ev": {
+        id: "xuv400-ev",
+        name: "XUV400 EV",
+        channel: "EV",
         category: "ev",
-        categoryLabel: "Upcoming Global Electric SUV",
-        tagline: "The Future is Electric. Maruti Suzuki's Global Pure EV.",
-        price: "Upcoming Preview (Expected ₹18.00 Lakh* – ₹24.00 Lakh*)",
-        priceRange: "Upcoming Preview / Expected ₹18.00 Lakh* to ₹24.00 Lakh* (Ex-Showroom)",
-        fuelTypes: "100% Pure Electric (Dedicated EV Architecture)",
-        variantRange: "49kWh Battery Pack, 61kWh Battery Pack (ALLGRIP-e AWD)",
-        mileage: "500+ km Range per charge",
-        engine: "Dedicated Pure EV Architecture (49kWh & 61kWh Battery Options)",
-        transmission: "eAxle with ALLGRIP-e Electric 4WD",
-        highlights: "Global Electric SUV, Dual-Motor ALLGRIP-e AWD, Dual Integrated Cockpit Screens, Fast DC Charging, Level 2 ADAS",
-        bgImage: "https://www.nexaexperience.com/adobe/assets/urn:aaid:aem:eee483e3-af04-4551-9d42-9d1c9d94a077/as/evitara-updated-31-3-desktop_image.png?width=2000&id=1&preferwebp=true",
-        keywords: ["e-vitara", "evitara", "evx", "electric", "ev", "electric car", "ई-विटारा", "इलेक्ट्रिक"]
+        categoryLabel: "All-Electric Performance SUV",
+        tagline: "The Future of Electric SUVs. 0 to 100 in 8.3 Seconds with 456 km Range.",
+        price: "₹15.49 Lakh* – ₹19.39 Lakh*",
+        priceRange: "₹15.49 Lakh* to ₹19.39 Lakh* (Ex-Showroom)",
+        fuelTypes: "100% Pure Electric (Zero Tailpipe Emissions)",
+        variantRange: "EC Pro (34.5kWh) & EL Pro (39.4kWh)",
+        mileage: "Up to 456 km per charge (MIDC)",
+        engine: "Permanent Magnet Synchronous Electric Motor (150PS, 310Nm instant torque)",
+        transmission: "Single-Speed Automatic Transmission (0-100 km/h in 8.3s)",
+        highlights: "Fast 50kW DC Fast Charging (0 to 80% in 50 minutes), Dual 10.25-inch Floating Display Cockpit, Dual-Zone Climate Control with Memory, Wireless Apple CarPlay & Android Auto, Copper-Accented EV Exterior Styling",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/45280/xuv400-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+        keywords: ["xuv400", "xuv 400", "xuv400 ev", "xuv ev", "electric suv", "ev", "electric car", "एक्सयूवी400", "इलेक्ट्रिक एसयूवी"]
+    },
+    "marazzo": {
+        id: "marazzo",
+        name: "Marazzo",
+        channel: "AUTHENTIC",
+        category: "luxury",
+        categoryLabel: "Smooth & Spacious 7/8 Seater MPV",
+        tagline: "Smooth Like A Shark. Quietest Cabin & Surround Cool Technology.",
+        price: "₹14.39 Lakh* – ₹16.80 Lakh*",
+        priceRange: "₹14.39 Lakh* to ₹16.80 Lakh* (Ex-Showroom)",
+        fuelTypes: "1.5L D15 4-Cylinder Turbo Diesel",
+        variantRange: "M2+, M4+, M6+ (7 & 8-Seater Options)",
+        mileage: "Up to 17.3 km/l (Diesel)",
+        engine: "1.5L 4-Cylinder D15 Turbo Diesel Engine (121PS, 300Nm torque)",
+        transmission: "6-Speed Manual Transmission with Front-Wheel Drive",
+        highlights: "Shark-Inspired Aerodynamic Silhouette, Industry-First Surround Cool Roof AC System, 4-Star Global NCAP Safety Rating, Ultra-Quiet Cabin Insulation, Aircraft-Inspired Parking Brake, 7 and 8 Passenger Seating Flexibility",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/31991/marazzo-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        keywords: ["marazzo", "mahindra marazzo", "mpv", "7 seater", "8 seater", "मराज़ो", "मराजो"]
+    },
+    "bolero-camper": {
+        id: "bolero-camper",
+        name: "Bolero Camper & Maxx Pik-Up",
+        channel: "COMMERCIAL",
+        category: "utility",
+        categoryLabel: "Heavy Duty Commercial Pick-Up Range",
+        tagline: "India's #1 Commercial Pickup Range. Maxx Payload, Double Cab & 4x4 Power.",
+        price: "₹9.27 Lakh* – ₹10.61 Lakh*",
+        priceRange: "₹9.27 Lakh* to ₹10.61 Lakh* (Ex-Showroom)",
+        fuelTypes: "2.5L m2DiCR Turbo Diesel & CNG",
+        variantRange: "Camper 4x4, Camper Gold, Maxx Pik-Up HD, City Pik-Up",
+        mileage: "Maxx Mileage & Heavy-Duty Commercial Reliability",
+        engine: "2.5L m2DiCR Turbocharged Diesel Engine (75PS, 200Nm torque)",
+        transmission: "5-Speed Heavy Duty Manual with 4x4 & 4x2 Options",
+        highlights: "Double Cabin 5-Seater + Large Cargo Bed, 4x4 All-Terrain Commercial Capability, 1.3 to 2.0 Ton Payload Options, Heavy Duty Leaf Spring Suspension, Power Steering and Air Conditioning Options",
+        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/134449/bolero-camper-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        keywords: ["bolero camper", "camper", "pikup", "pickup", "bolero pikup", "maxx pikup", "chota hathi", "कैम्पर", "पिकअप", "बोलेरो पिकअप"]
     }
 };
 
-let currentSelectedCarId = "victoris";
+let currentSelectedCarId = "thar-roxx";
 let activeCustomerName = "";
 let activeModelOfInterest = "";
 
-// --- System Instruction Prompt for Maruti Suzuki Consultant "Kabir" with Flow & Guardrails ---
-const MARUTI_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Specialist and Virtual Consultant for Maruti Suzuki India across all retail and commercial business channels: ARENA, NEXA, and COMMERCIAL / TOUR FLEET.
+// --- System Instruction Prompt for Mahindra Auto Consultant "Kabir" with Flow & Guardrails ---
+const MAHINDRA_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Specialist and Virtual Consultant for Mahindra Auto India across all SUV and utility vehicle categories: Authentic 4x4 SUVs, Tech & Luxury SUVs, Born Electric, and Tough Commercial Utilities.
 
 *** MALE GENDER & IDENTITY (STRICT REQUIREMENT) ***
 - YOU MUST ALWAYS SPEAK AS A MALE. NEVER SPEAK OR REFER TO YOURSELF AS A FEMALE.
 - YOUR NAME IS KABIR.
 - IN HINDI, ALWAYS USE MASCULINE GRAMMATICAL ENDINGS AND VERBS:
-  - Say: "नमस्ते! मैं कबीर हूँ, मारुति सुजुकी वर्चुअल शोरूम से। मैं आपकी पूरी मदद करूँगा।"
+  - Say: "नमस्ते! मैं कबीर हूँ, महिंद्रा ऑटो वर्चुअल शोरूम से। मैं आपकी पूरी मदद करूँगा।"
   - Use masculine verbs: "बताता हूँ", "दिखाता हूँ", "करूँगा", "समझता हूँ".
   - NEVER use feminine verb endings (e.g. NEVER say "करूँगी", "बताती हूँ", "दिखाती हूँ").
 - IN ENGLISH OR OTHER LANGUAGES, ALWAYS MAINTAIN A CONFIDENT, ENTHUSIASTIC, PROFESSIONAL MALE SHOWROOM EXPERT PERSONA.
@@ -406,48 +244,49 @@ const MARUTI_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Special
 - The conversation MUST start with:
   1. Greet customer in Hindi warmly as Kabir.
   2. Ask for the Customer's Name.
-  3. Ask which Maruti Suzuki model they are interested in exploring.
+  3. Ask which Mahindra SUV or model they are interested in exploring.
 - Once the customer provides their name and car model (or if they give their name / model in their reply), you MUST IMMEDIATELY execute the tool:
   record_customer_lead(customer_name, model_of_interest)
   This auto-qualifies the customer inquiry in the CRM database.
 - ALSO call switch_vehicle_showroom(car_name) to display the vehicle on stage.
 
 *** GUARDRAIL 1: OFFERS & ON-ROAD PRICE RULES (STRICT REQUIREMENT) ***
-1. CONSUMER / RURAL / EXCHANGE OFFERS:
-   - If a customer asks about consumer offers, rural offers, seasonal discounts, exchange bonus, corporate schemes, or any other offer:
+1. CONSUMER / FESTIVE / EXCHANGE OFFERS:
+   - If a customer asks about consumer offers, festive discounts, exchange bonuses, corporate schemes, or any other offer:
      Do NOT quote specific discount amounts. Politely inform the customer:
-     "हमारे सभी स्पेशल ऑफर्स, रूरल स्कीम्स और डिस्काउंट्स की विस्तृत जानकारी हमारी मारुति सुजुकी सेल्स टीम आपके शोरूम विज़िट या बुकिंग के समय आपके साथ साझा करेगी।"
+     "हमारे सभी स्पेशल ऑफर्स, एक्सचेंज बोनस और डिस्काउंट्स की विस्तृत जानकारी हमारी महिंद्रा अधिकृत सेल्स टीम आपके शोरूम विज़िट या बुकिंग के समय आपके साथ साझा करेगी।"
 2. ON-ROAD PRICE:
    - If a customer asks for the ON-ROAD price of any car:
      Do NOT quote or calculate on-road price. Politely inform them:
      "ऑन-रोड कीमत में राज्य आरटीओ (RTO) टैक्स, इंश्योरेंस और स्थानीय रजिस्ट्रेशन शामिल होते हैं, इसलिए सटीक ऑन-रोड कीमत हमारी सेल्स टीम आपके साथ साझा करेगी।"
 3. EX-SHOWROOM PRICE:
-   - You CAN and SHOULD provide the official EX-SHOWROOM price range starting from the entry-level variant up to the top variant (e.g. "विक्टोरिस की एक्स-शोरूम कीमत 10.49 लाख रुपये से शुरू होकर टॉप वैरिएंट के लिए 19.98 लाख रुपये तक है।").
+   - You CAN and SHOULD provide the official EX-SHOWROOM price range starting from the entry-level variant up to the top variant (e.g. "थार रॉक्स की एक्स-शोरूम कीमत 12.52 लाख रुपये से शुरू होकर टॉप वैरिएंट के लिए 23.52 लाख रुपये तक है।").
 
 *** GUARDRAIL 2: COMPETITION COMPARISON DEFLECTION (STRICT REQUIREMENT) ***
-- If a customer asks for a comparison with ANY competitor model or other brand (such as Hyundai Creta/Venue/i20, Kia Seltos/Sonet, Tata Nexon/Punch/Harrier, Honda Elevate/City, Mahindra Thar/Scorpio/XUV700, Toyota Hyryder/Innova, etc.):
-  1. NEVER provide any information, analysis, or specs regarding the competitor model.
-  2. NEVER say negative or positive comments about the competitor brand.
-  3. INSTEAD, POLITELY DEFLECT and SUGGEST the relevant Maruti Suzuki model available in that exact segment.
+- If a customer asks for a comparison with ANY competitor model or other brand (such as Tata Safari/Harrier/Nexon/Punch/Curvv, Hyundai Creta/Alcazar/Venue, Kia Seltos/Sonet/Carens, Toyota Fortuner/Innova/Hyryder, MG Hector, Maruti Brezza/Grand Vitara/Jimny, etc.):
+  1. NEVER provide any specs, analysis, or numbers for the competitor model.
+  2. NEVER say negative or derogatory comments about the competitor brand.
+  3. INSTEAD, POLITELY DEFLECT and SUGGEST the relevant market-leading Mahindra SUV in that segment.
   - Segment Deflection Guide:
-    * Asked about Creta / Seltos / Elevate -> Suggest Maruti Suzuki Victoris & Grand Vitara.
-    * Asked about Venue / Sonet / Nexon / Punch -> Suggest Maruti Suzuki Brezza & FRONX.
-    * Asked about i20 / Altroz -> Suggest Maruti Suzuki Baleno & Swift.
-    * Asked about Thar -> Suggest Maruti Suzuki Jimny ALLGRIP PRO 4x4.
-    * Asked about Innova / Carens / XUV700 -> Suggest Maruti Suzuki Invicto, XL6, and Ertiga.
-- NOTE: You ARE fully encouraged to compare two or more Maruti Suzuki cars with each other (e.g. Victoris vs Brezza vs Grand Vitara).
+    * Asked about Creta / Seltos / Grand Vitara / Elevate -> Suggest Mahindra XUV 3XO and XUV700.
+    * Asked about Safari / Harrier / Alcazar / Hector -> Suggest Mahindra XUV700 and Scorpio-N.
+    * Asked about Fortuner / Gloster / Endeavour -> Suggest Mahindra Scorpio-N (Big Daddy) and Thar ROXX.
+    * Asked about Innova / Carens / Ertiga -> Suggest Mahindra Scorpio-N, XUV700 (7-Seater), and Marazzo.
+    * Asked about Jimny / Gurkha / Off-roaders -> Suggest Mahindra Thar (3-Door) and Thar ROXX 4x4.
+    * Asked about Nexon EV / Curvv EV -> Suggest Mahindra XUV400 EV (Born Electric).
+- NOTE: You ARE fully encouraged to compare two or more Mahindra SUVs with each other (e.g. Thar ROXX vs Scorpio-N vs XUV700).
 
 *** GUARDRAIL 4: MODEL-RELATED INFORMATION STRUCTURED FLOW ***
 When answering any car model query, present the details in this clear, structured order:
-1. Available Fuel Types: Mention Petrol, Factory-Fitted S-CNG, Intelligent Electric Hybrid, or Pure EV.
-2. Variant Range: Mention the variant lineup (e.g., LXi to ZXi+ for ARENA; Sigma to Alpha+ for NEXA).
+1. Available Fuel Types: Mention mStallion Turbo Petrol, mHawk Diesel, or 100% Pure EV.
+2. Variant Range: Mention the variant lineup (e.g., MX1 to AX7L for Thar Roxx; Z2 to Z8L for Scorpio-N; MX to AX7L for XUV700).
 3. Ex-Showroom Price Range: Quote starting entry-level price up to the top variant.
-4. Key Features & Highlights: Mention key safety (6 airbags standard / 5-star NCAP), comfort (Sunroof, 360 camera, HUD, SmartPlay Pro+), and mileage.
+4. Key Features & Highlights: Mention safety (5-Star Bharat/Global NCAP), comfort (Panoramic Skyroof, Level 2 ADAS, Harman Kardon / Sony 3D Sound), and 4x4 capability (4XPLOR).
 
 *** CALL CONCLUSION, THANKS & ENDING THE CALL (MANDATORY REQUIREMENT) ***
 - When the customer indicates they do not have any more questions/queries, say they don't have anything else, or say thank you / bye / bas itna hi / no questions / nothing else / no:
   1. Speak a warm, polite thank you and heartfelt farewell in the customer's language:
-     (In Hindi): "मारुति सुजुकी वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! हमारे नजदीकी डीलरशिप से हमारी टीम आपसे संपर्क करेगी। आपका दिन शुभ और मंगलमय हो!"
+     (In Hindi): "महिंद्रा ऑटो वर्चुअल शोरूम में पधारने के लिए आपका बहुत-बहुत धन्यवाद! हमारे नजदीकी डीलरशिप से हमारी टीम आपसे संपर्क करेगी। आपका दिन शुभ और मंगलमय हो!"
      (In other languages): deliver the corresponding warm thank you and farewell.
   2. IMMEDIATELY call the tool: end_call_session(reason) so the call concludes cleanly and ends.
 
@@ -482,16 +321,16 @@ let currentSessionTranscript = [];
 
 // --- UI Initialization ---
 window.addEventListener("load", () => {
-    console.log("Maruti Suzuki Virtual Showroom Loaded with Lead Capture & Guardrails");
+    console.log("Mahindra Auto Virtual Showroom Loaded with Lead Capture & Guardrails");
     
     // Inject system instructions
     const systemInstructionsInput = document.getElementById("systemInstructions");
     if (systemInstructionsInput) {
-        systemInstructionsInput.value = MARUTI_SYSTEM_INSTRUCTION;
+        systemInstructionsInput.value = MAHINDRA_SYSTEM_INSTRUCTION;
     }
 
     renderLineupCarousel("all");
-    switchCarBackground("victoris");
+    switchCarBackground("thar-roxx");
     setupChannelPills();
     setAvailableCamerasOptions();
     setAvailableMicrophoneOptions();
@@ -510,12 +349,14 @@ function setupChannelPills() {
             const channel = pill.getAttribute("data-channel");
             if (channel === "all") {
                 filterLineup("all");
-            } else if (channel === "nexa") {
-                filterLineupByChannel("NEXA");
-            } else if (channel === "arena") {
-                filterLineupByChannel("ARENA");
-            } else if (channel === "commercial") {
-                filterLineupByChannel("COMMERCIAL");
+            } else if (channel === "authentic") {
+                filterLineupByChannel("AUTHENTIC");
+            } else if (channel === "tech") {
+                filterLineupByChannel("TECH");
+            } else if (channel === "ev") {
+                filterLineupByChannel("EV");
+            } else if (channel === "utility") {
+                filterLineupByChannel("UTILITY");
             }
         });
     });
@@ -527,15 +368,19 @@ function renderLineupCarousel(filterCategory = "all") {
     if (!carousel) return;
 
     carousel.innerHTML = "";
-    const vehicleEntries = Object.values(MARUTI_VEHICLES);
+    const vehicleEntries = Object.values(MAHINDRA_VEHICLES);
 
     vehicleEntries.forEach(vehicle => {
         if (filterCategory !== "all") {
-            if (filterCategory === "ev" && vehicle.category !== "ev" && !vehicle.categoryLabel.includes("Hybrid")) {
+            if (filterCategory === "4x4" && vehicle.category !== "4x4") {
                 return;
-            } else if (filterCategory === "commercial" && vehicle.channel !== "COMMERCIAL") {
+            } else if (filterCategory === "luxury" && vehicle.category !== "luxury") {
                 return;
-            } else if (filterCategory !== "ev" && filterCategory !== "commercial" && vehicle.category !== filterCategory) {
+            } else if (filterCategory === "compact" && vehicle.category !== "compact") {
+                return;
+            } else if (filterCategory === "ev" && vehicle.channel !== "EV" && vehicle.category !== "ev") {
+                return;
+            } else if (filterCategory === "utility" && vehicle.channel !== "UTILITY" && vehicle.channel !== "COMMERCIAL") {
                 return;
             }
         }
@@ -553,7 +398,7 @@ function renderLineupCarousel(filterCategory = "all") {
             </div>
             <div class="card-top-row">
                 <span class="card-channel-pill ${channelClass}">${vehicle.channel}</span>
-                <span class="card-category-text">${vehicle.category.toUpperCase()}</span>
+                <span class="card-category-text">${vehicle.categoryLabel}</span>
             </div>
             <div class="card-car-name">${vehicle.name}</div>
             <div class="card-car-price">${vehicle.price}</div>
@@ -577,7 +422,7 @@ function filterLineupByChannel(channel) {
     if (!carousel) return;
 
     carousel.innerHTML = "";
-    Object.values(MARUTI_VEHICLES).forEach(vehicle => {
+    Object.values(MAHINDRA_VEHICLES).forEach(vehicle => {
         if (vehicle.channel.toUpperCase() === channel.toUpperCase()) {
             const card = document.createElement("div");
             card.className = `car-card-item ${vehicle.id === currentSelectedCarId ? 'active' : ''}`;
@@ -591,7 +436,7 @@ function filterLineupByChannel(channel) {
                 </div>
                 <div class="card-top-row">
                     <span class="card-channel-pill ${channelClass}">${vehicle.channel}</span>
-                    <span class="card-category-text">${vehicle.category.toUpperCase()}</span>
+                    <span class="card-category-text">${vehicle.categoryLabel}</span>
                 </div>
                 <div class="card-car-name">${vehicle.name}</div>
                 <div class="card-car-price">${vehicle.price}</div>
@@ -606,10 +451,10 @@ function selectCar(carId) {
     const cleanId = String(carId).toLowerCase().trim().replace(/\s+/g, "-");
     let matchedId = null;
 
-    if (MARUTI_VEHICLES[cleanId]) {
+    if (MAHINDRA_VEHICLES[cleanId]) {
         matchedId = cleanId;
     } else {
-        for (const [id, vehicle] of Object.entries(MARUTI_VEHICLES)) {
+        for (const [id, vehicle] of Object.entries(MAHINDRA_VEHICLES)) {
             if (id === cleanId || vehicle.name.toLowerCase() === cleanId || vehicle.keywords.some(kw => kw === cleanId || cleanId.includes(kw))) {
                 matchedId = id;
                 break;
@@ -617,7 +462,7 @@ function selectCar(carId) {
         }
     }
 
-    if (!matchedId || !MARUTI_VEHICLES[matchedId]) return;
+    if (!matchedId || !MAHINDRA_VEHICLES[matchedId]) return;
 
     currentSelectedCarId = matchedId;
     switchCarBackground(matchedId);
@@ -633,7 +478,7 @@ function selectCar(carId) {
 
 // Dynamic Background Transition and Hero Card Update
 function switchCarBackground(carId) {
-    const vehicle = MARUTI_VEHICLES[carId];
+    const vehicle = MAHINDRA_VEHICLES[carId];
     if (!vehicle) return;
 
     const bgLayer = document.getElementById("backdrop-image");
@@ -670,7 +515,7 @@ function switchCarBackground(carId) {
     if (titleEl) titleEl.textContent = vehicle.name;
     if (taglineEl) taglineEl.textContent = vehicle.tagline;
     if (priceEl) priceEl.textContent = vehicle.priceRange || vehicle.price;
-    if (fuelEl) fuelEl.textContent = vehicle.fuelTypes || "Petrol & S-CNG";
+    if (fuelEl) fuelEl.textContent = vehicle.fuelTypes || "Petrol & Diesel";
     if (variantsEl) variantsEl.textContent = vehicle.variantRange || "Multiple Variants";
     if (mileageEl) mileageEl.textContent = vehicle.mileage;
     if (engineEl) engineEl.textContent = vehicle.engine;
@@ -687,10 +532,10 @@ function switchCarBackground(carId) {
 
     if (heroCarImg) {
         heroCarImg.src = vehicle.bgImage;
-        heroCarImg.alt = `Maruti Suzuki ${vehicle.name}`;
+        heroCarImg.alt = `Mahindra ${vehicle.name}`;
     }
     if (visualCaption) {
-        visualCaption.textContent = `Official Visual - Maruti Suzuki ${vehicle.name}`;
+        visualCaption.textContent = `Official Visual - Mahindra ${vehicle.name}`;
     }
     if (visualChannelTag) {
         visualChannelTag.textContent = vehicle.channel;
@@ -702,7 +547,7 @@ function detectCarInTranscript(text) {
     if (!text) return;
     const lower = text.toLowerCase();
 
-    for (const [carId, vehicle] of Object.entries(MARUTI_VEHICLES)) {
+    for (const [carId, vehicle] of Object.entries(MAHINDRA_VEHICLES)) {
         for (const kw of vehicle.keywords) {
             if (lower.includes(kw.toLowerCase())) {
                 console.log(`Detected vehicle mention: "${kw}" -> Switching showroom to ${vehicle.name}`);
@@ -724,16 +569,16 @@ function askQuickPrompt(promptText) {
 }
 
 function askAboutCurrentCar() {
-    const vehicle = MARUTI_VEHICLES[currentSelectedCarId];
+    const vehicle = MAHINDRA_VEHICLES[currentSelectedCarId];
     if (vehicle) {
-        askQuickPrompt(`Tell me about the Maruti Suzuki ${vehicle.name}, its fuel types, variant range, ex-showroom price, and key features.`);
+        askQuickPrompt(`Tell me about the Mahindra ${vehicle.name}, its fuel types, variant range, ex-showroom price, and key highlights.`);
     }
 }
 
 function bookTestDriveCurrentCar() {
-    const vehicle = MARUTI_VEHICLES[currentSelectedCarId];
+    const vehicle = MAHINDRA_VEHICLES[currentSelectedCarId];
     if (vehicle) {
-        askQuickPrompt(`I would like to schedule a test drive for the Maruti Suzuki ${vehicle.name}. My name is ${activeCustomerName || 'Customer'}.`);
+        askQuickPrompt(`I would like to schedule a test drive for the Mahindra ${vehicle.name}. My name is ${activeCustomerName || 'Customer'}.`);
     }
 }
 
@@ -802,7 +647,7 @@ function getSelectedResponseModality() {
 }
 
 function getSystemInstructions() {
-    return systemInstructionsInput ? systemInstructionsInput.value : MARUTI_SYSTEM_INSTRUCTION;
+    return systemInstructionsInput ? systemInstructionsInput.value : MAHINDRA_SYSTEM_INSTRUCTION;
 }
 
 async function connectBtnClick() {
@@ -1021,7 +866,7 @@ function initSpeechRecognition() {
                 console.log("Customer Final Speech Received:", speechStr);
 
                 const lower = speechStr.toLowerCase();
-                const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ") || lower.includes("kabir")) && lower.includes("वर्चुअल शोरूम");
+                const isEcho = (lower.includes("कबीर हूं") || lower.includes("कबीर हूँ") || lower.includes("kabir")) && (lower.includes("महिंद्रा") || lower.includes("शोरूम"));
                 if (!isEcho) {
                     newUserTranscriptMessage(speechStr);
                 }
@@ -1078,7 +923,7 @@ async function processCustomerDialogueTurn(messageText) {
                     customer_message: cleanText,
                     customer_name: activeCustomerName || "Valued Customer",
                     model_of_interest: activeModelOfInterest || currentSelectedCarId,
-                    channel: (MARUTI_VEHICLES[currentSelectedCarId] || {}).channel || "ARENA"
+                    channel: (MAHINDRA_VEHICLES[currentSelectedCarId] || {}).channel || "AUTHENTIC"
                 })
             });
             const data = await resp.json();
@@ -1086,7 +931,7 @@ async function processCustomerDialogueTurn(messageText) {
                 newModelMessage(data.agent_response);
             }
             if (data && data.is_call_ended) {
-                newSystemNotice("📞 Consultation Concluded - Thank you for visiting Maruti Suzuki");
+                newSystemNotice("📞 Consultation Concluded - Thank you for visiting Mahindra Auto");
                 setTimeout(() => {
                     console.log("Auto-ending call session after conclusion response...");
                     disconnectBtnClick();
@@ -1110,7 +955,7 @@ function extractCustomerDetailsFromText(text) {
         const match = text.match(pattern);
         if (match && match[1]) {
             const potentialName = match[1].trim();
-            const stopWords = ["maruti", "suzuki", "kabir", "tara", "car", "gaadi", "gadi", "auto", "namaste", "hello", "hi", "sir", "bhai", "ji", "ek", "yeh", "woh", "the", "a", "an", "here"];
+            const stopWords = ["mahindra", "kabir", "thar", "scorpio", "xuv", "bolero", "car", "gaadi", "gadi", "auto", "namaste", "hello", "hi", "sir", "bhai", "ji", "ek", "yeh", "woh", "the", "a", "an", "here"];
             if (potentialName.length >= 2 && !stopWords.includes(potentialName.toLowerCase())) {
                 console.log("Auto-extracted customer name:", potentialName);
                 activeCustomerName = potentialName;
@@ -1126,8 +971,8 @@ async function saveLeadToBackend(customerName, modelOfInterest) {
     activeCustomerName = customerName || activeCustomerName || "Valued Customer";
     activeModelOfInterest = modelOfInterest || activeModelOfInterest || currentSelectedCarId;
 
-    const vehicle = MARUTI_VEHICLES[activeModelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(activeModelOfInterest.toLowerCase())) || MARUTI_VEHICLES[currentSelectedCarId];
-    const channel = vehicle ? vehicle.channel : "ARENA";
+    const vehicle = MAHINDRA_VEHICLES[activeModelOfInterest.toLowerCase().trim().replace(/\s+/g, "-")] || Object.values(MAHINDRA_VEHICLES).find(v => v.name.toLowerCase().includes(activeModelOfInterest.toLowerCase())) || MAHINDRA_VEHICLES[currentSelectedCarId];
+    const channel = vehicle ? vehicle.channel : "AUTHENTIC";
     const carName = vehicle ? vehicle.name : activeModelOfInterest;
 
     const transcriptText = currentSessionTranscript.join("\n");
@@ -1184,10 +1029,10 @@ function syncTranscriptToBackend() {
     const fullTranscript = getLiveTranscriptFromChat();
     if (!fullTranscript || !fullTranscript.trim()) return;
 
-    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "victoris") + "").toLowerCase().trim().replace(/\s+/g, "-");
-    const vehicle = MARUTI_VEHICLES[modelKey] || MARUTI_VEHICLES[currentSelectedCarId] || MARUTI_VEHICLES["victoris"];
-    const channel = vehicle ? vehicle.channel : "ARENA";
-    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Victoris");
+    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "thar-roxx") + "").toLowerCase().trim().replace(/\s+/g, "-");
+    const vehicle = MAHINDRA_VEHICLES[modelKey] || MAHINDRA_VEHICLES[currentSelectedCarId] || MAHINDRA_VEHICLES["thar-roxx"];
+    const channel = vehicle ? vehicle.channel : "AUTHENTIC";
+    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Thar ROXX");
 
     if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
     syncDebounceTimer = setTimeout(async () => {
@@ -1199,7 +1044,7 @@ function syncTranscriptToBackend() {
                     session_id: geminiLiveApi.sessionId,
                     transcript: fullTranscript,
                     customer_name: activeCustomerName || "Valued Customer",
-                    model_of_interest: carName || "Victoris",
+                    model_of_interest: carName || "Thar ROXX",
                     channel: channel
                 })
             });
@@ -1215,10 +1060,10 @@ async function syncTranscriptImmediate() {
     const fullTranscript = getLiveTranscriptFromChat();
     if (!fullTranscript || !fullTranscript.trim()) return;
 
-    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "victoris") + "").toLowerCase().trim().replace(/\s+/g, "-");
-    const vehicle = MARUTI_VEHICLES[modelKey] || MARUTI_VEHICLES[currentSelectedCarId] || MARUTI_VEHICLES["victoris"];
-    const channel = vehicle ? vehicle.channel : "ARENA";
-    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Victoris");
+    const modelKey = ((activeModelOfInterest || currentSelectedCarId || "thar-roxx") + "").toLowerCase().trim().replace(/\s+/g, "-");
+    const vehicle = MAHINDRA_VEHICLES[modelKey] || MAHINDRA_VEHICLES[currentSelectedCarId] || MAHINDRA_VEHICLES["thar-roxx"];
+    const channel = vehicle ? vehicle.channel : "AUTHENTIC";
+    const carName = vehicle ? vehicle.name : (activeModelOfInterest || "Thar ROXX");
 
     try {
         await fetch("/api/leads/transcript", {
@@ -1228,7 +1073,7 @@ async function syncTranscriptImmediate() {
                 session_id: geminiLiveApi.sessionId,
                 transcript: fullTranscript,
                 customer_name: activeCustomerName || "Valued Customer",
-                model_of_interest: carName || "Victoris",
+                model_of_interest: carName || "Thar ROXX",
                 channel: channel
             })
         });
@@ -1260,10 +1105,10 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         // Proactively greet customer in Hindi and ask for Name and Model of Interest
         if (isFirstTurn) {
             isFirstTurn = false;
-            currentSessionTranscript = ["Kabir: Namaste! Main Kabir hoon, Maruti Suzuki Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si gaadi dekhna chahte hain?"];
+            currentSessionTranscript = ["Kabir: Namaste! Main Kabir hoon, Mahindra Auto Virtual Showroom se. Aapka shubh naam kya hai aur aap kaun si Mahindra SUV dekhna chahte hain?"];
             syncTranscriptToBackend();
             setTimeout(() => {
-                geminiLiveApi.sendTextMessage("Start the conversation now. Greet the customer warmly in Hindi as Kabir, male AI Showroom Specialist from Maruti Suzuki Virtual Showroom. Politely ask for their Name and which Maruti Suzuki car model they would like to explore today.");
+                geminiLiveApi.sendTextMessage("Start the conversation now. Greet the customer warmly in Hindi as Kabir, male AI Showroom Specialist from Mahindra Auto Virtual Showroom. Politely ask for their Name and which Mahindra SUV model they would like to explore today.");
             }, 600);
         }
     } else if (messageResponse.type === "TOOL_CALL_RECORD_LEAD") {
@@ -1290,9 +1135,9 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         selectCar(messageResponse.carName);
         
         const carKey = messageResponse.carName.toLowerCase().trim().replace(/\s+/g, "-");
-        const vehicle = MARUTI_VEHICLES[carKey] || Object.values(MARUTI_VEHICLES).find(v => v.name.toLowerCase().includes(messageResponse.carName.toLowerCase()));
+        const vehicle = MAHINDRA_VEHICLES[carKey] || Object.values(MAHINDRA_VEHICLES).find(v => v.name.toLowerCase().includes(messageResponse.carName.toLowerCase()));
         if (vehicle) {
-            newSystemNotice(`🚗 Showroom Backdrop: Maruti Suzuki ${vehicle.name}`);
+            newSystemNotice(`🚗 Showroom Backdrop: Mahindra ${vehicle.name}`);
         }
 
         if (messageResponse.callId) {
@@ -1309,7 +1154,7 @@ geminiLiveApi.onReceiveResponse = (messageResponse) => {
         }
     } else if (messageResponse.type === "TOOL_CALL_END_CALL") {
         console.log("Gemini Live Tool Call: end_call_session ->", messageResponse.reason);
-        newSystemNotice("📞 Consultation Concluded - Thank you for visiting Maruti Suzuki");
+        newSystemNotice("📞 Consultation Concluded - Thank you for visiting Mahindra Auto");
 
         if (messageResponse.callId) {
             geminiLiveApi.sendMessage({
@@ -1448,126 +1293,165 @@ function setAppStatus(status) {
 }
 
 // --- Chat Messages Display & Transcript Sync ---
-function newModelMessage(message) {
+function newModelMessage(text) {
     const textChat = document.getElementById("text-chat");
     if (!textChat) return;
 
     const p = document.createElement("p");
     p.className = "model-bubble";
-    p.textContent = message;
+    p.textContent = text;
     textChat.appendChild(p);
     textChat.scrollTop = textChat.scrollHeight;
 
-    currentSessionTranscript.push("Kabir: " + message);
+    currentSessionTranscript.push("Kabir: " + text);
     syncTranscriptToBackend();
 }
 
 function newUserMessage() {
-    const textMessage = document.getElementById("text-message");
-    if (!textMessage || textMessage.value.trim() === "") return;
+    const input = document.getElementById("text-message");
+    if (!input || !input.value.trim()) return;
 
-    const message = textMessage.value.trim();
-    geminiLiveApi.sendTextMessage(message);
+    const text = input.value.trim();
+    input.value = "";
 
     const textChat = document.getElementById("text-chat");
     if (textChat) {
         const p = document.createElement("p");
         p.className = "user-bubble";
-        p.textContent = message;
+        p.textContent = text;
         textChat.appendChild(p);
         textChat.scrollTop = textChat.scrollHeight;
     }
 
-    currentSessionTranscript.push("Customer: " + message);
-    textMessage.value = "";
+    currentSessionTranscript.push("Customer: " + text);
+    detectCarInTranscript(text);
+    extractCustomerDetailsFromText(text);
     syncTranscriptToBackend();
-    processCustomerDialogueTurn(message);
+
+    if (geminiLiveApi && geminiLiveApi.webSocket && geminiLiveApi.webSocket.readyState === WebSocket.OPEN) {
+        geminiLiveApi.sendTextMessage(text);
+    } else {
+        processCustomerDialogueTurn(text);
+    }
 }
 
 function newUserTranscriptMessage(text) {
+    if (!text || !text.trim()) return;
+    const cleanText = text.trim();
+
     const textChat = document.getElementById("text-chat");
-    if (!textChat) return;
+    if (textChat) {
+        const p = document.createElement("p");
+        p.className = "user-bubble";
+        p.textContent = cleanText;
+        textChat.appendChild(p);
+        textChat.scrollTop = textChat.scrollHeight;
+    }
 
-    const p = document.createElement("p");
-    p.className = "user-bubble";
-    p.textContent = text;
-    textChat.appendChild(p);
-    textChat.scrollTop = textChat.scrollHeight;
-
-    currentSessionTranscript.push("Customer: " + text);
+    currentSessionTranscript.push("Customer: " + cleanText);
+    detectCarInTranscript(cleanText);
+    extractCustomerDetailsFromText(cleanText);
     syncTranscriptToBackend();
-    processCustomerDialogueTurn(text);
 }
 
-// --- Leads & Inquiries CRM Dashboard Logic ---
-async function updateLeadsCountBadge() {
-    try {
-        const resp = await fetch("/api/leads");
-        const data = await resp.json();
-        const count = data.leads ? data.leads.length : 0;
-        const badge = document.getElementById("leads-count-badge");
-        if (badge) {
-            badge.textContent = count;
-        }
-    } catch (e) {
-        console.warn("Could not fetch lead count:", e);
+// --- Leads & CRM Inquiries Modal & Data Fetching ---
+function toggleLeadsModal() {
+    const modal = document.getElementById("leads-modal");
+    if (!modal) return;
+
+    const isHidden = (modal.style.display === "none" || modal.style.display === "");
+    modal.style.display = isHidden ? "flex" : "none";
+
+    if (isHidden) {
+        fetchAndRenderLeads();
     }
 }
 
 async function fetchAndRenderLeads() {
-    const tableBody = document.getElementById("leads-table-body");
-    if (!tableBody) return;
+    const tbody = document.getElementById("leads-table-body");
+    if (!tbody) return;
 
-    tableBody.innerHTML = `<tr><td colspan="6" class="leads-loading">Loading captured leads from Cloud Datastore...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="leads-loading">Loading captured leads from database...</td></tr>`;
 
     try {
         const resp = await fetch("/api/leads");
         const data = await resp.json();
         const leads = data.leads || [];
 
-        const badge = document.getElementById("leads-count-badge");
-        if (badge) badge.textContent = leads.length;
-
         if (leads.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="leads-empty">No leads recorded yet. Start a live session to capture inquiries!</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="leads-empty">No leads captured yet. Start a session with Kabir to auto-qualify customer inquiries.</td></tr>`;
             return;
         }
 
-        tableBody.innerHTML = "";
+        tbody.innerHTML = "";
         leads.forEach(lead => {
             const tr = document.createElement("tr");
-            const dateStr = lead.call_date ? new Date(lead.call_date).toLocaleString() : "Recent";
-            const channelClass = (lead.channel || "ARENA").toLowerCase();
-
+            const dateStr = lead.call_date ? new Date(lead.call_date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : "Just now";
+            const channelBadge = lead.channel ? `<span class="leads-badge ${lead.channel.toLowerCase()}">${lead.channel}</span>` : `<span class="leads-badge authentic">AUTHENTIC</span>`;
+            
             tr.innerHTML = `
-                <td>${dateStr}</td>
-                <td class="lead-name">${lead.customer_name}</td>
-                <td><strong>${lead.model_of_interest}</strong></td>
-                <td><span class="card-channel-pill ${channelClass}">${lead.channel}</span></td>
-                <td><span class="lead-status-pill"><span class="material-icons" style="font-size:12px;">verified</span> ${lead.status}</span></td>
+                <td class="leads-time-cell">${dateStr}</td>
+                <td class="leads-name-cell"><strong>${escapeHtml(lead.customer_name || 'Valued Customer')}</strong></td>
+                <td class="leads-model-cell">${escapeHtml(lead.model_of_interest || 'Thar ROXX')}</td>
+                <td>${channelBadge}</td>
+                <td><span class="leads-status-pill">${escapeHtml(lead.status || 'Auto-Qualified')}</span></td>
                 <td>
-                    <button class="btn-view-transcript" onclick='showTranscriptViewer(${JSON.stringify(lead.customer_name)}, ${JSON.stringify(lead.transcript || "No transcript available")})'>
-                        View Transcript
+                    <button class="btn-view-transcript" onclick="viewLeadTranscript('${lead.session_id}')">
+                        <span class="material-icons">chat</span> View
                     </button>
                 </td>
             `;
-            tableBody.appendChild(tr);
+            tbody.appendChild(tr);
         });
+
+        // Store leads in window cache for quick modal transcript viewing
+        window.cachedLeads = leads;
+        updateLeadsBadgeCountNumber(leads.length);
     } catch (e) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="leads-empty" style="color:#ef4444;">Error loading leads: ${e.message}</td></tr>`;
+        console.error("Failed to fetch leads from backend:", e);
+        tbody.innerHTML = `<tr><td colspan="6" class="leads-error">Failed to load leads: ${e.message}</td></tr>`;
     }
 }
 
-function showTranscriptViewer(customerName, transcript) {
-    const viewer = document.getElementById("transcript-viewer");
-    const title = document.getElementById("transcript-viewer-title");
-    const body = document.getElementById("transcript-viewer-body");
+async function updateLeadsCountBadge() {
+    try {
+        const resp = await fetch("/api/leads");
+        const data = await resp.json();
+        const leads = data.leads || [];
+        updateLeadsBadgeCountNumber(leads.length);
+    } catch (e) {
+        console.warn("Failed to update leads count badge:", e);
+    }
+}
 
-    if (viewer && title && body) {
-        title.textContent = `Call Transcript - ${customerName}`;
-        body.textContent = transcript || "No spoken messages logged.";
+function updateLeadsBadgeCountNumber(count) {
+    const badge = document.getElementById("leads-count-badge");
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? "inline-flex" : "none";
+    }
+}
+
+function viewLeadTranscript(sessionId) {
+    const viewer = document.getElementById("transcript-viewer");
+    const body = document.getElementById("transcript-viewer-body");
+    const title = document.getElementById("transcript-viewer-title");
+    if (!viewer || !body) return;
+
+    let lead = (window.cachedLeads || []).find(l => l.session_id === sessionId);
+    if (!lead && geminiLiveApi && geminiLiveApi.sessionId === sessionId) {
+        lead = {
+            customer_name: activeCustomerName || "Valued Customer",
+            model_of_interest: activeModelOfInterest || "Thar ROXX",
+            transcript: currentSessionTranscript.join("\n")
+        };
+    }
+
+    if (lead) {
+        if (title) title.textContent = `Transcript: ${lead.customer_name} (${lead.model_of_interest})`;
+        body.textContent = lead.transcript || "(No recorded dialogue turns yet)";
         viewer.style.display = "block";
-        viewer.scrollIntoView({ behavior: "smooth" });
+        viewer.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
@@ -1576,235 +1460,174 @@ function closeTranscriptViewer() {
     if (viewer) viewer.style.display = "none";
 }
 
-function toggleLeadsModal() {
-    const modal = document.getElementById("leads-modal");
-    if (!modal) return;
-    const isHidden = modal.style.display === "none" || modal.style.display === "";
-    modal.style.display = isHidden ? "flex" : "none";
-    if (isHidden) {
-        fetchAndRenderLeads();
-    }
+function escapeHtml(text) {
+    if (!text) return "";
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-// --- Audio & Media Streaming Input ---
-let inputAudioContext = null;
-let inputWorkletNode = null;
-let inputMediaStream = null;
+// --- Audio & Media Streaming Engine ---
+let mediaStream = null;
+let audioContext = null;
+let audioProcessor = null;
+let audioInput = null;
 
 async function startAudioInput() {
     try {
-        console.log("Initializing microphone capture...");
-        if (!inputAudioContext || inputAudioContext.state === "closed") {
-            inputAudioContext = new (window.AudioContext || window.webkitAudioContext)({
-                sampleRate: 16000,
-            });
-        }
-
-        if (inputAudioContext.state === "suspended") {
-            await inputAudioContext.resume();
-        }
-
-        const selectedMic = micSelect ? micSelect.value : null;
+        console.log("Starting Audio Input Stream...");
+        audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        
         const constraints = {
             audio: {
-                deviceId: selectedMic ? { exact: selectedMic } : undefined,
+                deviceId: micSelect.value ? { exact: micSelect.value } : undefined,
+                channelCount: 1,
+                sampleRate: 16000,
                 echoCancellation: true,
                 noiseSuppression: true,
                 autoGainControl: true
-            },
+            }
         };
 
-        inputMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-        const source = inputAudioContext.createMediaStreamSource(inputMediaStream);
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        audioInput = audioContext.createMediaStreamSource(mediaStream);
+        
+        // Use ScriptProcessor for 16kHz PCM streaming
+        const bufferSize = 2048;
+        audioProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
 
-        await inputAudioContext.audioWorklet.addModule("/frontend/input-processor.js");
-        inputWorkletNode = new AudioWorkletNode(inputAudioContext, "input-processor");
-
-        inputWorkletNode.port.onmessage = (event) => {
-            const pcm16Data = event.data;
-            const uint8Data = new Uint8Array(pcm16Data.buffer);
-            let binary = "";
-            const len = uint8Data.byteLength;
-            const chunkSize = 0x8000;
-            for (let i = 0; i < len; i += chunkSize) {
-                binary += String.fromCharCode.apply(null, uint8Data.subarray(i, Math.min(i + chunkSize, len)));
+        audioProcessor.onaudioprocess = (e) => {
+            if (!geminiLiveApi.webSocket || geminiLiveApi.webSocket.readyState !== WebSocket.OPEN) return;
+            const inputData = e.inputBuffer.getChannelData(0);
+            
+            // Convert Float32 to 16-bit PCM Int16
+            const pcm16 = new Int16Array(inputData.length);
+            for (let i = 0; i < inputData.length; i++) {
+                let s = Math.max(-1, Math.min(1, inputData[i]));
+                pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
             }
-            const base64Pcm = window.btoa(binary);
-            geminiLiveApi.sendAudioChunk(base64Pcm, inputAudioContext.sampleRate);
+
+            // Convert to Base64
+            const uint8 = new Uint8Array(pcm16.buffer);
+            let binary = '';
+            for (let i = 0; i < uint8.byteLength; i++) {
+                binary += String.fromCharCode(uint8[i]);
+            }
+            const base64Audio = btoa(binary);
+
+            geminiLiveApi.sendAudioChunk(base64Audio);
         };
 
-        source.connect(inputWorkletNode);
-        const dummyGain = inputAudioContext.createGain();
-        dummyGain.gain.value = 0;
-        inputWorkletNode.connect(dummyGain);
-        dummyGain.connect(inputAudioContext.destination);
-
-        initSpeechRecognition();
-        if (speechRecognizer) {
-            try { speechRecognizer.start(); } catch (e) {
-                console.log("Speech recognizer start error:", e);
-            }
-        }
-
-        console.log("Microphone live streaming active at rate:", inputAudioContext.sampleRate);
-    } catch (err) {
-        console.error("Microphone access error:", err);
+        audioInput.connect(audioProcessor);
+        audioProcessor.connect(audioContext.destination);
+        console.log("Audio input recording and streaming active at 16kHz");
+    } catch (e) {
+        console.error("Failed to start audio input stream:", e);
     }
 }
 
 function stopAudioInput() {
+    if (audioProcessor) {
+        try { audioProcessor.disconnect(); } catch (e) {}
+        audioProcessor = null;
+    }
+    if (audioInput) {
+        try { audioInput.disconnect(); } catch (e) {}
+        audioInput = null;
+    }
+    if (audioContext) {
+        try { audioContext.close(); } catch (e) {}
+        audioContext = null;
+    }
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+    }
     if (speechRecognizer) {
         try { speechRecognizer.stop(); } catch (e) {}
-    }
-    if (inputMediaStream) {
-        inputMediaStream.getTracks().forEach((track) => track.stop());
-        inputMediaStream = null;
-    }
-    if (inputWorkletNode) {
-        inputWorkletNode.disconnect();
-        inputWorkletNode = null;
-    }
-    if (inputAudioContext && inputAudioContext.state !== "closed") {
-        inputAudioContext.close();
-        inputAudioContext = null;
     }
 }
 
 function micBtnClick() {
-    stopAudioInput();
     micBtn.hidden = true;
     micOffBtn.hidden = false;
+    if (mediaStream) {
+        mediaStream.getAudioTracks().forEach(track => track.enabled = false);
+    }
 }
 
 function micOffBtnClick() {
-    startAudioInput();
     micBtn.hidden = false;
     micOffBtn.hidden = true;
-}
-
-// --- Camera & Video Sharing ---
-let videoStream;
-let videoIntervalId;
-
-async function startCameraInput() {
-    const selectedCamera = cameraSelect ? cameraSelect.value : null;
-    const constraints = {
-        video: selectedCamera ? { deviceId: { exact: selectedCamera } } : true,
-    };
-
-    try {
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        const videoElement = document.getElementById("video");
-        const cameraPip = document.getElementById("camera-pip");
-        if (videoElement) {
-            videoElement.srcObject = videoStream;
-            if (cameraPip) cameraPip.style.display = "block";
-        }
-        startVideoFrameSender();
-    } catch (err) {
-        console.error("Camera access error:", err);
-    }
-}
-
-function stopCameraInput() {
-    if (videoStream) {
-        videoStream.getTracks().forEach((track) => track.stop());
-    }
-    const cameraPip = document.getElementById("camera-pip");
-    if (cameraPip) cameraPip.style.display = "none";
-    clearInterval(videoIntervalId);
-}
-
-function startVideoFrameSender() {
-    const videoElement = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    if (!canvas || !videoElement) return;
-    const context = canvas.getContext("2d");
-
-    videoIntervalId = setInterval(() => {
-        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            const base64Data = canvas.toDataURL("image/jpeg", 0.6).split(",")[1];
-            geminiLiveApi.sendImageChunk(base64Data);
-        }
-    }, 1000);
-}
-
-function cameraBtnClick() {
-    stopCameraInput();
-    cameraBtn.hidden = true;
-    cameraOffBtn.hidden = false;
-}
-
-function cameraOffBtnClick() {
-    startCameraInput();
-    cameraBtn.hidden = false;
-    cameraOffBtn.hidden = true;
-}
-
-async function screenShareBtnClick() {
-    try {
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-        const videoElement = document.getElementById("video");
-        const cameraPip = document.getElementById("camera-pip");
-        if (videoElement) {
-            videoElement.srcObject = screenStream;
-            if (cameraPip) cameraPip.style.display = "block";
-        }
-        startVideoFrameSender();
-    } catch (err) {
-        console.error("Screen share error:", err);
-    }
-}
-
-async function setAvailableCamerasOptions() {
-    if (!cameraSelect) return;
-    try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter((device) => device.kind === "videoinput");
-
-        cameraSelect.innerHTML = '<option value="">Default Camera</option>';
-        videoDevices.forEach((device) => {
-            const option = document.createElement("option");
-            option.value = device.deviceId;
-            option.textContent = device.label || `Camera ${cameraSelect.options.length}`;
-            cameraSelect.appendChild(option);
-        });
-    } catch (e) {
-        console.log("Device enumeration error:", e);
+    if (mediaStream) {
+        mediaStream.getAudioTracks().forEach(track => track.enabled = true);
     }
 }
 
 async function setAvailableMicrophoneOptions() {
-    if (!micSelect) return;
     try {
         const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = devices.filter((device) => device.kind === "audioinput");
-
-        micSelect.innerHTML = '<option value="">Default Mic</option>';
-        audioDevices.forEach((device) => {
-            const option = document.createElement("option");
-            option.value = device.deviceId;
-            option.textContent = device.label || `Mic ${micSelect.options.length}`;
-            micSelect.appendChild(option);
-        });
+        const audioDevices = devices.filter(device => device.kind === "audioinput");
+        if (micSelect) {
+            micSelect.innerHTML = `<option value="">Default Microphone</option>`;
+            audioDevices.forEach((device, i) => {
+                const opt = document.createElement("option");
+                opt.value = device.deviceId;
+                opt.textContent = device.label || `Microphone ${i + 1}`;
+                micSelect.appendChild(opt);
+            });
+        }
     } catch (e) {
-        console.log("Mic enumeration error:", e);
+        console.warn("Could not enumerate audio devices:", e);
     }
 }
 
-function newCameraSelected() {
-    if (!cameraBtn.hidden) {
-        stopCameraInput();
-        startCameraInput();
+async function setAvailableCamerasOptions() {
+    try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === "videoinput");
+        if (cameraSelect) {
+            cameraSelect.innerHTML = `<option value="">Default Camera</option>`;
+            videoDevices.forEach((device, i) => {
+                const opt = document.createElement("option");
+                opt.value = device.deviceId;
+                opt.textContent = device.label || `Camera ${i + 1}`;
+                cameraSelect.appendChild(opt);
+            });
+        }
+    } catch (e) {
+        console.warn("Could not enumerate video devices:", e);
     }
 }
 
 function newMicSelected() {
-    if (!micBtn.hidden) {
+    if (mediaStream) {
         stopAudioInput();
         startAudioInput();
     }
+}
+
+function newCameraSelected() {
+    console.log("Camera selected:", cameraSelect.value);
+}
+
+function cameraBtnClick() {
+    cameraBtn.hidden = true;
+    cameraOffBtn.hidden = false;
+    const pip = document.getElementById("camera-pip");
+    if (pip) pip.style.display = "none";
+}
+
+function cameraOffBtnClick() {
+    cameraBtn.hidden = false;
+    cameraOffBtn.hidden = true;
+    const pip = document.getElementById("camera-pip");
+    if (pip) pip.style.display = "flex";
+}
+
+function screenShareBtnClick() {
+    console.log("Screen share requested");
 }

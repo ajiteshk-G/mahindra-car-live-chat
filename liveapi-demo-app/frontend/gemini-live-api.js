@@ -408,13 +408,13 @@ class GeminiLiveAPI {
             function_declarations: [
                 {
                     name: "switch_vehicle_showroom",
-                    description: "Call this tool to switch the showroom backdrop and display specs whenever the user asks about, compares, or mentions any Maruti Suzuki car model.",
+                    description: "Call this tool to switch the showroom backdrop and display specs whenever the user asks about, compares, or mentions any Mahindra SUV or vehicle model.",
                     parameters: {
                         type: "object",
                         properties: {
                             car_name: {
                                 type: "string",
-                                description: "The normalized key of the vehicle (e.g. victoris, grand-vitara, swift, brezza, dzire, fronx, jimny, invicto, baleno, ertiga, xl6, wagonr, alto-k10, celerio, s-presso, eeco, super-carry, tour-s, tour-m, tour-v, e-vitara)"
+                                description: "The normalized key of the Mahindra vehicle (e.g. thar-roxx, scorpio-n, xuv700, xuv-3xo, thar, scorpio-classic, bolero-neo, bolero-neo-plus, bolero, xuv400-ev, marazzo, bolero-camper)"
                             }
                         },
                         required: ["car_name"]
@@ -422,7 +422,7 @@ class GeminiLiveAPI {
                 },
                 {
                     name: "record_customer_lead",
-                    description: "Mandatory lead qualification tool. Call this tool immediately when the customer shares their name and vehicle model of interest to record and auto-qualify the lead in the inquiry database.",
+                    description: "Mandatory lead qualification tool. Call this tool immediately when the customer shares their name and Mahindra vehicle model of interest to record and auto-qualify the lead in the inquiry database.",
                     parameters: {
                         type: "object",
                         properties: {
@@ -432,7 +432,7 @@ class GeminiLiveAPI {
                             },
                             model_of_interest: {
                                 type: "string",
-                                description: "The Maruti Suzuki vehicle model the customer is interested in (e.g. Victoris, Grand Vitara, Swift, Brezza, Dzire, Jimny, Fronx, Invicto, Baleno, Ertiga, XL6, WagonR, Alto K10, Celerio, S-Presso, Eeco, Super Carry, Tour S, Tour M, Tour V, e-Vitara)"
+                                description: "The Mahindra vehicle model the customer is interested in (e.g. Thar ROXX, Scorpio-N, XUV700, XUV 3XO, Thar, Scorpio Classic, Bolero Neo, Bolero Neo Plus, Bolero, XUV400 EV, Marazzo, Bolero Camper)"
                             }
                         },
                         required: ["customer_name", "model_of_interest"]
@@ -448,7 +448,8 @@ class GeminiLiveAPI {
                                 type: "string",
                                 description: "Reason for concluding the call, e.g. 'Customer confirmed no more questions'"
                             }
-                        }
+                        },
+                        required: ["reason"]
                     }
                 }
             ]

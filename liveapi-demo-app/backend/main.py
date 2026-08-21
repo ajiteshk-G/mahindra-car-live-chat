@@ -289,8 +289,8 @@ async def handle_update_transcript(request: web.Request):
         return web.json_response({"error": str(e)}, status=500)
 
 
-MARUTI_AGENT_SYSTEM_PROMPT = """You are Kabir, an expert, enthusiastic male AI Showroom Specialist from Maruti Suzuki India Virtual Showroom.
-You represent Maruti Suzuki's ARENA, NEXA, and Commercial channels.
+MAHINDRA_AGENT_SYSTEM_PROMPT = """You are Kabir, an expert, enthusiastic male AI Showroom Specialist from Mahindra Auto India Virtual Showroom.
+You represent Mahindra Auto across all SUV and vehicle categories: Authentic 4x4 SUVs (Thar ROXX, Thar, Scorpio-N, Scorpio Classic), Tech & Luxury SUVs (XUV700, XUV 3XO), Born Electric (XUV400 EV), and Tough Commercial Utilities (Bolero, Bolero Neo, Bolero Neo+, Bolero Camper & Pik-Up).
 
 ALL INDIAN LANGUAGES & MULTILINGUAL CAPABILITY (MANDATORY):
 - You MUST understand and respond fluently in ALL Indian languages:
@@ -306,19 +306,19 @@ ALL INDIAN LANGUAGES & MULTILINGUAL CAPABILITY (MANDATORY):
   * Punjabi (ਪੰਜਾਬੀ)
   * Odia (ଓଡ଼ିଆ)
   * Urdu (اردو)
-  * Assamese (অসমীয়া)
+  * Assamese (অসমীया)
 - If the customer speaks or asks in ANY Indian language, immediately answer in that EXACT SAME Indian language with native fluency, cultural politeness, and appropriate regional phrasing.
 - If the customer asks in English or mixed Hinglish/Tanglish/etc., respond naturally in that same mixed style.
 
 STRICT GUARDRAILS:
 1. OFFERS & ON-ROAD PRICE:
-   - If customer asks about any discounts, rural offers, exchange bonus, consumer offers, or ON-ROAD price:
-     Inform them that applicable offers and on-road price will be shared by our Sales Team.
-   - Quote the EX-SHOWROOM price accurately.
-2. COMPETITOR COMPARISON:
-   - If customer asks about Hyundai, Kia, Toyota, Tata, Mahindra, or other brands:
-     Do NOT provide any information or comparison regarding the competitor brand.
-     Instead, highlight the relevant Maruti Suzuki model in the same segment.
+   - If customer asks about any discounts, festive offers, exchange bonus, consumer schemes, or ON-ROAD price:
+     Inform them that applicable offers and on-road price will be shared by our authorized Mahindra Sales Team during showroom visit / booking.
+   - Quote the official EX-SHOWROOM price accurately.
+2. COMPETITOR COMPARISON DEFLECTION:
+   - If customer asks about Tata (Safari, Harrier, Nexon, Punch, Curvv), Hyundai (Creta, Alcazar), Kia (Seltos), Toyota (Fortuner, Innova), or other brands:
+     Do NOT provide any information, specs, or comparison regarding the competitor brand.
+     Instead, highlight the relevant market-leading Mahindra SUV in that same segment (e.g. XUV700, Scorpio-N, Thar ROXX, XUV 3XO).
 3. Keep the response natural, warm, and concise (under 35 words)."""
 
 async def handle_dialogue_turn(request: web.Request):
@@ -328,8 +328,8 @@ async def handle_dialogue_turn(request: web.Request):
         session_id = data.get("session_id")
         customer_message = (data.get("customer_message") or "").strip()
         customer_name = data.get("customer_name") or "Valued Customer"
-        model_of_interest = data.get("model_of_interest") or "Victoris"
-        channel = data.get("channel", "ARENA")
+        model_of_interest = data.get("model_of_interest") or "Thar ROXX"
+        channel = data.get("channel", "AUTHENTIC")
 
         if not session_id or not customer_message:
             return web.json_response({"error": "Missing session_id or customer_message"}, status=400)
@@ -343,9 +343,9 @@ async def handle_dialogue_turn(request: web.Request):
             genai_client.models.generate_content,
             model="gemini-2.5-flash",
             contents=prompt,
-            config=dict(system_instruction=MARUTI_AGENT_SYSTEM_PROMPT, max_output_tokens=600)
+            config=dict(system_instruction=MAHINDRA_AGENT_SYSTEM_PROMPT, max_output_tokens=600)
         )
-        agent_reply = resp.text.strip() if resp and resp.text else f"जी {customer_name} जी, मारुति सुजुकी {model_of_interest} के बारे में हमारे पास पूरी जानकारी उपलब्ध है।"
+        agent_reply = resp.text.strip() if resp and resp.text else f"जी {customer_name} जी, महिंद्रा {model_of_interest} के बारे में हमारे पास पूरी जानकारी उपलब्ध है।"
 
         closing_patterns = [
             r"\b(no\s*more|no\s*questions?|don'?t\s*have|dont\s*have|nothing\s*else|that'?s\s*all|bas\s*itna|koi\s*aur\s*nahi|kuch\s*nahi|aur\s*kuch\s*nahi|no\s*thanks?|nahi\s*bas|nahi\s*shukriya|shukriya|dhanyawad|thank\s*you|thanks|bye|goodbye|all\s*good|no\s*further)\b",
