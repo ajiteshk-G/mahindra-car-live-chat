@@ -414,7 +414,7 @@ class GeminiLiveAPI {
                         properties: {
                             car_name: {
                                 type: "string",
-                                description: "The normalized key of the Mahindra vehicle (e.g. thar-roxx, scorpio-n, xuv700, xuv-3xo, thar, scorpio-classic, bolero-neo, bolero-neo-plus, bolero, xuv400-ev, marazzo, bolero-camper)"
+                                description: "The normalized key of the Mahindra vehicle (e.g. thar-roxx, be-6e, xev-9e, scorpio-n, xuv700, xuv-3xo, thar, scorpio-classic, bolero-neo, bolero-neo-plus, bolero, xuv400-ev, marazzo, bolero-camper)"
                             }
                         },
                         required: ["car_name"]
@@ -432,7 +432,7 @@ class GeminiLiveAPI {
                             },
                             model_of_interest: {
                                 type: "string",
-                                description: "The Mahindra vehicle model the customer is interested in (e.g. Thar ROXX, Scorpio-N, XUV700, XUV 3XO, Thar, Scorpio Classic, Bolero Neo, Bolero Neo Plus, Bolero, XUV400 EV, Marazzo, Bolero Camper)"
+                                description: "The Mahindra vehicle model the customer is interested in (e.g. Thar ROXX, BE 6e, XEV 9e, Scorpio-N, XUV700, XUV 3XO, Thar, Scorpio Classic, Bolero Neo, Bolero Neo Plus, Bolero, XUV400 EV, Marazzo, Bolero Camper)"
                             }
                         },
                         required: ["customer_name", "model_of_interest"]

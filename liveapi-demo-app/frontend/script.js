@@ -4,7 +4,7 @@
  * Includes Authentic SUVs, Tech SUVs, Born Electric, and Tough Utility/Commercial Range
  */
 
-// --- Official Mahindra Auto Complete Vehicle Knowledge Base with Multilingual Keywords & Structured Specs ---
+// --- Official Mahindra Auto & Mahindra Electric SUV Complete Vehicle Knowledge Base ---
 const MAHINDRA_VEHICLES = {
     "thar-roxx": {
         id: "thar-roxx",
@@ -21,8 +21,44 @@ const MAHINDRA_VEHICLES = {
         engine: "2.0L mStallion Turbo Petrol (177PS, 380Nm) & 2.2L mHawk Diesel (175PS, 370Nm)",
         transmission: "6-Speed AISIN Torque Converter Automatic / 6-Speed Manual",
         highlights: "Panoramic Skyroof, Level 2 ADAS (10 Active Safety Features), Twin 10.25-inch HD Digital Screens, Harman Kardon 9-Speaker Audio with QuantumLogic 3D, Ventilated Front Seats, 4XPLOR Intelligent Terrain Management with Electronic Locking Differential, 5-Door Practicality",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/174987/thar-roxx-exterior-right-front-three-quarter-31.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/thar-roxx.jpg",
         keywords: ["thar roxx", "roxx", "5 door thar", "5-door thar", "thar 5 door", "thar 5-door", "थार रॉक्स", "रॉक्स", "5 डोर थार"]
+    },
+    "be-6e": {
+        id: "be-6e",
+        name: "BE 6e",
+        channel: "EV",
+        category: "ev",
+        categoryLabel: "Born Electric Sport SUV Coupe",
+        tagline: "Unlimit Tomorrow. Pure Electric INGLO Architecture with 682 km Range.",
+        price: "₹18.90 Lakh* – ₹26.90 Lakh*",
+        priceRange: "₹18.90 Lakh* to ₹26.90 Lakh* (Ex-Showroom Introductory)",
+        fuelTypes: "100% Born Electric (INGLO Dedicated Platform)",
+        variantRange: "Pack ONE, Pack TWO, Pack THREE (59kWh & 79kWh Battery Packs, Formula E Edition)",
+        mileage: "Up to 682 km per charge (MIDC Part 1+2)",
+        engine: "High-Performance Rear-Wheel Drive Electric Motor (285PS, 380Nm, 0-100 km/h in 6.7s)",
+        transmission: "Single-Speed High-Efficiency e-Drive with Semi-Active Suspension",
+        highlights: "Born Electric INGLO Platform, 175kW Ultra-Fast DC Charging (20-80% in 20 mins), Integrated Dual Cockpit Screens, Level 2+ ADAS, 16-Speaker Harman Kardon Sound with Dolby Atmos, Aircraft-Inspired Halo Cockpit, 5-Star Bharat NCAP Ready",
+        bgImage: "/frontend/assets/be-6e.jpg",
+        keywords: ["be 6e", "be6e", "be 6", "be6", "be.05", "born electric", "mahindra electric", "electric suv", "बीई 6e", "बीई6e"]
+    },
+    "xev-9e": {
+        id: "xev-9e",
+        name: "XEV 9e",
+        channel: "EV",
+        category: "ev",
+        categoryLabel: "Electric Origin Luxury SUV Coupe",
+        tagline: "Unlimit Luxury. Triple Panoramic Cockpit Screens & 656 km Range.",
+        price: "₹21.90 Lakh* – ₹29.90 Lakh*",
+        priceRange: "₹21.90 Lakh* to ₹29.90 Lakh* (Ex-Showroom Introductory)",
+        fuelTypes: "100% Born Electric (INGLO Dedicated Luxury Platform)",
+        variantRange: "Pack ONE, Pack TWO, Pack THREE, XEV 9S",
+        mileage: "Up to 656 km per charge (MIDC)",
+        engine: "High-Output INGLO Electric Powertrain (285PS, 380Nm, 0-100 km/h in 6.8s)",
+        transmission: "Single-Speed e-Drive with Intelligent Dynamic Drive Modes",
+        highlights: "World-First Triple Integrated 12.3-inch Panoramic Cockpit Displays (Driver + Infotainment + Co-Driver Entertainment), Harman Kardon 16-Speaker 3D Audio with Dolby Atmos, Level 2+ ADAS, Infinity Panoramic Glass Roof, 79kWh Blade Battery, 175kW DC Fast Charging",
+        bgImage: "/frontend/assets/xev-9e.jpg",
+        keywords: ["xev 9e", "xev9e", "xev", "xev 9s", "xev9s", "luxury ev", "electric coupe", "एक्सईवी 9e", "एक्सईवी9e"]
     },
     "scorpio-n": {
         id: "scorpio-n",
@@ -39,7 +75,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.0L mStallion Turbo Petrol (200PS) & 2.2L mHawk Diesel (175PS, 400Nm)",
         transmission: "6-Speed Automatic & 6-Speed Manual with 4XPLOR 4WD",
         highlights: "Commanding High Seating, 4XPLOR Intelligent Terrain Modes (Normal, Grass/Gravel/Snow, Mud/Ruts, Sand), Sony 12-Speaker 3D Immersive Sound with Dual Channel Subwoofer, Electric Sunroof, Dual-Zone Climate Control, Alexa Built-in",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/40432/scorpio-n-exterior-right-front-three-quarter-75.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/scorpio-n.jpg",
         keywords: ["scorpio-n", "scorpio n", "scorpion", "big daddy", "scorpio-n 4x4", "स्कॉर्पियो एन", "स्कॉर्पियो n", "बिग डैडी"]
     },
     "xuv700": {
@@ -57,7 +93,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.0L mStallion Turbo Petrol (200PS) & 2.2L mHawk Diesel (185PS, 450Nm)",
         transmission: "6-Speed Automatic / 6-Speed Manual with Optional All-Wheel Drive (AWD)",
         highlights: "Dual 10.25-inch Floating Superscreen Cockpit, Level 2 ADAS (Adaptive Cruise Control, Auto Emergency Braking, Lane Departure Prevention), Panoramic Skyroof, Sony 3D Sound with 12 Speakers, Flush Smart Door Handles, Wireless Apple CarPlay & Android Auto",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/42355/xuv700-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/xuv700.jpg",
         keywords: ["xuv700", "xuv 700", "xuv", "700", "xuv 7xo", "xuv7xo", "adas", "एक्सयूवी 700", "एक्सयूवी700"]
     },
     "xuv-3xo": {
@@ -75,7 +111,7 @@ const MAHINDRA_VEHICLES = {
         engine: "1.2L mStallion Turbo Petrol (111PS), 1.2L TGDi Turbo (130PS) & 1.5L Diesel (117PS)",
         transmission: "AISIN 6-Speed Torque Converter AT & 6-Speed Manual",
         highlights: "Segment-Largest Panoramic Skyroof, Level 2 ADAS with 360-Degree Surround Camera, Dual-Zone Climate Control, 6 Airbags Standard across all variants, Harman Kardon Premium Audio, Dual 10.25-inch High-Definition Displays",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/156405/xuv-3xo-exterior-right-front-three-quarter-33.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/xuv-3xo.jpg",
         keywords: ["xuv 3xo", "xuv3xo", "3xo", "xuv 300", "xuv300", "compact suv", "एक्सयूवी 3एक्सओ", "3एक्सओ"]
     },
     "thar": {
@@ -93,7 +129,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.0L mStallion TGDi Petrol (150PS) / 2.2L mHawk Diesel (130PS) / 1.5L Diesel",
         transmission: "6-Speed AT / 6-Speed MT with Shift-on-Fly 4WD Transfer Case",
         highlights: "Iconic 2-Door Stance, Mechanical Locking Rear Differential (MLD), 650mm Water Wading Capacity, Removable Roof Top, IP54 Drizzle-Resistant Interior Switches, Washable Floor with Drain Plugs",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/40087/thar-exterior-right-front-three-quarter-35.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/thar.jpg",
         keywords: ["thar", "thar 3 door", "3 door thar", "classic thar", "4x4", "off road", "offroader", "थार", "3 डोर थार"]
     },
     "scorpio-classic": {
@@ -111,7 +147,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.2L All-Aluminum GEN-2 mHawk Diesel Engine (132PS, 300Nm torque)",
         transmission: "6-Speed Cable-Shift Manual Transmission with Rear-Wheel Drive (RWD)",
         highlights: "Signature Tower Tail Lamps, New Redefined Grille with Twin Peaks Logo, 9-inch Touchscreen Infotainment with Bluetooth/Phone Mirroring, Micro-Hybrid Technology, Durable Ladder-Frame Chassis, Available in 7 and 9-Seater layouts",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/128413/scorpio-classic-exterior-right-front-three-quarter-47.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/scorpio-classic.jpg",
         keywords: ["scorpio classic", "scorpio s11", "classic scorpio", "scorpio", "स्कॉर्पियो क्लासिक", "स्कॉर्पियो एस11"]
     },
     "bolero-neo": {
@@ -129,7 +165,7 @@ const MAHINDRA_VEHICLES = {
         engine: "1.5L mHawk100 Turbo Diesel (100PS, 260Nm torque)",
         transmission: "5-Speed Manual Transmission with Rear-Wheel Drive (RWD)",
         highlights: "Authentic Body-on-Frame Construction, Multi-Terrain Technology (Mechanical Locking Differential - MLD on N10(O)), 7-Seater Layout, Micro-Hybrid Engine System, Premium Italian Themed Interiors, 7-inch Touchscreen",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/50823/bolero-neo-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/bolero-neo.jpg",
         keywords: ["bolero neo", "neo", "bolero n10", "n10", "बोलेरो नियो", "नियो"]
     },
     "bolero-neo-plus": {
@@ -147,7 +183,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.2L mHawk Diesel Engine (120PS, 280Nm torque)",
         transmission: "6-Speed Manual with Rear-Wheel Drive",
         highlights: "Spacious 9-Seater Seating Arrangement (2 Front + 3 Middle + 4 Side-Facing Rear), 9-Inch Touchscreen Infotainment, Heavy Duty Suspension, Micro Hybrid Start-Stop System, ABS with EBD & Dual Airbags",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/174989/bolero-neo-plus-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/bolero-neo-plus.jpg",
         keywords: ["bolero neo plus", "bolero neo+", "bolero 9 seater", "9 seater", "9-seater", "बोलेरो नियो प्लस", "9 सीटर बोलेरो"]
     },
     "bolero": {
@@ -165,7 +201,7 @@ const MAHINDRA_VEHICLES = {
         engine: "1.5L mHawk75 Turbocharged Diesel Engine (75PS, 210Nm torque)",
         transmission: "5-Speed Manual Transmission with Heavy Duty Rear-Wheel Drive",
         highlights: "Solid Metal Front Bumper & High Ground Clearance, 7-Seater Configuration, Micro-Hybrid Technology, Unmatched Rural & Semi-Urban Durability, Proven Low Maintenance Cost, Driver Airbag, ABS with EBD",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/43482/bolero-exterior-right-front-three-quarter-2.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/bolero.jpg",
         keywords: ["bolero", "classic bolero", "bolero b6", "bolero power plus", "बोलेरो", "क्लासिक बोलेरो"]
     },
     "xuv400-ev": {
@@ -183,7 +219,7 @@ const MAHINDRA_VEHICLES = {
         engine: "Permanent Magnet Synchronous Electric Motor (150PS, 310Nm instant torque)",
         transmission: "Single-Speed Automatic Transmission (0-100 km/h in 8.3s)",
         highlights: "Fast 50kW DC Fast Charging (0 to 80% in 50 minutes), Dual 10.25-inch Floating Display Cockpit, Dual-Zone Climate Control with Memory, Wireless Apple CarPlay & Android Auto, Copper-Accented EV Exterior Styling",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/45280/xuv400-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/xuv400-ev.jpg",
         keywords: ["xuv400", "xuv 400", "xuv400 ev", "xuv ev", "electric suv", "ev", "electric car", "एक्सयूवी400", "इलेक्ट्रिक एसयूवी"]
     },
     "marazzo": {
@@ -201,7 +237,7 @@ const MAHINDRA_VEHICLES = {
         engine: "1.5L 4-Cylinder D15 Turbo Diesel Engine (121PS, 300Nm torque)",
         transmission: "6-Speed Manual Transmission with Front-Wheel Drive",
         highlights: "Shark-Inspired Aerodynamic Silhouette, Industry-First Surround Cool Roof AC System, 4-Star Global NCAP Safety Rating, Ultra-Quiet Cabin Insulation, Aircraft-Inspired Parking Brake, 7 and 8 Passenger Seating Flexibility",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/31991/marazzo-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/marazzo.jpg",
         keywords: ["marazzo", "mahindra marazzo", "mpv", "7 seater", "8 seater", "मराज़ो", "मराजो"]
     },
     "bolero-camper": {
@@ -219,7 +255,7 @@ const MAHINDRA_VEHICLES = {
         engine: "2.5L m2DiCR Turbocharged Diesel Engine (75PS, 200Nm torque)",
         transmission: "5-Speed Heavy Duty Manual with 4x4 & 4x2 Options",
         highlights: "Double Cabin 5-Seater + Large Cargo Bed, 4x4 All-Terrain Commercial Capability, 1.3 to 2.0 Ton Payload Options, Heavy Duty Leaf Spring Suspension, Power Steering and Air Conditioning Options",
-        bgImage: "https://imgd.aeplcdn.com/1280x720/n/cw/ec/134449/bolero-camper-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
+        bgImage: "/frontend/assets/bolero-camper.jpg",
         keywords: ["bolero camper", "camper", "pikup", "pickup", "bolero pikup", "maxx pikup", "chota hathi", "कैम्पर", "पिकअप", "बोलेरो पिकअप"]
     }
 };
