@@ -303,10 +303,11 @@ class GeminiLiveAPI {
                         raw: messageData
                     });
                 } else if (call.name === "find_nearest_showroom") {
-                    const city = call.args?.city || "New Delhi";
-                    const pincode = call.args?.pincode || "110001";
-                    const showroomName = ;
-                    const address = ;
+                    const city = (call.args && call.args.city) || "New Delhi";
+                    const pincode = (call.args && call.args.pincode) || "110001";
+                    const ch = (call.args && call.args.channel) || "Direct";
+                    const showroomName = "Mahindra " + ch + " Experience Showroom, " + city;
+                    const address = "Plot 14, Main Auto Hub, " + city + " - " + pincode;
                     if (call.id) {
                         this.sendToolResponse(call.id, call.name, {
                             status: "success",

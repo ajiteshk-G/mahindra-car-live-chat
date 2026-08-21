@@ -283,6 +283,16 @@ let currentSelectedCarId = "thar-roxx";
 let activeCustomerName = "";
 let activeModelOfInterest = "";
 
+// Global Media & Speech State Variables (declared early to prevent TDZ)
+var speechRecognizer = null;
+var currentInterimBubble = null;
+var currentSpeechLang = "hi-IN";
+var isAgentSpeaking = false;
+var speakingTimeout = null;
+var agentSpeakingTimeout = null;
+var userVideoStream = null;
+var videoFrameInterval = null;
+
 // --- System Instruction Prompt for Mahindra Auto Consultant "Kabir" with Flow & Guardrails ---
 const MAHINDRA_SYSTEM_INSTRUCTION = `You are Kabir, the expert AI Showroom Specialist and Virtual Consultant for Mahindra Auto India across all SUV and utility vehicle categories: Authentic 4x4 SUVs, Tech & Luxury SUVs, Born Electric, and Tough Commercial Utilities.
 
@@ -852,9 +862,6 @@ function disconnectBtnClick() {
     }, 400);
 }
 
-let speakingTimeout = null;
-let isAgentSpeaking = false;
-let agentSpeakingTimeout = null;
 
 function setAgentSpeaking(speaking) {
     if (speaking) {
@@ -893,9 +900,6 @@ function triggerSpeakingGlow() {
 
 let isFirstTurn = true;
 
-let speechRecognizer = null;
-let currentInterimBubble = null;
-let currentSpeechLang = "hi-IN";
 
 function setSpeechLanguage(lang) {
     currentSpeechLang = lang || "hi-IN";
@@ -1729,8 +1733,6 @@ function newMicSelected() {
     }
 }
 
-let userVideoStream = null;
-let videoFrameInterval = null;
 
 async function startCameraStream() {
     try {
