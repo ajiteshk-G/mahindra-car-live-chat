@@ -768,6 +768,7 @@ function disconnectBtnClick() {
     geminiLiveApi.disconnect();
     setAppStatus("disconnected");
     stopAudioInput();
+    stopCameraStream();
 
     const connectBtn = document.getElementById("connectBtn");
     const disconnectBtn = document.getElementById("disconnectBtn");
@@ -1673,24 +1674,153 @@ function newMicSelected() {
     }
 }
 
+let userVideoStream = null;
+let videoFrameInterval = null;
+
+async function startCameraStream() {
+    try {
+        console.log("Requesting user webcam video stream...");
+        const constraints = {
+            video: {
+                deviceId: cameraSelect && cameraSelect.value ? { exact: cameraSelect.value } : undefined,
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: "user"
+            }
+        };
+
+        userVideoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const videoEl = document.getElementById("video");
+        if (videoEl) {
+            videoEl.srcObject = userVideoStream;
+            videoEl.muted = true;
+            await videoEl.play().catch(err => console.log("Camera video play error:", err));
+        }
+
+        const pip = document.getElementById("camera-pip");
+        if (pip) {
+            pip.style.display = "flex";
+            const pipLabel = pip.querySelector(".pip-label");
+            if (pipLabel) pipLabel.textContent = "You (Live)";
+        }
+
+        cameraBtn.hidden = false;
+        cameraOffBtn.hidden = true;
+
+        startVideoFrameStreaming();
+        console.log("User camera feed active and streaming video frames to Gemini Live");
+    } catch (e) {
+        console.error("Failed to start camera feed:", e);
+        if (typeof newSystemNotice === "function") {
+            newSystemNotice("⚠️ Camera access was not granted or camera is not available.");
+        }
+    }
+}
+
+function stopCameraStream() {
+    if (videoFrameInterval) {
+        clearInterval(videoFrameInterval);
+        videoFrameInterval = null;
+    }
+    if (userVideoStream) {
+        userVideoStream.getTracks().forEach(track => track.stop());
+        userVideoStream = null;
+    }
+    const videoEl = document.getElementById("video");
+    if (videoEl) {
+        videoEl.srcObject = null;
+    }
+    const pip = document.getElementById("camera-pip");
+    if (pip) {
+        pip.style.display = "none";
+    }
+
+    cameraBtn.hidden = true;
+    cameraOffBtn.hidden = false;
+    console.log("User camera feed stopped.");
+}
+
+function startVideoFrameStreaming() {
+    if (videoFrameInterval) clearInterval(videoFrameInterval);
+    const canvas = document.getElementById("canvas");
+    const videoEl = document.getElementById("video");
+    if (!canvas || !videoEl) return;
+    const ctx = canvas.getContext("2d");
+
+    // Stream 1 frame every 1 second to Gemini Live API
+    videoFrameInterval = setInterval(() => {
+        if (!geminiLiveApi || !geminiLiveApi.webSocket || geminiLiveApi.webSocket.readyState !== WebSocket.OPEN) return;
+        if (!userVideoStream || videoEl.paused || videoEl.ended || videoEl.readyState < 2) return;
+
+        const w = videoEl.videoWidth || 320;
+        const h = videoEl.videoHeight || 240;
+        canvas.width = Math.min(w, 640);
+        canvas.height = Math.min(h, 480);
+
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+        const base64Data = dataUrl.split(",")[1];
+        if (base64Data) {
+            geminiLiveApi.sendImageChunk(base64Data);
+        }
+    }, 1000);
+}
+
 function newCameraSelected() {
-    console.log("Camera selected:", cameraSelect.value);
+    console.log("New camera selected:", cameraSelect.value);
+    if (userVideoStream) {
+        stopCameraStream();
+        startCameraStream();
+    }
 }
 
 function cameraBtnClick() {
-    cameraBtn.hidden = true;
-    cameraOffBtn.hidden = false;
-    const pip = document.getElementById("camera-pip");
-    if (pip) pip.style.display = "none";
+    stopCameraStream();
 }
 
 function cameraOffBtnClick() {
-    cameraBtn.hidden = false;
-    cameraOffBtn.hidden = true;
-    const pip = document.getElementById("camera-pip");
-    if (pip) pip.style.display = "flex";
+    startCameraStream();
 }
 
-function screenShareBtnClick() {
-    console.log("Screen share requested");
+async function screenShareBtnClick() {
+    try {
+        console.log("Requesting screen share stream...");
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { cursor: "always" },
+            audio: false
+        });
+
+        if (userVideoStream) {
+            stopCameraStream();
+        }
+
+        userVideoStream = screenStream;
+        const videoEl = document.getElementById("video");
+        if (videoEl) {
+            videoEl.srcObject = screenStream;
+            videoEl.muted = true;
+            await videoEl.play().catch(err => console.log("Screen video play error:", err));
+        }
+
+        const pip = document.getElementById("camera-pip");
+        if (pip) {
+            pip.style.display = "flex";
+            const pipLabel = pip.querySelector(".pip-label");
+            if (pipLabel) pipLabel.textContent = "Screen (Live)";
+        }
+
+        cameraBtn.hidden = false;
+        cameraOffBtn.hidden = true;
+
+        startVideoFrameStreaming();
+
+        screenStream.getVideoTracks()[0].onended = () => {
+            console.log("Screen share ended by user");
+            stopCameraStream();
+            const pipLabel = document.querySelector(".pip-label");
+            if (pipLabel) pipLabel.textContent = "You (Live)";
+        };
+    } catch (e) {
+        console.warn("Screen share cancelled or failed:", e);
+    }
 }
