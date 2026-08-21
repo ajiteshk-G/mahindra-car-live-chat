@@ -269,6 +269,9 @@ class GeminiLiveAPI {
 
         // 1. Setup Complete
         if (messageData?.setupComplete || messageData?.setup_complete) {
+            console.log("Vertex AI Setup Completed confirmed.");
+            this.isSetupComplete = true;
+            this.onConnectionStarted();
             this.onReceiveResponse({
                 type: "SETUP COMPLETE",
                 data: messageData.setupComplete || messageData.setup_complete,
@@ -445,8 +448,8 @@ class GeminiLiveAPI {
 
         this.webSocket.onopen = (event) => {
             console.log("WebSocket opened successfully:", event);
+            this.isSetupComplete = false;
             this.sendInitialSetupMessages();
-            this.onConnectionStarted();
         };
 
         this.webSocket.onmessage = this.onReceiveMessage.bind(this);
@@ -626,12 +629,12 @@ class GeminiLiveAPI {
     }
 
     sendAudioChunk(base64PcmData, sampleRate = 16000) {
-        if (!this.webSocket || this.webSocket.readyState !== WebSocket.OPEN) return;
+        if (!this.webSocket || this.webSocket.readyState !== WebSocket.OPEN || !this.isSetupComplete) return;
         const audioMessage = {
-            realtime_input: {
-                media_chunks: [
+            realtimeInput: {
+                mediaChunks: [
                     {
-                        mime_type: `audio/pcm;rate=${sampleRate}`,
+                        mimeType: `audio/pcm;rate=${sampleRate}`,
                         data: base64PcmData,
                     },
                 ],

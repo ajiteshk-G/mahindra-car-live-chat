@@ -1736,7 +1736,7 @@ function newMicSelected() {
 
 async function startCameraStream() {
     try {
-        console.log("Requesting user webcam video stream...");
+        console.log("Requesting user webcam video stream for dual video communication...");
         const constraints = {
             video: {
                 deviceId: cameraSelect && cameraSelect.value ? { exact: cameraSelect.value } : undefined,
@@ -1754,27 +1754,20 @@ async function startCameraStream() {
             await videoEl.play().catch(err => console.log("Camera video play error:", err));
         }
 
-        const pip = document.getElementById("customer-video-pane"); const stage = document.getElementById("video-preview-container");
-        if (pip) { pip.style.display = "flex"; } if (stage) { stage.classList.add("dual-video"); }
+        const pip = document.getElementById("customer-video-pane");
+        const stage = document.getElementById("video-preview-container");
+        if (pip) { pip.style.display = "flex"; }
+        if (stage) { stage.classList.add("dual-video"); }
 
         cameraBtn.hidden = false;
         cameraOffBtn.hidden = true;
-
-        startVideoFrameStreaming();
-        console.log("User camera feed active and streaming video frames to Gemini Live");
+        console.log("User camera video communication feed active (Dual video stage).");
     } catch (e) {
-        console.error("Failed to start camera feed:", e);
-        if (typeof newSystemNotice === "function") {
-            newSystemNotice("⚠️ Camera access was not granted or camera is not available.");
-        }
+        console.warn("Camera access was not granted or not available:", e);
     }
 }
 
 function stopCameraStream() {
-    if (videoFrameInterval) {
-        clearInterval(videoFrameInterval);
-        videoFrameInterval = null;
-    }
     if (userVideoStream) {
         userVideoStream.getTracks().forEach(track => track.stop());
         userVideoStream = null;
@@ -1783,38 +1776,14 @@ function stopCameraStream() {
     if (videoEl) {
         videoEl.srcObject = null;
     }
-    const pip = document.getElementById("customer-video-pane"); const stage = document.getElementById("video-preview-container");
-    if (pip) { pip.style.display = "none"; } if (stage) { stage.classList.remove("dual-video"); }
+    const pip = document.getElementById("customer-video-pane");
+    const stage = document.getElementById("video-preview-container");
+    if (pip) { pip.style.display = "none"; }
+    if (stage) { stage.classList.remove("dual-video"); }
 
     cameraBtn.hidden = true;
     cameraOffBtn.hidden = false;
-    console.log("User camera feed stopped.");
-}
-
-function startVideoFrameStreaming() {
-    if (videoFrameInterval) clearInterval(videoFrameInterval);
-    const canvas = document.getElementById("canvas");
-    const videoEl = document.getElementById("video");
-    if (!canvas || !videoEl) return;
-    const ctx = canvas.getContext("2d");
-
-    // Stream 1 frame every 1 second to Gemini Live API
-    videoFrameInterval = setInterval(() => {
-        if (!geminiLiveApi || !geminiLiveApi.webSocket || geminiLiveApi.webSocket.readyState !== WebSocket.OPEN) return;
-        if (!userVideoStream || videoEl.paused || videoEl.ended || videoEl.readyState < 2) return;
-
-        const w = videoEl.videoWidth || 320;
-        const h = videoEl.videoHeight || 240;
-        canvas.width = Math.min(w, 640);
-        canvas.height = Math.min(h, 480);
-
-        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
-        const base64Data = dataUrl.split(",")[1];
-        if (base64Data) {
-            geminiLiveApi.sendImageChunk(base64Data);
-        }
-    }, 1000);
+    console.log("User camera video communication feed stopped.");
 }
 
 function newCameraSelected() {
