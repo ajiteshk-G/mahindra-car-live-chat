@@ -279,11 +279,17 @@ class GeminiLiveAPI {
             });
         }
 
-        // 2. Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session)
+        // 2. Handle tool calls (switch_vehicle_showroom, record_customer_lead, end_call_session, test drive)
         const toolCalls = messageData?.toolCall?.functionCalls || messageData?.tool_call?.function_calls;
         if (toolCalls && toolCalls.length > 0) {
             for (const call of toolCalls) {
                 if (call.name === "switch_vehicle_showroom" && call.args) {
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "success",
+                            message: `Showroom background switched to ${call.args.car_name}`
+                        });
+                    }
                     this.onReceiveResponse({
                         type: "TOOL_CALL_SWITCH_CAR",
                         carName: call.args.car_name,
@@ -291,6 +297,12 @@ class GeminiLiveAPI {
                         raw: messageData
                     });
                 } else if (call.name === "record_customer_lead" && call.args) {
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "success",
+                            message: `Lead recorded for ${call.args.customer_name}`
+                        });
+                    }
                     this.onReceiveResponse({
                         type: "TOOL_CALL_RECORD_LEAD",
                         customerName: call.args.customer_name,
@@ -299,6 +311,12 @@ class GeminiLiveAPI {
                         raw: messageData
                     });
                 } else if (call.name === "end_call_session" && call.args) {
+                    if (call.id) {
+                        this.sendToolResponse(call.id, call.name, {
+                            status: "success",
+                            message: "Call session ended"
+                        });
+                    }
                     this.onReceiveResponse({
                         type: "TOOL_CALL_END_CALL",
                         reason: call.args.reason || "Customer completed inquiry",
@@ -611,6 +629,22 @@ class GeminiLiveAPI {
 
         console.log("Setup message payload:", JSON.stringify(sessionSetupMessage));
         this.sendMessage(sessionSetupMessage);
+    }
+
+        sendToolResponse(callId, functionName, responseObj) {
+        if (!this.webSocket || this.webSocket.readyState !== WebSocket.OPEN) return;
+        const toolResponseMessage = {
+            toolResponse: {
+                functionResponses: [
+                    {
+                        response: { output: responseObj },
+                        id: callId
+                    }
+                ]
+            }
+        };
+        console.log("Sending toolResponse back to Gemini Live:", JSON.stringify(toolResponseMessage));
+        this.sendMessage(toolResponseMessage);
     }
 
     sendTextMessage(text) {
