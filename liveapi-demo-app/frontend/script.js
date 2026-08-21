@@ -42,24 +42,7 @@ const MAHINDRA_VEHICLES = {
         bgImage: "/frontend/assets/be-6e.jpg",
         keywords: ["be 6e", "be6e", "be 6", "be6", "be.05", "born electric", "mahindra electric", "electric suv", "बीई 6e", "बीई6e"]
     },
-    "be-6-formula-e": {
-        id: "be-6-formula-e",
-        name: "BE 6 Formula E Edition",
-        channel: "EV",
-        category: "ev",
-        categoryLabel: "Track-Inspired Born EV Edition",
-        tagline: "Born For The Track. Formula E DNA, Racing Livery & Aerodynamic Wing.",
-        price: "₹24.50 Lakh* – ₹27.90 Lakh*",
-        priceRange: "₹24.50 Lakh* to ₹27.90 Lakh* (Ex-Showroom)",
-        fuelTypes: "100% Born Electric Racing Edition",
-        variantRange: "Formula E Special Edition Pack",
-        mileage: "High-Performance Track Tuning with 682 km Range",
-        engine: "High-Output INGLO Electric Motor with Instant Torque Vectoring (285PS, 380Nm)",
-        transmission: "Motorsport-Tuned Single-Speed e-Drive with Active Downforce Aero Wing",
-        highlights: "FIA Formula E Racing Livery, High-Downforce Rear Aero Wing, Track-Tuned Semi-Active Suspension, Performance Carbon-Accented Halo Cockpit, 175kW DC Ultra-Fast Charging, Dolby Atmos 16-Speaker Audio",
-        bgImage: "/frontend/assets/be-6-formula-e.jpg",
-        keywords: ["formula e", "be 6 formula e", "be6 formula e", "racing edition", "formula e edition", "फॉर्मूला ई", "फॉर्मूला e"]
-    },
+
     "xev-9e": {
         id: "xev-9e",
         name: "XEV 9e",
